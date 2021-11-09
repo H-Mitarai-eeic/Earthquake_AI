@@ -11,6 +11,7 @@ target.addEventListener("click", getPosition);
 var offsetX = 0
 var offsetY = 0
 
+
 // >>> for get INPUT >>>
 function getPosition(e) {
   offsetX = e.offsetX; // =>図形左上からのx座標
@@ -18,8 +19,6 @@ function getPosition(e) {
 
   offsetX = Math.floor(offsetX / 2)
   offsetY = Math.floor(offsetY / 2)
-
-
   createFig(mode = "pin")
   console.log(offsetX, offsetY, Number(inputElemDepth.value), Number(inputElemMag.value))
 }
@@ -86,16 +85,44 @@ function createFig(mode = "run") {
       }
 
       if (mode == "pin" || mode == "run") {
-        var image_data = test_context.createImageData(12, 12);
-        for (var y = 0; y < image_data.height; y++) {
-          for (var x = 0; x < image_data.width; x++) {
-            image_data.data[(x + y * image_data.width) * 4] = 0;
-            image_data.data[(x + y * image_data.width) * 4 + 1] = 153;
-            image_data.data[(x + y * image_data.width) * 4 + 2] = 255;
-            image_data.data[(x + y * image_data.width) * 4 + 3] = 255;
+        let frameSize = (5 + Number(inputElemMag.value)) * 2 + 1
+        const side = 5 + Number(inputElemMag.value)
+        let pinColor = 255 * (1 - Number(inputElemDepth.value) / 1000)
+        var image_data = test_context.createImageData(1, 1);
+        image_data.data[0] = 0;
+        image_data.data[1] = pinColor;
+        image_data.data[2] = 255;
+        image_data.data[3] = 255;
+
+        lineThickness = Math.min(3, frameSize / 4)
+        for (var y = 0; y < frameSize; y++) {
+          for (var x = 0; x < frameSize; x++) {
+            // var r = x;
+
+            if (Math.abs(x - y) <= lineThickness || Math.abs(x + y - frameSize) <= lineThickness) {
+              test_context.putImageData(image_data, 2 * offsetX + x - side, 2 * offsetY + y - side);
+            }
           }
         }
-        test_context.putImageData(image_data, 2 * offsetX, 2 * offsetY);
+
+        // let frameSize = (4 + Number(inputElemMag.value)) * 1.5
+        // let pinColor = 255 * (1 - Number(inputElemDepth.value) / 1000)
+        // var image_data = test_context.createImageData(frameSize, frameSize);
+        // for (var y = 0; y < image_data.height; y++) {
+        //   for (var x = 0; x < image_data.width; x++) {
+        //     if (Math.abs(x - y) <= 3 || Math.abs(x + y - frameSize) <= 3) {
+
+        //       image_data.data[(x + y * image_data.width) * 4] = 0;
+        //       image_data.data[(x + y * image_data.width) * 4 + 1] = pinColor;
+        //       image_data.data[(x + y * image_data.width) * 4 + 2] = 255;
+        //       image_data.data[(x + y * image_data.width) * 4 + 3] = 255;
+        //     }
+        //     else {
+        //       image
+        //     }
+        //   }
+        // }
+        // test_context.putImageData(image_data, 2 * offsetX, 2 * offsetY);
       }
     });
     image.src = imagePath;
