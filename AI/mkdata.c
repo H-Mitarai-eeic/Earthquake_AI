@@ -37,6 +37,7 @@ typedef struct{
     double phase1_sec;
 
     double SeismicIntensity;
+    int IntensityClass; //0 ~ 9
 
 } OB_DATA;
 
@@ -94,7 +95,7 @@ int main(void){
 
     while ((head = fgetc(fp_data)) != EOF){
         if (head == 'A'){
-            fscanf(fp_data, "%4s%2s%2s%2s%2s%4s%*4s%7s%*4s%8s%*4s%5s%*3s%2s%*1s", year_str, month_str, day_str, hour_str, min_str, sec_str, latitude_str, longitude_str, depth_str, magnitude_str);
+            fscanf(fp_data, "%4s%2s%2s%2s%2s%4s%*4[^\n]%7[^\n]%*4[^\n]%8[^\n]%*4[^\n]%5[^\n]%*3[^\n]%2[^\n]%*1[^\n]", year_str, month_str, day_str, hour_str, min_str, sec_str, latitude_str, longitude_str, depth_str, magnitude_str);
             fscanf(fp_data, "%*13[^\n]%*[^0-9]");
             fscanf(fp_data, "%[0-9]", ob_n_str);
             fscanf(fp_data, "%*[^\n]%*1[\n]");
@@ -126,6 +127,8 @@ int main(void){
             }else {
                 epic.magnitude = atof(magnitude_str) / 10.0;
             }
+            printf("longitude:%s.\n", longitude_str);
+            printf("depth:%s.\n", depth_str);
 
             int line_N = epic.ob_n;
             for (int j = 0; j < line_N; j++){
@@ -139,10 +142,11 @@ int main(void){
                     ob_data.phase1_min =atoi(phase1_min_str);
                     ob_data.phase1_sec = atoi(phase1_sec_str);
                     ob_data.SeismicIntensity = atof(SeismicIntensity_str) / 10.0;
+                    ob_data.IntensityClass = SeismicIntensity_to_10classes(ob_data.SeismicIntensity);
                     if(Check_Observation_Points(ob_list, &ob_data) == -1){
                         printf("不明な観測地点ID : %d\n", ob_data.ob_p_ID);
                     }
-                    fprintf(fp_out_ob_data, "%d, %f, %f, %f\n", EarthQuake_ID, ob_data.latitude, ob_data.longitude, ob_data.SeismicIntensity);
+                    fprintf(fp_out_ob_data, "%d, %f, %f, %f, %d\n", EarthQuake_ID, ob_data.latitude, ob_data.longitude, ob_data.SeismicIntensity, ob_data.IntensityClass);
                 }
             }
             
@@ -167,4 +171,29 @@ int Check_Observation_Points(const OB_LIST *ob_list, OB_DATA *ob_data){
         }
     }
     return -1;
+}
+int SeismicIntensity_to_10classes(double SeismicIntensity){
+    if(SeismicIntensity < 0.5){
+        return 0;
+    }else if(0.5 <=SeismicIntensity && SeismicIntensity < 1.5){
+        return 1;
+    }else if(1.5 <=SeismicIntensity && SeismicIntensity < 2.5){
+        return 2;
+    }else if(2.5 <=SeismicIntensity && SeismicIntensity < 3.5){
+        return 3;
+    }else if(3.5 <=SeismicIntensity && SeismicIntensity < 4.5){
+        return 4;
+    }else if(4.5 <=SeismicIntensity && SeismicIntensity < 5.0){
+        return 5;   //5-
+    }else if(5.0 <=SeismicIntensity && SeismicIntensity < 5.5){
+        return 6;   //5+
+    }else if(5.5 <=SeismicIntensity && SeismicIntensity < 6.0){
+        return 7;   //6-
+    }else if(6.0 <=SeismicIntensity && SeismicIntensity < 6.5){
+        return 8;   //6+
+    }else if(6.5 <=SeismicIntensity){
+        return 9;   //5+
+    }else {
+        return -1;  //error
+    }
 }

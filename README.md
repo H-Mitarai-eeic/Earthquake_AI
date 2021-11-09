@@ -4,7 +4,7 @@
 # データ形式
 ## kansoku[year].csv
 ```
-地震ID(int), 緯度(float), 経度(float), 計測震度(float)
+地震ID(int), 緯度(float), 経度(float), 計測震度(float), 震度階級(int, 0 ~ 9)
 ```
 ## shingen[year].csv
 ```
