@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import Dataset
 import glob
 import numpy as np
-import csv
+
 class MyCifarDataset(Dataset):
 	def __init__(self, root=None, train=True, transform=None):
 		self.root = root
@@ -67,7 +67,10 @@ class MyDataSet(Dataset):
 			txt = f.readlines()[0]
 		x, y, depth, mag = txt.split(",")
 		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=torch.int8, skiprows=1)
-		return x, y, depth, mag, lbl_data
+		img = torch.zeros(2, len(lbl_data), len(lbl_data))
+		img[0][x][y] = depth
+		img[1][x][y] = mag
+		return img, lbl_data
 
 
 

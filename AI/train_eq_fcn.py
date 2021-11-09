@@ -80,7 +80,8 @@ def main():
 
 		for i, data in enumerate(trainloader, 0):
 			# Get the inputs; data is a list of [inputs, labels]
-			input_x, input_y, input_depth, input_mag, labels = data
+			inputs, labels = data
+
 			if args.gpu >= 0:
 				inputs = inputs.to(device)
 				labels = labels.to(device)
@@ -88,14 +89,11 @@ def main():
 			optimizer.zero_grad()
 
 			# Forward
-			inputs = torch.zeros(2, len(labels), len(labels))
-			inputs[0][input_x][input_y] = input_depth
-			inputs[0][input_x][input_y] = input_mag
 			outputs = net(inputs)
 			# Predict the label
 			_, predicted = torch.max(outputs, 1)
 			# Check whether estimation is right
-			c = (predicted == labels).squeeze()
+			c = (predicted == labels).squeeze() ##この辺怪しい
 
 			for i in range(len(predicted)):
 				correct_train += c[i].item()
