@@ -57,6 +57,7 @@ def main():
 	trainvalset = MyDataSet(root=args.dataset, train=True, transform=transform)
 	# Split train/val
 	n_samples = len(trainvalset)
+	print("n_samples:", n_samples)
 	trainsize = int(n_samples * 0.9)
 	valsize = n_samples - trainsize
 	trainset, valset = torch.utils.data.random_split(trainvalset, [trainsize, valsize])
@@ -88,8 +89,10 @@ def main():
 			# Reset the parameter gradients
 			optimizer.zero_grad()
 
+			print("before forward")
 			# Forward
 			outputs = net(inputs)
+			print("after forward")
 			# Predict the label
 			_, predicted = torch.max(outputs, 1)
 			# Check whether estimation is right
@@ -104,6 +107,7 @@ def main():
 			optimizer.step()
 			# Add loss
 			running_loss += loss.item()
+			print("trainloader_",i,"loss:",loss.item())
 
 		# Report loss of the epoch
 		print('[epoch %d] loss: %.3f' % (ep + 1, running_loss))

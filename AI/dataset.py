@@ -66,7 +66,9 @@ class MyDataSet(Dataset):
 		with open(self.all_data[idx], "r") as f:
 			txt = f.readlines()[0]
 		x, y, depth, mag = txt.split(",")
-		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=torch.int8, skiprows=1)
+		x, y, depth, mag = int(x), int(y), float(depth), float(mag)
+		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=None, skiprows=1)
+		#print(lbl_data)
 		img = torch.zeros(2, len(lbl_data), len(lbl_data))
 		img[0][x][y] = depth
 		img[1][x][y] = mag
