@@ -3,7 +3,7 @@ import os.path as osp
 import fcn
 import torch.nn as nn
 
-from .fcn32s import get_upsampling_weight
+from fcn32s import get_upsampling_weight
 
 
 class FCN8s(nn.Module):
@@ -22,7 +22,7 @@ class FCN8s(nn.Module):
     def __init__(self, n_class=21):
         super(FCN8s, self).__init__()
         # conv1
-        self.conv1_1 = nn.Conv2d(3, 64, 3, padding=100)
+        self.conv1_1 = nn.Conv2d(2, 64, 3, padding=100) #入力の厚さは2
         self.relu1_1 = nn.ReLU(inplace=True)
         self.conv1_2 = nn.Conv2d(64, 64, 3, padding=1)
         self.relu1_2 = nn.ReLU(inplace=True)
