@@ -94,7 +94,7 @@ function createFig(mode = "run") {
         image_data.data[2] = 255;
         image_data.data[3] = 255;
 
-        lineThickness = Math.maxin(3, frameSize / 4)
+        lineThickness = Math.min(3, frameSize / 4)
         for (var y = 0; y < frameSize; y++) {
           for (var x = 0; x < frameSize; x++) {
             // var r = x;
