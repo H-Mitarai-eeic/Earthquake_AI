@@ -1,12 +1,15 @@
-let target = document.getElementById("figJapan");
+const canvasWidth = 512
+const canvasHeight = 512
+
+let target = document.getElementById("test_canvas");
 
 const inputElemDepth = document.getElementById('inputDepth');
 const inputElemMag = document.getElementById('inputMag');
 
 target.addEventListener("click", getPosition);
 
-let offsetX = 0
-let offsetY = 0
+var offsetX = 0
+var offsetY = 0
 
 // >>> for get INPUT >>>
 function getPosition(e) {
@@ -16,6 +19,8 @@ function getPosition(e) {
   offsetX = Math.floor(offsetX / 2)
   offsetY = Math.floor(offsetY / 2)
 
+
+  createFig(mode = "pin")
   console.log(offsetX, offsetY, Number(inputElemDepth.value), Number(inputElemMag.value))
 }
 
@@ -42,29 +47,97 @@ window.onload = () => {
 // <<< for get INPUT <<<
 
 // >>> for OUTPUT >>>
-function createFig() {
+function createFig(mode = "run") {
   var test_context = document.getElementById('test_canvas').getContext('2d');
-  var image_data = test_context.createImageData(256, 256);
+  const canvas = document.getElementById("test_canvas");
+  let imagePath = "./fig/japan.png";
+  draw(canvas, imagePath);
   // data[x] in image_data means 
   // x mod 4 switch
   // 0:r
   // 1:g
   // 2:b
-  // 3:alpha
-  for (var y = 0; y < 256; y++) {
-    for (var x = 0; x < 256; x++) {
-      var r = random = Math.random() * 255;
-      // var r = x;
-      image_data.data[(x + y * 256) * 4] = 255;
-      image_data.data[(x + y * 256) * 4 + 1] = 10;
-      image_data.data[(x + y * 256) * 4 + 2] = 0;
-      image_data.data[(x + y * 256) * 4 + 3] = r;
-    }
+  // // 3:alpha
+  function draw(canvas, imagePath) {
+    console.log("draw");
+    const image = new Image();
+    image.addEventListener("load", function () {
+      // canvas.width = image.naturalWidth;
+      // canvas.height = image.naturalHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+      console.log("load!");
+
+      if (mode == "run") {
+        var image_data = test_context.createImageData(1, 1);
+        for (var y = 0; y < canvasHeight; y++) {
+          for (var x = 0; x < canvasWidth; x++) {
+            var r = random = Math.random() * 255;
+            // var r = x;
+            if (r > 240) {
+              image_data.data[0] = r;
+              image_data.data[1] = 10;
+              image_data.data[2] = 0;
+              image_data.data[3] = 255;
+              test_context.putImageData(image_data, x, y);
+            }
+          }
+        }
+      }
+
+      if (mode == "pin" || mode == "run") {
+        var image_data = test_context.createImageData(12, 12);
+        for (var y = 0; y < image_data.height; y++) {
+          for (var x = 0; x < image_data.width; x++) {
+            image_data.data[(x + y * image_data.width) * 4] = 0;
+            image_data.data[(x + y * image_data.width) * 4 + 1] = 153;
+            image_data.data[(x + y * image_data.width) * 4 + 2] = 255;
+            image_data.data[(x + y * image_data.width) * 4 + 3] = 255;
+          }
+        }
+        test_context.putImageData(image_data, 2 * offsetX, 2 * offsetY);
+      }
+    });
+    image.src = imagePath;
   }
-
-  test_context.putImageData(image_data, 0, 0);
-
-
-  console.log(offsetX, offsetY, Number(inputElemDepth.value), Number(inputElemMag.value))
+  console.log("done")
 }
+
+createFig(init = true)
+
+// var test_context = document.getElementById('test_canvas').getContext('2d');
+// var image_data = test_context.createImageData(256, 256);
+// // data[x] in image_data means 
+// // x mod 4 switch
+// // 0:r
+// // 1:g
+// // 2:b
+// // 3:alpha
+// for (var y = 0; y < 256; y++) {
+//   for (var x = 0; x < 256; x++) {
+//     var r = random = Math.random() * 255;
+//     // var r = x;
+//     image_data.data[(x + y * 256) * 4] = 255;
+//     image_data.data[(x + y * 256) * 4 + 1] = 10;
+//     image_data.data[(x + y * 256) * 4 + 2] = 0;
+//     image_data.data[(x + y * 256) * 4 + 3] = r;
+//   }
+// }
+
+// test_context.putImageData(image_data, 0, 0);
+
+
+// console.log(offsetX, offsetY, Number(inputElemDepth.value), Number(inputElemMag.value))}
 // <<< for OUTPUT<<<
+
+// const canvas = document.getElementById("test_canvas");
+// const ctx = canvas.getContext("2d");
+
+// ctx.font = "40px Times New Roman";
+// ctx.fillText("Into", 0, 40);
+
+// ctx.font = "40px Times New Roman";
+// ctx.strokeText("the", 20, 60);
+
+// ctx.font = "40px Times New Roman";
+// ctx.fillText("Program", 40, 80);
