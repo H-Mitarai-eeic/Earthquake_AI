@@ -8,12 +8,12 @@ import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
+# from network import CifarCNN
 from fcn8s import FCN8s
-
-# from network import MnistCNN
+from dataset import MyDataSet
 
 def main():
-	parser = argparse.ArgumentParser(description='Pytorch for earthquake')
+	parser = argparse.ArgumentParser(description='Pytorch example: CIFAR-10')
 	parser.add_argument('--batchsize', '-b', type=int, default=100,
 						help='Number of images in each mini-batch')
 	parser.add_argument('--epoch', '-e', type=int, default=20,
@@ -26,6 +26,8 @@ def main():
 						help='Directory to output the result')
 	parser.add_argument('--resume', '-r', default='',
 						help='Resume the training from snapshot')
+	parser.add_argument('--dataset', '-d', default='data/mini_cifar',
+						help='Root directory of dataset')
 	args = parser.parse_args()
 
 	print('GPU: {}'.format(args.gpu))
@@ -34,10 +36,8 @@ def main():
 	print('')
 
 	# Set up a neural network to train
-	#net = MLP(args.unit, 28*28, 10)
 	net = FCN8s(10)
-
-	# Load designated network weight 
+	# Load designated network weight
 	if args.resume:
 		net.load_state_dict(torch.load(args.resume))
 	# Set model to GPU
@@ -50,28 +50,28 @@ def main():
 	criterion = nn.CrossEntropyLoss()
 	optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-	# Load the MNIST
+	# Load the CIFAR-10
 
-	transform = transforms.Compose(	[transforms.ToTensor()] )
+	transform = transforms.Compose([transforms.ToTensor()])
 
-	trainvalset = datasets.MNIST(root='./data', train=True,
-										download=True, transform=transform)
+	trainvalset = MyDataSet(root=args.dataset, train=True, transform=transform)
 	# Split train/val
 	n_samples = len(trainvalset)
+	print("n_samples:", n_samples)
 	trainsize = int(n_samples * 0.9)
 	valsize = n_samples - trainsize
 	trainset, valset = torch.utils.data.random_split(trainvalset, [trainsize, valsize])
 
 	trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batchsize,
-										shuffle=True, num_workers=2)
+											  shuffle=True, num_workers=2)
 	valloader = torch.utils.data.DataLoader(valset, batch_size=args.batchsize,
-										shuffle=True, num_workers=2)
+											shuffle=True, num_workers=2)
 	# Setup result holder
 	x = []
 	ac_train = []
 	ac_val = []
 	# Train
-	for ep in range(args.epoch):  # loop over the dataset multiple times
+	for ep in range(args.epoch):  # Loop over the dataset multiple times
 
 		running_loss = 0.0
 		correct_train = 0
@@ -82,18 +82,22 @@ def main():
 		for i, data in enumerate(trainloader, 0):
 			# Get the inputs; data is a list of [inputs, labels]
 			inputs, labels = data
+
 			if args.gpu >= 0:
 				inputs = inputs.to(device)
 				labels = labels.to(device)
 			# Reset the parameter gradients
 			optimizer.zero_grad()
 
+			print("before forward")
 			# Forward
 			outputs = net(inputs)
+			print("after forward")
 			# Predict the label
 			_, predicted = torch.max(outputs, 1)
 			# Check whether estimation is right
-			c = (predicted == labels).squeeze()
+			c = (predicted == labels).squeeze() ##この辺怪しい
+
 			for i in range(len(predicted)):
 				correct_train += c[i].item()
 				total_train += 1
@@ -103,6 +107,7 @@ def main():
 			optimizer.step()
 			# Add loss
 			running_loss += loss.item()
+			print("trainloader_",i,"loss:",loss.item())
 
 		# Report loss of the epoch
 		print('[epoch %d] loss: %.3f' % (ep + 1, running_loss))
@@ -129,7 +134,7 @@ def main():
 					total_val += 1
 
 		# Record result
-		x.append(ep+1)
+		x.append(ep + 1)
 		ac_train.append(100 * correct_train / total_train)
 		ac_val.append(100 * correct_val / total_val)
 
@@ -145,11 +150,10 @@ def main():
 	ax.legend()
 	ax.set_xlabel("Epoch")
 	ax.set_ylabel("Accuracy [%]")
-	ax.set_ylim(80, 100)
+	ax.set_ylim(0, 100)
 
-	plt.savefig(args.out + '/accuracy_mnist_cnn.png')
+	plt.savefig(args.out + '/accuracy_cifar.png')
 	#plt.show()
-
 
 if __name__ == '__main__':
 	main()

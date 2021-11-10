@@ -23,7 +23,7 @@ int latitude2Ycoor(double latitude);
 int longitude2Xcoor(double longitude);
 
 int main(void){
-    char filename_list[] = "data_original/code_p.dat";
+    char filename_list[] = "data/code_p.dat";
     char filename_out[] = "data_shaped/ObservationPointsMap.csv";
     FILE  *fp_list, *fp_out;
 
