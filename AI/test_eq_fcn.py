@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
 from fcn8s import FCN8s
+from fcn32s import FCN32s
 from dataset import MyDataSet
 
 def main():
@@ -27,7 +28,7 @@ def main():
 	print('')
 
 	# Set up a neural network to test
-	net = FCN8s(10)
+	net = FCN32s(10)
 	# Load designated network weight
 	net.load_state_dict(torch.load(args.model))
 	# Set model to GPU
@@ -61,11 +62,13 @@ def main():
 			# Check whether estimation is right
 			c = (predicted == labels).squeeze()
 			for i in range(len(predicted)):
-				label = labels[i]
-				correct += c[i].item()
-				class_correct[label] += c[i].item()
-				total += 1
-				class_total[label] += 1
+				for j in range(len(predicted[i])):
+					for k in range(len(predicted[i][j])):
+						label = labels[i][j][k]
+						correct += c[i][j][k].item()
+						class_correct[label] += c[i][j][k].item()
+						total += 1
+						class_total[label] += 1
 
 	# List of classes
 	classes = ("0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7")

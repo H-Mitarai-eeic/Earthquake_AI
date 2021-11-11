@@ -131,3 +131,47 @@ class   CifarCNN(nn.Module):
 		h = h.view(-1, 16 * 5 * 5)
 		y = self.fc(h)
 		return y
+
+# class   EQCNN(nn.Module):
+# 	"""
+# 	Network / Convolutional newral network for Earthquake task
+# 	"""
+# 	def __init__(self, n_out):
+# 		"""
+# 		Construct CNN
+
+# 		Parameters
+# 		----------
+# 		n_out	: int
+# 			dimension of output
+# 		"""
+# 		super(EQCNN, self).__init__()
+
+# 		self.conv1 = nn.Conv2d(2, 64, 3, stride=1)	# 2 * 256 * 256 -> 6 * 253 * 253
+# 		self.relu1 = nn.ReLU(inplace=True)
+# 		self.pool = nn.MaxPool2d(2, 2)	# 6 * 253 * 253 -> 6 * 14 * 14
+# 		self.conv2 = nn.Conv2d(6, 16, 5, stride=1)	# 6 * 14 * 14 -> 16 * 10 * 10
+# 		#self.pool = nn.MaxPool2d(2, 2)	# 16 * 10 * 10 -> 16 * 5 * 5
+# 		self.fc = nn.Linear(16 * 5 * 5, n_out)	# 400(=16*5*5) -> n_out
+
+# 	def forward(self, x):
+# 		"""
+# 		Calculate forward propagation
+
+# 		Parameters
+# 		----------
+# 		x	: torch.Tensor
+# 			input to the network
+# 			batchsize * channel * height * width
+
+# 		Returns
+# 		-------
+# 		y	: torch.Tensor
+# 			output from the network
+# 			batchsize * outout_dimension
+# 		"""
+# 		h = self.pool(F.relu(self.conv1(x)))
+# 		h = self.pool(F.relu(self.conv2(h)))
+# 		h = h.view(-1, 16 * 5 * 5)
+# 		y = self.fc(h)
+# 		return y
