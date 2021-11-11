@@ -39,7 +39,7 @@ class FCN32s(nn.Module):
     def __init__(self, n_class=21):
         super(FCN32s, self).__init__()
         # conv1
-        self.conv1_1 = nn.Conv2d(3, 64, 3, padding=100)
+        self.conv1_1 = nn.Conv2d(2, 64, 3, padding=2)
         self.relu1_1 = nn.ReLU(inplace=True)
         self.conv1_2 = nn.Conv2d(64, 64, 3, padding=1)
         self.relu1_2 = nn.ReLU(inplace=True)
@@ -90,8 +90,8 @@ class FCN32s(nn.Module):
         self.drop7 = nn.Dropout2d()
 
         self.score_fr = nn.Conv2d(4096, n_class, 1)
-        self.upscore = nn.ConvTranspose2d(n_class, n_class, 64, stride=32,
-                                          bias=False)
+        self.upscore = nn.ConvTranspose2d(n_class, n_class, 192, stride=32,
+                                          bias=False) #64 to 192
 
         self._initialize_weights()
 
@@ -108,19 +108,31 @@ class FCN32s(nn.Module):
                 m.weight.data.copy_(initial_weight)
 
     def forward(self, x):
+        #print("x:",x.size())
+        #print("starting_forward")
         h = x
         h = self.relu1_1(self.conv1_1(h))
+        # print("a")
         h = self.relu1_2(self.conv1_2(h))
+        # print("b")
         h = self.pool1(h)
+        # print("c")
 
         h = self.relu2_1(self.conv2_1(h))
+        # print("d")
         h = self.relu2_2(self.conv2_2(h))
+        # print("e")
         h = self.pool2(h)
+        # print("f")
 
         h = self.relu3_1(self.conv3_1(h))
+        # print("g")
         h = self.relu3_2(self.conv3_2(h))
+        # print("h")
         h = self.relu3_3(self.conv3_3(h))
+        # print("i")
         h = self.pool3(h)
+        # print("j")
 
         h = self.relu4_1(self.conv4_1(h))
         h = self.relu4_2(self.conv4_2(h))
@@ -137,11 +149,14 @@ class FCN32s(nn.Module):
 
         h = self.relu7(self.fc7(h))
         h = self.drop7(h)
-
+        #print("before_score_fr",h.size())
+    
         h = self.score_fr(h)
+        #print("score_fr",h.size())
 
         h = self.upscore(h)
-        h = h[:, :, 19:19 + x.size()[2], 19:19 + x.size()[3]].contiguous()
+        #print("upscore",h.size())
+        # h = h[:, :, 19:19 + x.size()[2], 19:19 + x.size()[3]].contiguous()
 
         return h
 

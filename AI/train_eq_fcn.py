@@ -10,7 +10,9 @@ from torchvision import datasets, transforms
 
 # from network import CifarCNN
 from fcn8s import FCN8s
+from fcn32s import FCN32s
 from dataset import MyDataSet
+# from network import EQCNN
 
 def main():
 	parser = argparse.ArgumentParser(description='Pytorch example: CIFAR-10')
@@ -36,7 +38,7 @@ def main():
 	print('')
 
 	# Set up a neural network to train
-	net = FCN8s(10)
+	net = FCN32s(10)
 	# Load designated network weight
 	if args.resume:
 		net.load_state_dict(torch.load(args.resume))
@@ -79,7 +81,7 @@ def main():
 		correct_val = 0
 		total_val = 0
 
-		for i, data in enumerate(trainloader, 0):
+		for s, data in enumerate(trainloader, 0):
 			# Get the inputs; data is a list of [inputs, labels]
 			inputs, labels = data
 
@@ -89,25 +91,31 @@ def main():
 			# Reset the parameter gradients
 			optimizer.zero_grad()
 
-			print("before forward")
+			#print("before forward")
 			# Forward
 			outputs = net(inputs)
-			print("after forward")
+			#print("after forward")
 			# Predict the label
+			#print("outputs:", outputs.size())
 			_, predicted = torch.max(outputs, 1)
 			# Check whether estimation is right
+			#print("predicted:",predicted.size())
+			#print("labels:",labels.size())
 			c = (predicted == labels).squeeze() ##この辺怪しい
+			#print("c:", c.size())
 
 			for i in range(len(predicted)):
-				correct_train += c[i].item()
-				total_train += 1
+				for j in range(len(predicted[i])):
+					for k in range(len(predicted[i][j])):
+						correct_train += c[i][j][k].item()
+						total_train += 1
 			# Backward + Optimize
 			loss = criterion(outputs, labels)
 			loss.backward()
 			optimizer.step()
 			# Add loss
 			running_loss += loss.item()
-			print("trainloader_",i,"loss:",loss.item())
+			print("trainloader_",s,"loss:",loss.item())
 
 		# Report loss of the epoch
 		print('[epoch %d] loss: %.3f' % (ep + 1, running_loss))
@@ -130,8 +138,10 @@ def main():
 				# Check whether estimation is right
 				c = (predicted == labels).squeeze()
 				for i in range(len(predicted)):
-					correct_val += c[i].item()
-					total_val += 1
+					for j in range(len(predicted[i])):
+						for k in range(len(predicted[i][j])):
+							correct_val += c[i][j][k].item()
+							total_val += 1
 
 		# Record result
 		x.append(ep + 1)
