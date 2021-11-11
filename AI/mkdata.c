@@ -49,7 +49,7 @@ int SeismicIntensity_to_10classes(double SeismicIntensity);
 
 int main(void){
 
-    char filename_list[] = "data/code_p.dat";
+    char filename_list[] = "Earthquake_Data/data/code_p.dat";
     FILE  *fp_list;
 
     //共通
@@ -89,9 +89,9 @@ int main(void){
     fclose(fp_list);
 
     for (int i = YEAR_S; i <= YEAR_E; i++){
-        char filename_data[100] = "data/i";    //.dat
-        char filename_out_epic[100] = "data_shaped/shingen";    //.csv
-        char filename_out_ob_data[100] = "data_shaped/kansoku"; //.csv
+        char filename_data[100] = "Earthquake_Data/data/i";    //.dat
+        char filename_out_epic[100] = "Earthquake_Data/data_shaped/shingen";    //.csv
+        char filename_out_ob_data[100] = "Earthquake_Data/data_shaped/kansoku"; //.csv
         FILE *fp_data, *fp_out_epic, *fp_out_ob_data;
 
         char file_year_str[100];
