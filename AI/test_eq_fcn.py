@@ -34,6 +34,7 @@ def main():
 	# Set model to GPU
 	if args.gpu >= 0:
 		# Make a specified GPU current
+		print("GPU using")
 		device = 'cuda:' + str(args.gpu)
 		net = net.to(device)
 
