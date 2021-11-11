@@ -21,6 +21,7 @@ typedef struct{
 
 int latitude2Ycoor(double latitude);
 int longitude2Xcoor(double longitude);
+double degmin2_100(double tude);
 
 int main(void){
     char filename_list[] = "data/code_p.dat";
@@ -55,7 +56,7 @@ int main(void){
         ob_list[i].longitude = longitude / 100.0;
         x = longitude2Xcoor(ob_list[i].longitude);
         y = latitude2Ycoor(ob_list[i].latitude);
-        if (0 <= x && x < 256 && 0 <= y && y < 256){
+        if (0 <= x && x < MESH_SIZE && 0 <= y && y < MESH_SIZE){
             mesh[x][y] ++;
         }
         else{
@@ -78,36 +79,44 @@ int main(void){
 }
 
 int latitude2Ycoor(double latitude){
-    int latitude_deg = latitude;
-    double latitude_min = latitude - latitude_deg;
-    double latitude_in_100 = latitude_deg + (latitude_min / 60.0) * 100.0;
+    double latitude_in_100 = degmin2_100(latitude);
     double lat_s = JAPAN_LAT_S;
     double lat_n = JAPAN_LAT_N;
-    double lat_width;
+    double lat_s_in_100 = degmin2_100(lat_s);
+    double lat_n_in_100 = degmin2_100(lat_n);
+    double lat_width_in_100;
     int MeshSize = MESH_SIZE;
     int y; //左上が 0 
 
-    lat_width = lat_n - lat_s;
+    lat_width_in_100 = lat_n_in_100 - lat_s_in_100;
     //printf("latitude width %f\n", MeshSize * (latitude - lat_s) / lat_width);
 
-    y = MeshSize * (latitude_in_100 - lat_s) / lat_width;
+    y = MeshSize * (latitude_in_100 - lat_s_in_100) / lat_width_in_100;
 
     return MeshSize - y;
 }
 int longitude2Xcoor(double longitude){
-    int longitude_deg = longitude;
-    double longitude_min = longitude - longitude_deg;
-    double longitude_in_100 = longitude_deg + (longitude_min / 60.0) * 100.0;
+    double longitude_in_100 = degmin2_100(longitude);
     double lon_w = JAPAN_LON_W;
     double lon_e = JAPAN_LON_E;
-    double lon_width;
+    double lon_w_in_100 = degmin2_100(lon_w);
+    double lon_e_in_100 = degmin2_100(lon_e);
+    double lon_width_in_100;
     int MeshSize = MESH_SIZE;
     int x;  //左上が 0 
 
-    lon_width = lon_e - lon_w;
+    lon_width_in_100 = lon_e_in_100 - lon_w_in_100;
     //printf("longitude %f, x %f\n", longitude, (longitude - lon_w) / lon_width * MeshSize);
 
-    x = (longitude_in_100 - lon_w) / lon_width * MeshSize;
+    x = MeshSize * (longitude_in_100 - lon_w_in_100) / lon_width_in_100;
 
     return x;
+}
+
+double degmin2_100(double tude){
+    int tude_deg = tude;
+    double tude_min = tude - tude_deg;
+    double tude_in_100 = tude_deg + (tude_min / 60.0) * 100;
+
+    return tude_in_100;
 }
