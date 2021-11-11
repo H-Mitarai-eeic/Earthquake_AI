@@ -112,27 +112,17 @@ class FCN32s(nn.Module):
         #print("starting_forward")
         h = x
         h = self.relu1_1(self.conv1_1(h))
-        # print("a")
         h = self.relu1_2(self.conv1_2(h))
-        # print("b")
         h = self.pool1(h)
-        # print("c")
 
         h = self.relu2_1(self.conv2_1(h))
-        # print("d")
         h = self.relu2_2(self.conv2_2(h))
-        # print("e")
         h = self.pool2(h)
-        # print("f")
 
         h = self.relu3_1(self.conv3_1(h))
-        # print("g")
         h = self.relu3_2(self.conv3_2(h))
-        # print("h")
         h = self.relu3_3(self.conv3_3(h))
-        # print("i")
         h = self.pool3(h)
-        # print("j")
 
         h = self.relu4_1(self.conv4_1(h))
         h = self.relu4_2(self.conv4_2(h))
@@ -149,13 +139,10 @@ class FCN32s(nn.Module):
 
         h = self.relu7(self.fc7(h))
         h = self.drop7(h)
-        #print("before_score_fr",h.size())
     
         h = self.score_fr(h)
-        #print("score_fr",h.size())
 
         h = self.upscore(h)
-        #print("upscore",h.size())
         # h = h[:, :, 19:19 + x.size()[2], 19:19 + x.size()[3]].contiguous()
 
         return h
