@@ -76,8 +76,8 @@ def main():
 	# Show accuracy
 	for i in range(10):
 		if class_total[i] != 0:
-			print('Accuracy of %5s : %2d %%' % (
-			classes[i], 100 * class_correct[i] / class_total[i]))
+			print('Accuracy of %5s : %2d %% , total num of this class: %d' % (
+			classes[i], 100 * class_correct[i] / class_total[i], class_total[i]))
 	print('Accuracy : %.3f %%' % (100 * correct / total))
 
 
