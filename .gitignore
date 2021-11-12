@@ -7,6 +7,8 @@
 /AI/data_reshaped
 /AI/data_shaped
 /AI/Earthquake_Data
+/AI/data100
+/AI/result
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
