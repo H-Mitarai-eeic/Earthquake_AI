@@ -73,12 +73,11 @@ int main(void){
             strcat(filename_out, EarthQuake_ID_str);
             strcat(filename_out, ".csv");
             //printf("output:%s\n", filename_out);
-            if ((fp_out = fopen(filename_out, "w")) == NULL){
-                printf("cannot open file:%s\n", filename_out);
-                return 1;
-            }
 
             int mesh[MESH_SIZE][MESH_SIZE] = {0};
+            int epic_x, epic_y;
+            epic_x = longitude2Xcoor(epic.longitude);
+            epic_y = latitude2Ycoor(epic.latitude);
 
             for (int j = 0; j < epic.ob_n; j++){
                 if(5 == fscanf(fp_in_ob_data, "%d,%lf,%lf,%lf,%d", &ob_data.EarthQuake_ID, &ob_data.latitude, &ob_data.longitude, &ob_data.SeismicIntensity, &ob_data.IntensityClass)){
@@ -89,18 +88,25 @@ int main(void){
                     }
                 }
             }
-            fprintf(fp_out, "%d,%d,%f,%f\n", longitude2Xcoor(epic.longitude), latitude2Ycoor(epic.latitude), epic.depth, epic.magnitude);
-            for (int y = 0; y < MESH_SIZE; y++){
-                for (int x = 0; x < MESH_SIZE; x++){
-                    if (x  < MESH_SIZE - 1){
-                        fprintf(fp_out, "%d,", mesh[x][y]);
-                    }
-                    else{
-                        fprintf(fp_out, "%d\n", mesh[x][y]);
+
+            if(0 <= epic_x && epic_x < MESH_SIZE && 0 <= epic_y && epic_y < MESH_SIZE){
+                if ((fp_out = fopen(filename_out, "w")) == NULL){
+                    printf("cannot open file:%s\n", filename_out);
+                    return 1;
+                }
+                fprintf(fp_out, "%d,%d,%f,%f\n", epic_x, epic_y, epic.depth, epic.magnitude);
+                for (int y = 0; y < MESH_SIZE; y++){
+                    for (int x = 0; x < MESH_SIZE; x++){
+                        if (x  < MESH_SIZE - 1){
+                            fprintf(fp_out, "%d,", mesh[x][y]);
+                        }
+                        else{
+                            fprintf(fp_out, "%d\n", mesh[x][y]);
+                        }
                     }
                 }
+                fclose(fp_out);
             }
-            fclose(fp_out);
         }
         fclose(fp_in_epic);
         fclose(fp_in_ob_data);

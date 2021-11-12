@@ -46,6 +46,8 @@ typedef struct{
 
 int Check_Observation_Points(const OB_LIST *ob_list, OB_DATA *ob_data);
 int SeismicIntensity_to_10classes(double SeismicIntensity);
+void ReplaceSpaceWith0(char *string, int n);
+int isSapceOnly(char *string, int n);
 
 int main(void){
 
@@ -121,7 +123,7 @@ int main(void){
         while ((head = fgetc(fp_data)) != EOF){
             if (head == 'A'){
                 //震源データ読み込み
-                fscanf(fp_data, "%4s%2s%2s%2s%2s%4s%*4[^\n]%7[^\n]%*4[^\n]%8[^\n]%*4[^\n]%5[^\n]%*3[^\n]%2[^\n]%*1[^\n]", year_str, month_str, day_str, hour_str, min_str, sec_str, latitude_str, longitude_str, depth_str, magnitude_str);
+                fscanf(fp_data, "%4[^\n]%2[^\n]%2[^\n]%2[^\n]%2[^\n]%4[^\n]%*4[^\n]%7[^\n]%*4[^\n]%8[^\n]%*4[^\n]%5[^\n]%*3[^\n]%2[^\n]%*1[^\n]", year_str, month_str, day_str, hour_str, min_str, sec_str, latitude_str, longitude_str, depth_str, magnitude_str);
                 fscanf(fp_data, "%*13[^\n]%*[^0-9]");
                 fscanf(fp_data, "%[0-9]", ob_n_str);
                 fscanf(fp_data, "%*[^\n]%*1[\n]");
@@ -131,9 +133,14 @@ int main(void){
                 epic.hour = atoi(hour_str); 
                 epic.min = atoi(min_str);
                 epic.sec = atoi(sec_str) / 100.0;
+                ReplaceSpaceWith0(latitude_str, 10);
                 epic.latitude = atof(latitude_str) / 10000.0;
+                ReplaceSpaceWith0(longitude_str, 10);
                 epic.longitude = atof(longitude_str) / 10000.0;
                 epic.ob_n = atoi(ob_n_str); //観測点数
+                if (epic.latitude < 1){
+                    printf("%s, %f\n", latitude_str, epic.latitude);
+                }
                 if (depth_str[4] == 'X'){
                     //深さ固定での場合
                     depth_str[3] = '\0';
@@ -153,31 +160,37 @@ int main(void){
                 }else {
                     epic.magnitude = atof(magnitude_str) / 10.0;
                 }
-
-                //震度データの読み込み
-                int line_N = epic.ob_n;
-                for (int j = 0; j < line_N; j++){
-                    fscanf(fp_data, "%7s%*1s%2s%2s%2s%3s%*3s%2s%*[^\n]%*1[\n]", ob_p_ID_str, phase1_day_str, phase1_hour_str, phase1_min_str, phase1_sec_str, SeismicIntensity_str);
-                    if (SeismicIntensity_str[0] == '/'){
-                        epic.ob_n -= 1;
-                    }else{
-                        ob_data.ob_p_ID = atoi(ob_p_ID_str);
-                        ob_data.phase1_day = atoi(phase1_day_str);
-                        ob_data.phase1_hour = atoi(phase1_hour_str);
-                        ob_data.phase1_min =atoi(phase1_min_str);
-                        ob_data.phase1_sec = atoi(phase1_sec_str);
-                        ob_data.SeismicIntensity = atof(SeismicIntensity_str) / 10.0;
-                        ob_data.IntensityClass = SeismicIntensity_to_10classes(ob_data.SeismicIntensity);
-                        if(Check_Observation_Points(ob_list, &ob_data) == -1){
-                            printf("不明な観測地点ID : %d\n", ob_data.ob_p_ID);
+                if (isSapceOnly(magnitude_str, 10) || isSapceOnly(depth_str, 10)){
+                    //マグニチュードまたは深さの欠損時
+                    printf("マグニチュードまたは深さの欠損 : %s/%s/%s, %s:%s:%s, latitude : %f, longitude : %f, depth : %s, magnitude : %s, 観測地点数 : %s\n", year_str, month_str, day_str, hour_str, min_str, sec_str, epic.latitude, epic.longitude, depth_str, magnitude_str, ob_n_str);
+                }else{
+                    //震度データの読み込み
+                    int line_N = epic.ob_n;
+                    for (int j = 0; j < line_N; j++){
+                        fscanf(fp_data, "%7[^\n]%*1[^\n]%2[^\n]%2[^\n]%2[^\n]%3[^\n]%*3[^\n]%2[^\n]%*[^\n]%*1[\n]", ob_p_ID_str, phase1_day_str, phase1_hour_str, phase1_min_str, phase1_sec_str, SeismicIntensity_str);
+                        if (SeismicIntensity_str[0] == '/'){
+                            epic.ob_n -= 1;
+                        }else{
+                            ob_data.ob_p_ID = atoi(ob_p_ID_str);
+                            ob_data.phase1_day = atoi(phase1_day_str);
+                            ob_data.phase1_hour = atoi(phase1_hour_str);
+                            ob_data.phase1_min = atoi(phase1_min_str);
+                            ob_data.phase1_sec = atoi(phase1_sec_str);
+                            ob_data.SeismicIntensity = atof(SeismicIntensity_str) / 10.0;
+                            ob_data.IntensityClass = SeismicIntensity_to_10classes(ob_data.SeismicIntensity);
+                            if(Check_Observation_Points(ob_list, &ob_data) == -1){
+                                printf("不明な観測地点ID : %d\n", ob_data.ob_p_ID);
+                            }
+                            //震度データの書き込み
+                            fprintf(fp_out_ob_data, "%d,%f,%f,%f,%d\n", EarthQuake_ID, ob_data.latitude, ob_data.longitude, ob_data.SeismicIntensity, ob_data.IntensityClass);
                         }
-                        fprintf(fp_out_ob_data, "%d,%f,%f,%f,%d\n", EarthQuake_ID, ob_data.latitude, ob_data.longitude, ob_data.SeismicIntensity, ob_data.IntensityClass);
                     }
-                }
-                
-                if(epic.ob_n > 0){
-                    fprintf(fp_out_epic, "%d,%d,%f,%f,%f,%f\n", EarthQuake_ID, epic.ob_n, epic.latitude, epic.longitude, epic.depth, epic.magnitude);
-                    EarthQuake_ID ++;
+                    //震源データの書き込み
+                    if(epic.ob_n > 0){
+                        //震源データの書き込み
+                        fprintf(fp_out_epic, "%d,%d,%f,%f,%f,%f\n", EarthQuake_ID, epic.ob_n, epic.latitude, epic.longitude, epic.depth, epic.magnitude);
+                        EarthQuake_ID ++;
+                    }
                 }
 
             }else{
@@ -224,4 +237,34 @@ int SeismicIntensity_to_10classes(double SeismicIntensity){
     }else {
         return -1;  //error
     }
+}
+
+void ReplaceSpaceWith0(char *string, int n){
+    //文字列の半角すぺーーすを0で置換
+    int i;
+    for(i = 0; i < n; i++){
+        if(string[i] == '\0'){
+            break;
+        }
+        else if(string[i] == ' '){
+            string[i] = '0';
+        }
+    }
+}
+int isSapceOnly(char *string, int n){
+    //文字列の中身がない、あるいは半角スペースだけのとき1を返す。
+    int i = 0;
+    if(string[0] == '\0'){
+        return 1;
+    }
+    while(string[i] != '\0'){
+        if(string[i] != ' '){
+            return 0;
+        }
+        i++;
+        if (i >= n){
+            break;
+        }
+    }
+    return 1;
 }
