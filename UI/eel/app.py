@@ -7,20 +7,18 @@ from datetime import datetime
 import random
 import subprocess
 bitSize = 256
+
 # これを書くことでJSからアクセスができます
 
 
 @eel.expose
 def ask_python_from_js_get_result(server):
   # ここで処理を記述
-  now_time = ""
   try:
     ntp_client = ntplib.NTPClient()
     ntp_resp = ntp_client.request(server)
-    # ntp_time = datetime.strptime(ctime(ntp_resp.tx_time), "%a %b %d %H:%M:%S %Y")
-    # now_time = ntp_time.strftime("%Y/%m/%d %H:%M:%S")
   except:
-    now_time = "Woops! something went wrong."
+    msg = "Woops! something went wrong."
   finally:
     # NOTE
     # return now_time
@@ -28,9 +26,7 @@ def ask_python_from_js_get_result(server):
     command = ["python", "test.py"]
     proc = subprocess.Popen(command)  # ->コマンドが実行される(処理の終了は待たない)
     result = proc.communicate()
-    l = [[0 for i in range(bitSize)] for j in range(bitSize)]
     f = open('data.txt', "r")
-
     msg = ""
     for i in range(bitSize):
       line = f.readline()
@@ -45,4 +41,4 @@ def ask_python_from_js_get_result(server):
 eel.init("web")
 
 # 最初に表示するhtmlページ
-eel.start("html/index.html")
+eel.start("html/index.html", size=(1000, 1000))
