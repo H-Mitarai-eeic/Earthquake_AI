@@ -15,12 +15,12 @@ gridSize = figWidth // bitSize
 
 root = Tk()
 root.title("EarthQuake")
-root.geometry("800x1000")
+root.geometry("700x1000")
 bgcolor = "deep sky blue"
 root.configure(bg=bgcolor)
 
 
-labelTitle = tkinter.Label(text="Earthquake", fg="Black", font=("", "50", "bold"), bg=bgcolor)
+labelTitle = tkinter.Label(text="Earthquake", fg="Black", font=("", "40", "bold"), bg=bgcolor)
 labelTitle.pack(pady=10)
 
 figJapan = "./fig/japan.png"
@@ -30,7 +30,7 @@ figJapan = ImageTk.PhotoImage(figJapan)
 
 figRun = "./fig/run.png"
 figRun = Image.open(figRun)
-figRun = figRun.resize((300, 150))
+figRun = figRun.resize((150, 50))
 figRun = ImageTk.PhotoImage(figRun)
 
 canvas = Canvas(root, width=figWidth, height=figWidth)
@@ -75,7 +75,7 @@ def changeMag(str):
   f.close()
 
 
-labelMag = tkinter.Label(text="マグニチュード", fg="Black", font=("", "20", "bold"), bg=bgcolor)
+labelMag = tkinter.Label(text="マグニチュード", fg="Black", font=("", "18", "bold"), bg=bgcolor)
 labelMag.pack()
 canvas.bind("<Button-1>", circleclick)  # <Button-1>はマウスの左クリック
 
@@ -90,7 +90,7 @@ scaleMag = tkinter.Scale(
 )
 scaleMag.pack(padx=100, pady=10, fill=tkinter.X)
 
-labelDepth = tkinter.Label(text="深さ", fg="Black", font=("", "20", "bold"), bg=bgcolor)
+labelDepth = tkinter.Label(text="深さ", fg="Black", font=("", "18", "bold"), bg=bgcolor)
 labelDepth.pack()
 scaleDepth = tkinter.Scale(
     root,
