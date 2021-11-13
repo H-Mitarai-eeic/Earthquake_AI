@@ -90,10 +90,9 @@ class MYFCN(nn.Module):
         self.drop7 = nn.Dropout2d(p=0.2)
 
         self.score_fr = nn.Conv2d(256, n_class, 1)
-        self.upscore = nn.ConvTranspose2d(n_class, n_class, 8, stride=8,
-                                          bias=False) #Hout = (Hin - 1)*stride - 2*padding + kernel + outputpadding
+        self.upscore = nn.ConvTranspose2d(256, n_class, 8, stride=8, bias=False) #Hout = (Hin - 1)*stride - 2*padding + kernel + outputpadding n_class to 256
 
-        self._initialize_weights()
+        # self._initialize_weights()
 
     def _initialize_weights(self):
         for m in self.modules():
@@ -148,7 +147,7 @@ class MYFCN(nn.Module):
         h = self.drop7(h)
         # print("after layr7:", h.size())
     
-        h = self.score_fr(h)
+        # h = self.score_fr(h)
         # print("after sc_fr:", h.size())
 
         h = self.upscore(h)

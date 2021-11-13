@@ -12,7 +12,7 @@ for i in range(10):
         arr = [[0 for _ in range(256)] for _ in range(256)]
         for i in range(256):
             for j in range(256):
-                arr[i][j] = min(9, int(mag * 10 / (abs(x-i)/10 + 1) / (abs(y-j)/10 + 1)))
+                arr[i][j] = 1 + min(8, int(mag * 10 / (abs(x-i)/10 + 1) / (abs(y-j)/10 + 1)))
                 # arr[i][j] = 1
         writer.writerow([x, y, depth, mag])
         writer.writerows(arr)

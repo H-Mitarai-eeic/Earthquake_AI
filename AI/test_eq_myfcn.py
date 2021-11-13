@@ -60,7 +60,9 @@ def main():
 			# Forward
 			outputs = net(images)
 			# Predict the label
-			print(outputs[0, :, 0, 0])
+			for i in range(0,255,20):
+				for j in range(0,255,20):
+					print("[{}, {}]".format(i,j), outputs[0, :, i, j])
 
 			_, predicted = torch.max(outputs, 1)
 			# Check whether estimation is right
