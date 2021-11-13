@@ -49,14 +49,17 @@ class MyCifarDataset(Dataset):
 
 
 class MyDataSet(Dataset):
-	def __init__(self, root=None, train=True, transform=None):
+	def __init__(self, root=None, train=True, transform=None, ID=None):
 		self.root = root
 		self.transform = transform
 		mode = "train" if train else "test"
 		
 		#全てのデータのパスを入れる
 		data_dir = os.path.join(self.root, mode)
-		self.all_data = glob.glob(data_dir + "/*")
+		if mode == "train":
+			self.all_data = glob.glob(data_dir + "/*")
+		elif mode == "test":
+			self.all_data = glob.glob(data_dir + "/" + ID + ".csv")
 		#all_dataは一次元配列
 
 	def __len__(self):
@@ -68,10 +71,9 @@ class MyDataSet(Dataset):
 		x, y, depth, mag = txt.split(",")
 		x, y, depth, mag = int(x), int(y), float(depth), float(mag)
 		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
-		#print(lbl_data)
 		img = torch.zeros(2, len(lbl_data), len(lbl_data))
 		img[0][x][y] = depth
-		img[1][x][y] = mag
+		img[1][x][y] = 10 ** mag
 		return img, lbl_data
 
 

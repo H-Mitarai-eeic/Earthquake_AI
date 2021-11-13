@@ -12,7 +12,10 @@ from torchvision import datasets, transforms
 from fcn8s import FCN8s
 from fcn32s import FCN32s
 from dataset import MyDataSet
+from myloss import MyLoss
 # from network import EQCNN
+
+import csv
 
 def main():
 	parser = argparse.ArgumentParser(description='Pytorch example: CIFAR-10')
@@ -28,7 +31,9 @@ def main():
 						help='Directory to output the result')
 	parser.add_argument('--resume', '-r', default='',
 						help='Resume the training from snapshot')
-	parser.add_argument('--dataset', '-d', default='data/mini_cifar',
+	parser.add_argument('--dataset', '-d', default='data100/',
+						help='Root directory of dataset')
+	parser.add_argument('--mask', '-mask', default='ObservationPointsMap.csv',
 						help='Root directory of dataset')
 	args = parser.parse_args()
 
@@ -36,6 +41,12 @@ def main():
 	print('# Minibatch-size: {}'.format(args.batchsize))
 	print('# epoch: {}'.format(args.epoch))
 	print('')
+
+	#open mask
+	with open(args.mask, "r") as f_mask:
+		reader = csv.reader(f_mask)
+		mask = [[int(row2) for row2 in row] for row in reader]
+	#print(mask)
 
 	# Set up a neural network to train
 	net = FCN32s(10)
@@ -49,8 +60,9 @@ def main():
 		net = net.to(device)
 
 	# Setup a loss and an optimizer
-	criterion = nn.CrossEntropyLoss()
-	optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+	#criterion = nn.CrossEntropyLoss(ignore_index = 0)
+	criterion = MyLoss()
+	optimizer = optim.SGD(net.parameters(), lr=1, momentum=0.9)
 
 	# Load the CIFAR-10
 
@@ -89,6 +101,7 @@ def main():
 				inputs = inputs.to(device)
 				labels = labels.to(device)
 			# Reset the parameter gradients
+			#label_copy = labels.clone()
 			optimizer.zero_grad()
 
 			#print("before forward")
@@ -99,18 +112,40 @@ def main():
 			#print("outputs:", outputs.size())
 			_, predicted = torch.max(outputs, 1)
 			# Check whether estimation is right
-			#print("predicted:",predicted.size())
-			#print("labels:",labels.size())
+			"""
+			print("predicted:",predicted.size())
+			print("labels:",labels.size())
+			print("outputs:",outputs.size())
+			for i in range(10):
+			"""
+			#maskを掛ける
+			"""
+			for E in range(len(outputs)):
+				for X in range(len(outputs[E][0])):
+					for Y in range(len(outputs[E][0][X])):
+						if mask[X][Y] == 0:
+							outputs[E][0][X][Y] = 0.1
+							for cl in range(1, 10):
+								outputs[E][cl][X][Y] = -0.1
+			
+			for E in range(len(predicted)):
+				for X in range(len(predicted[E])):
+					for Y in range(len(predicted[E][X])):
+						if mask[X][Y] == 0:
+							labels[E][X][Y] = predicted[E][X][Y]
+			"""
 			c = (predicted == labels).squeeze() ##この辺怪しい
 			#print("c:", c.size())
-
+			
 			for i in range(len(predicted)):
 				for j in range(len(predicted[i])):
 					for k in range(len(predicted[i][j])):
 						correct_train += c[i][j][k].item()
 						total_train += 1
 			# Backward + Optimize
-			loss = criterion(outputs, labels)
+			#loss = criterion(outputs, labels)
+			loss = criterion(outputs, labels, mask)
+			#print(loss)
 			loss.backward()
 			optimizer.step()
 			# Add loss
@@ -167,3 +202,5 @@ def main():
 
 if __name__ == '__main__':
 	main()
+
+		
