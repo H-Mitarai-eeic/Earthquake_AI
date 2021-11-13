@@ -175,13 +175,13 @@ function createFig(mode = "run") {
     }
 
     if (mode == "pin" || mode == "run") {
-      let frameSize = (5 + Number(inputElemMag.value)) * 2 + 1
+      let frameSize = (5 + Number(inputElemMag.value)) * 3 + 1
       const side = 5 + Number(inputElemMag.value)
-      let pinColor = 255 * (1 - Number(inputElemDepth.value) / 1000)
+      let pinColor = 255 * (1 - Number(inputElemDepth.value) / 2000)
       var image_data = test_context.createImageData(1, 1);
-      image_data.data[0] = 0;
-      image_data.data[1] = pinColor;
-      image_data.data[2] = 255;
+      image_data.data[0] = pinColor;
+      image_data.data[1] = 0;
+      image_data.data[2] = 0;
       image_data.data[3] = 255;
 
       lineThickness = Math.min(3, frameSize / 4)

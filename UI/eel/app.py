@@ -41,4 +41,4 @@ def ask_python_from_js_get_result(server):
 eel.init("web")
 
 # 最初に表示するhtmlページ
-eel.start("html/index.html", size=(1000, 1000))
+eel.start("html/index.html", size=(800, 1300))

@@ -1,145 +1,18 @@
-*,
-*:before,
-*:after {
-  -webkit-box-sizing: inherit;
-  box-sizing: inherit;
-}
-
-h1 {
-  position: relative;
-  display: inline-block;
-  padding: 0 65px;
-  text-align: center;
-  font-size: 300%;
-}
-
+@import url("https://fonts.googleapis.com/css?family=Exo:400,700");
 body {
-  padding: 30px;
-  background: #0edbdb;
+  font-family: "Exo", sans-serif;
 }
 
-h1:before,
-h1:after {
-  position: absolute;
-  top: calc(50% - 3px);
-  width: 50px;
-  height: 6px;
-  content: "";
-  border-top: solid 2px #000;
-  border-bottom: solid 2px #000;
-}
-
-h1:before {
-  left: 0;
-}
-
-h1:after {
-  right: 0;
-}
-
-h2 {
-  font-size: 120%;
-}
-
-.fit-picture {
-  width: 512px;
-}
-
-/* main */
-
-.main {
-  display: flex;
-}
-/* .main > div {
-  width: 100%;
-} */
-.main,
-.main > div {
-  /* border: 1px solid #999; */
-  padding: 10px;
-}
-
-.btn,
-a.btn,
-button.btn {
-  font-size: 1.6rem;
-  font-weight: 700;
-  line-height: 1.5;
-  position: relative;
-  display: inline-block;
-  padding: 1rem 4rem;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
-  text-align: center;
-  vertical-align: middle;
-  text-decoration: none;
-  letter-spacing: 0.1em;
-  color: #212529;
-  border-radius: 0.5rem;
-}
-
-a.btn-svg,
-button.btn-svg {
-  font-weight: 700;
-  line-height: 54px;
-
-  width: 204px;
-  height: 54px;
-  padding: 0;
-
-  cursor: pointer;
-  text-decoration: none;
-
-  /* background-color: transparent; */
-  background: #fff;
-  /* background: #fff; */
-}
-
-a.btn-svg svg,
-button.btn-svg svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  height: 100%;
-}
-
-a.btn-svg svg rect,
-button.btn-svg svg rect {
-  -webkit-transition: all 400ms ease;
-  transition: all 400ms ease;
-
-  stroke: #000;
-  stroke-width: 2;
-  stroke-dasharray: 200px, 16px;
-  stroke-dashoffset: 70px;
-}
-
-a.btn-svg:hover svg rect,
-button.btn-svg:hover svg rect {
-  stroke-dashoffset: 284px;
-}
-
-a.btn-svg span,
-button.btn-svg span {
-  color: #000;
-}
-
-/* range slider */
 html {
   height: 100%;
-  display: flex;
+  /* display: flex; */
   align-items: center;
   justify-content: center;
   font-family: "Work Sans", sans-serif;
   text-align: center;
+  background: #13c7e7; /* fallback for old browsers */
 }
+
 html h1,
 html h2,
 html h3,
@@ -149,8 +22,9 @@ html h6 {
   margin: 0;
 }
 html h1 {
-  color: #333;
+  /* color: #a5fecb; */
   font-weight: 500;
+  font-size: 300%;
 }
 html h3 {
   color: #aaa;
@@ -160,10 +34,10 @@ html h4 {
   color: #999;
   font-weight: 500;
 }
-html h4:after {
+/* html h4:after {
   content: "%";
   padding-left: 1px;
-}
+} */
 html input[type="range"] {
   outline: 0;
   border: 0;
@@ -173,13 +47,12 @@ html input[type="range"] {
   margin: 24px 0 16px;
   transition: box-shadow 0.2s ease-in-out;
 }
-
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   html input[type="range"] {
     overflow: hidden;
     height: 40px;
     -webkit-appearance: none;
-    background-color: #ddd;
+    background-color: rgb(96, 136, 160);
   }
   html input[type="range"]::-webkit-slider-runnable-track {
     height: 40px;
@@ -193,14 +66,14 @@ html input[type="range"] {
     height: 40px;
     cursor: ew-resize;
     background: #fff;
-    box-shadow: -340px 0 0 320px #1597ff, inset 0 0 0 40px #1597ff;
+    box-shadow: -340px 0 0 320px #1422ee, inset 0 0 0 40px #1422ee;
     border-radius: 50%;
     transition: box-shadow 0.2s ease-in-out;
     position: relative;
   }
   html input[type="range"]:active::-webkit-slider-thumb {
     background: #fff;
-    box-shadow: -340px 0 0 320px #1597ff, inset 0 0 0 3px #1597ff;
+    box-shadow: -340px 0 0 320px #1422ee, inset 0 0 0 3px #1422ee;
   }
 }
 html input[type="range"]::-moz-range-progress {
@@ -215,14 +88,14 @@ html input[type="range"]::-ms-fill-lower {
 html input[type="range"]::-ms-fill-upper {
   background-color: #9a905d;
 }
-#h4-container {
+/* #h4-container {
   width: 400px;
   max-width: 100%;
   padding: 0 20px;
   box-sizing: border-box;
   position: relative;
-}
-#h4-container #h4-subcontainer {
+} */
+/* #h4-container #h4-subcontainer {
   width: 100%;
   position: relative;
 }
@@ -255,4 +128,4 @@ input:not(:active) + #h4-container h4 {
   opacity: 0;
   margin-top: -50px;
   pointer-events: none;
-}
+} */
