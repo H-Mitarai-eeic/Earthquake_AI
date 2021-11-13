@@ -129,5 +129,9 @@ def main():
 		writer = csv.writer(fo)
 		writer.writerows(predicted_map)
 
+	for i in range(10):
+		print("class", i ,"at 100 100:", outputs[0][i][100][100])
+		print("at 50 100:", outputs[0][i][50][100])
+
 if __name__ == '__main__':
 	main()

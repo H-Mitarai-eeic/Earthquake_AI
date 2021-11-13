@@ -20,11 +20,14 @@ class MyLoss(nn.Module):
         for i in range(len(predicted)):
             for j in range(len(predicted[i])):
                 for k in range(len(predicted[i][j])):
-                    if labels[i][j][k] != 0:
+                    if mask[j][k] != 0:
                         label = labels[i][j][k]
                         predic = predicted[i][j][k]
-                        diff = label - predic
-                        loss_sum += diff ** 2
+                        diff = predic - label
+                        if diff < 0:
+                            loss_sum += -diff
+                        else:
+                            loss_sum += diff
                         total += 1 
 
         loss = loss_sum.to(torch.float16) / float(total)
