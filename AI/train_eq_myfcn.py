@@ -53,7 +53,7 @@ def main():
 
 	# Setup a loss and an optimizer
 	criterion = nn.CrossEntropyLoss()
-	optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+	optimizer = optim.SGD(net.parameters(), lr=1, momentum=0.9) #lr 0.001 to 0.1
 
 	# Load the CIFAR-10
 
@@ -96,6 +96,12 @@ def main():
 
 			# Forward
 			outputs = net(inputs)
+			# print("input:")
+			# print(torch.max(inputs))
+			# print("output:")
+			# print(torch.max(outputs))
+			# print("labels:")
+			# print(torch.max(labels))
 	
 			# Predict the label
 			_, predicted = torch.max(outputs, 1)
