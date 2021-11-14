@@ -10,7 +10,10 @@
     <br />
     <br />
     <br />
-    <h1>Earthquake AI</h1>
+    <br />
+    <br />
+    <br />
+    <h1>Earthquake-AI</h1>
     <!-- <div class="main"> -->
     <!-- <div> -->
     <!-- <img class="fit-picture" src="../fig/japan.png" alt="japan" id="figJapan" /> -->
@@ -35,7 +38,7 @@
     />
     <div id="h4-container">
       <div id="h4-subcontainer">
-        <h4><span></span></h4>
+        <h4 id="h4Depth"><span></span></h4>
       </div>
     </div>
 
@@ -75,7 +78,8 @@
         );
         // $('h4').css({'transform': 'translateX(calc(-50% - 20px)) scale(' + (1+(rangePercent/100)) + ')', 'left': rangePercent+'%'});
         $("h4").css({
-          transform: "translateX(-50%) scale(" + (1 + rangePercent / 120) + ")",
+          transform:
+            "translateX(-50%) scale(" + (1.5 + rangePercent / 120) + ")",
           left: rangePercent + 16 + "%",
         });
       });
