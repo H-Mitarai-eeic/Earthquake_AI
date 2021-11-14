@@ -10,6 +10,7 @@ from torchvision import datasets, transforms
 from fcn8s import FCN8s
 from fcn32s import FCN32s
 from dataset import MyDataSet
+from myfcn import MYFCN
 
 import csv
 
@@ -41,7 +42,8 @@ def main():
 		mask = [[int(row2) for row2 in row] for row in reader]
 
 	# Set up a neural network to test
-	net = FCN32s(10)
+	#net = FCN32s(10)
+	net = MYFCN(10)
 	# Load designated network weight
 	net.load_state_dict(torch.load(args.model))
 	# Set model to GPU
@@ -127,8 +129,8 @@ def main():
 	for X in range(len(predicted_map)):
 		for Y in range(len(predicted_map[X])):
 			if mask[X][Y] == 0:
-				predicted_map[X][Y] =0
-				#predicted_map[X][Y] = predicted_map[X][Y]
+				#predicted_map[X][Y] =0
+				predicted_map[X][Y] = predicted_map[X][Y]
 
 	#print(predicted_map)
 	with open(args.output + 'predicted/' + args.ID + '_predicted.csv', "w") as fo:

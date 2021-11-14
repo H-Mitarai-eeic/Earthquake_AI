@@ -125,6 +125,7 @@ def main():
 						for Y in range(len(labels[B][X])):
 							if mask[X][Y] != 0:
 								mask_tensor[B][C][X][Y] = 1 
+			
 			"""
 			for B in range(len(labels)):
 				for C in range(10):

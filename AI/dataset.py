@@ -72,8 +72,14 @@ class MyDataSet(Dataset):
 		x, y, depth, mag = int(x), int(y), float(depth), float(mag)
 		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
 		img = torch.zeros(2, len(lbl_data), len(lbl_data))
+		"""
 		img[0][x][y] = depth
 		img[1][x][y] = mag
+		"""
+		for i in range(x):
+			for j in range(y):
+				img[0][i][j] = depth
+				img[1][i][j] = mag / ((x-i)**2) / ((y-j)**2)
 		return img, lbl_data
 
 
