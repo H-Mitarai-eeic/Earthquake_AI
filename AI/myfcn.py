@@ -17,12 +17,13 @@ def get_upsampling_weight(in_channels, out_channels, kernel_size):
     og = np.ogrid[:kernel_size, :kernel_size]
     filt = (1 - abs(og[0] - center) / factor) * \
            (1 - abs(og[1] - center) / factor)
-    weight = np.zeros((in_channels, out_channels, kernel_size, kernel_size), dtype=np.float64)
+    weight = np.zeros((in_channels, out_channels, kernel_size, kernel_size),
+                      dtype=np.float64)
     weight[range(in_channels), range(out_channels), :, :] = filt
     return torch.from_numpy(weight).float()
 
 
-class FCN32s(nn.Module):
+class MYFCN(nn.Module):
 
     pretrained_model = \
         osp.expanduser('~/data/models/pytorch/fcn32s_from_caffe.pth')
@@ -36,10 +37,8 @@ class FCN32s(nn.Module):
         )
 
     def __init__(self, n_class=21):
-        super(FCN32s, self).__init__()
+        super(MYFCN, self).__init__()
         # conv1
-        #self.upscore1_0 = nn.ConvTranspose2d(2, 2, 21, padding=10)
-        self.relu1_10 = nn.ReLU(inplace=True)
         self.conv1_1 = nn.Conv2d(2, 64, 3, padding=2)
         self.relu1_1 = nn.ReLU(inplace=True)
         self.conv1_2 = nn.Conv2d(64, 64, 3, padding=1)
@@ -63,37 +62,37 @@ class FCN32s(nn.Module):
         self.pool3 = nn.MaxPool2d(2, stride=2, ceil_mode=True)  # 1/8
 
         # conv4
-        self.conv4_1 = nn.Conv2d(256, 512, 3, padding=1)
-        self.relu4_1 = nn.ReLU(inplace=True)
-        self.conv4_2 = nn.Conv2d(512, 512, 3, padding=1)
-        self.relu4_2 = nn.ReLU(inplace=True)
-        self.conv4_3 = nn.Conv2d(512, 512, 3, padding=1)
-        self.relu4_3 = nn.ReLU(inplace=True)
-        self.pool4 = nn.MaxPool2d(2, stride=2, ceil_mode=True)  # 1/16
+        # self.conv4_1 = nn.Conv2d(256, 512, 3, padding=1)
+        # self.relu4_1 = nn.ReLU(inplace=True)
+        # self.conv4_2 = nn.Conv2d(512, 512, 3, padding=1)
+        # self.relu4_2 = nn.ReLU(inplace=True)
+        # self.conv4_3 = nn.Conv2d(512, 512, 3, padding=1)
+        # self.relu4_3 = nn.ReLU(inplace=True)
+        # self.pool4 = nn.MaxPool2d(2, stride=2, ceil_mode=True)  # 1/16
 
         # conv5
-        self.conv5_1 = nn.Conv2d(512, 512, 3, padding=1)
-        self.relu5_1 = nn.ReLU(inplace=True)
-        self.conv5_2 = nn.Conv2d(512, 512, 3, padding=1)
-        self.relu5_2 = nn.ReLU(inplace=True)
-        self.conv5_3 = nn.Conv2d(512, 512, 3, padding=1)
-        self.relu5_3 = nn.ReLU(inplace=True)
-        self.pool5 = nn.MaxPool2d(2, stride=2, ceil_mode=True)  # 1/32
+        # self.conv5_1 = nn.Conv2d(512, 512, 3, padding=1)
+        # self.relu5_1 = nn.ReLU(inplace=True)
+        # self.conv5_2 = nn.Conv2d(512, 512, 3, padding=1)
+        # self.relu5_2 = nn.ReLU(inplace=True)
+        # self.conv5_3 = nn.Conv2d(512, 512, 3, padding=1)
+        # self.relu5_3 = nn.ReLU(inplace=True)
+        # self.pool5 = nn.MaxPool2d(2, stride=2, ceil_mode=True)  # 1/32
 
         # fc6
-        self.fc6 = nn.Conv2d(512, 4096, 7)
-        self.relu6 = nn.ReLU(inplace=True)
-        self.drop6 = nn.Dropout2d()
+        # self.fc6 = nn.Conv2d(256, 512, 7)
+        # self.relu6 = nn.ReLU(inplace=True)
+        # self.drop6 = nn.Dropout2d()
 
         # fc7
-        self.fc7 = nn.Conv2d(4096, 4096, 1)
+        self.fc7 = nn.Conv2d(256, 256, 2)
         self.relu7 = nn.ReLU(inplace=True)
-        self.drop7 = nn.Dropout2d()
+        self.drop7 = nn.Dropout2d(p=0.2)
 
-        self.score_fr = nn.Conv2d(4096, n_class, 1)
-        self.upscore = nn.ConvTranspose2d(n_class, n_class, 192, stride=32,bias=False) #64 to 192
+        self.score_fr = nn.Conv2d(256, n_class, 1)
+        self.upscore = nn.ConvTranspose2d(256, n_class, 8, stride=8, bias=False) #Hout = (Hin - 1)*stride - 2*padding + kernel + outputpadding n_class to 256
 
-        self._initialize_weights()
+        # self._initialize_weights()
 
     def _initialize_weights(self):
         for m in self.modules():
@@ -109,41 +108,50 @@ class FCN32s(nn.Module):
 
     def forward(self, x):
         #print("x:",x.size())
-        #print("starting_forward")
+        
         h = x
-        #h = self.relu1_0(self.upscore1_0(h))
+        # print("starting_forward:", h.size())
         h = self.relu1_1(self.conv1_1(h))
         h = self.relu1_2(self.conv1_2(h))
         h = self.pool1(h)
+        # print("after conv1:", h.size())
 
         h = self.relu2_1(self.conv2_1(h))
         h = self.relu2_2(self.conv2_2(h))
         h = self.pool2(h)
+        # print("after conv2:", h.size())
 
         h = self.relu3_1(self.conv3_1(h))
         h = self.relu3_2(self.conv3_2(h))
         h = self.relu3_3(self.conv3_3(h))
         h = self.pool3(h)
+        # print("after conv3:", h.size())
 
-        h = self.relu4_1(self.conv4_1(h))
-        h = self.relu4_2(self.conv4_2(h))
-        h = self.relu4_3(self.conv4_3(h))
-        h = self.pool4(h)
+        # h = self.relu4_1(self.conv4_1(h))
+        # h = self.relu4_2(self.conv4_2(h))
+        # h = self.relu4_3(self.conv4_3(h))
+        # h = self.pool4(h)
+        # print("after conv4:", h.size())
 
-        h = self.relu5_1(self.conv5_1(h))
-        h = self.relu5_2(self.conv5_2(h))
-        h = self.relu5_3(self.conv5_3(h))
-        h = self.pool5(h)
+        # h = self.relu5_1(self.conv5_1(h))
+        # h = self.relu5_2(self.conv5_2(h))
+        # h = self.relu5_3(self.conv5_3(h))
+        # h = self.pool5(h)
+        # print("after conv5:", h.size())
 
-        h = self.relu6(self.fc6(h))
-        h = self.drop6(h)
+        # h = self.relu6(self.fc6(h))
+        # h = self.drop6(h)
+        # print("after layr6:", h.size())
 
         h = self.relu7(self.fc7(h))
         h = self.drop7(h)
+        # print("after layr7:", h.size())
     
-        h = self.score_fr(h)
+        # h = self.score_fr(h)
+        # print("after sc_fr:", h.size())
 
         h = self.upscore(h)
+        # print("after trans:", h.size())
         # h = h[:, :, 19:19 + x.size()[2], 19:19 + x.size()[3]].contiguous()
 
         return h
@@ -160,14 +168,14 @@ class FCN32s(nn.Module):
             self.conv3_2, self.relu3_2,
             self.conv3_3, self.relu3_3,
             self.pool3,
-            self.conv4_1, self.relu4_1,
-            self.conv4_2, self.relu4_2,
-            self.conv4_3, self.relu4_3,
-            self.pool4,
-            self.conv5_1, self.relu5_1,
-            self.conv5_2, self.relu5_2,
-            self.conv5_3, self.relu5_3,
-            self.pool5,
+            # self.conv4_1, self.relu4_1,
+            # self.conv4_2, self.relu4_2,
+            # self.conv4_3, self.relu4_3,
+            # self.pool4,
+            # self.conv5_1, self.relu5_1,
+            # self.conv5_2, self.relu5_2,
+            # self.conv5_3, self.relu5_3,
+            # self.pool5,
         ]
         for l1, l2 in zip(vgg16.features, features):
             if isinstance(l1, nn.Conv2d) and isinstance(l2, nn.Conv2d):

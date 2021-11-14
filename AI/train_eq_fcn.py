@@ -13,6 +13,7 @@ from fcn8s import FCN8s
 from fcn32s import FCN32s
 from dataset import MyDataSet
 from myloss import MyLoss
+from myfcn import MYFCN
 # from network import EQCNN
 
 import csv
@@ -42,14 +43,9 @@ def main():
 	print('# epoch: {}'.format(args.epoch))
 	print('')
 
-	#open mask
-	with open(args.mask, "r") as f_mask:
-		reader = csv.reader(f_mask)
-		mask = [[int(row2) for row2 in row] for row in reader]
-	#print(mask)
-
 	# Set up a neural network to train
-	net = FCN32s(10)
+	#net = FCN32s(10)
+	net = MYFCN(10)
 	# Load designated network weight
 	if args.resume:
 		net.load_state_dict(torch.load(args.resume))
@@ -60,7 +56,7 @@ def main():
 		net = net.to(device)
 
 	# Setup a loss and an optimizer
-	#criterion = nn.CrossEntropyLoss(ignore_index = 0)
+	#criterion = nn.CrossEntropyLoss()
 	criterion = MyLoss()
 	optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9)
 
@@ -80,6 +76,21 @@ def main():
 											  shuffle=True, num_workers=2)
 	valloader = torch.utils.data.DataLoader(valset, batch_size=args.batchsize,
 											shuffle=True, num_workers=2)
+	
+	#open mask
+	with open(args.mask, "r") as f_mask:
+		reader = csv.reader(f_mask)
+		mask = [[int(row2) for row2 in row] for row in reader]
+	"""
+	mask_tensor = torch.zeros(args.batchsize, 10, len(mask), len(mask[0]))
+	for B in range(args.batchsize):
+		for C in range(10):
+			for X in range(len(mask)):
+				for Y in range(len(mask[X])):
+					if mask[X][Y] != 0:
+						mask_tensor[B][C][X][Y] = 1 
+	"""
+	
 	# Setup result holder
 	x = []
 	ac_train = []
@@ -96,29 +107,62 @@ def main():
 		for s, data in enumerate(trainloader, 0):
 			# Get the inputs; data is a list of [inputs, labels]
 			inputs, labels = data
-
+			targets = (-1) * torch.ones(len(labels), 10, len(labels[0]), len(labels[0][0]))
+			for B in range(len(labels)):
+				for X in range(len(labels[B])):
+					for Y in range(len(labels[B][X])):
+						C = labels[B][X][Y]
+						if C == 0:
+							targets[B][C][X][Y] = 1
+						else:
+							targets[B][C][X][Y] = 1
+			
+			mask_tensor = torch.zeros(len(labels), 10, len(labels[0]), len(labels[0][0]))
+			
+			for B in range(len(labels)):
+				for C in range(10):
+					for X in range(len(labels[B])):
+						for Y in range(len(labels[B][X])):
+							if mask[X][Y] != 0:
+								mask_tensor[B][C][X][Y] = 1 
+			"""
+			for B in range(len(labels)):
+				for C in range(10):
+					for X in range(len(labels[B])):
+						for Y in range(len(labels[B][X])):
+							if labels[B][X][Y] != 0:
+								mask_tensor[B][C][X][Y] = 1
+			"""
 			if args.gpu >= 0:
 				inputs = inputs.to(device)
 				labels = labels.to(device)
+				targets = targets.to(device)
+				mask_tensor = mask_tensor.to(device)
 			# Reset the parameter gradients
-			#label_copy = labels.clone()
 			optimizer.zero_grad()
 
 			#print("before forward")
 			# Forward
+			inputs.requires_grad = True
 			outputs = net(inputs)
-			#print("after forward")
+			#print("outputs.requires_grad:", outputs.requires_grad)
+
 			# Predict the label
-			#print("outputs:", outputs.size())
+			print("")
+			print("outputs:", outputs.size())
+			print("targets:", targets.size())
+			print("labels:", labels.size())
+			print("mask_tensor:", mask_tensor.size())
 			_, predicted = torch.max(outputs, 1)
-			# Check whether estimation is right
+
 			"""
 			print("predicted:",predicted.size())
 			print("labels:",labels.size())
 			print("outputs:",outputs.size())
-			for i in range(10):
 			"""
 			#maskを掛ける
+			#outputs = outputs * mask_tensor
+			#targets = targets * mask_tensor
 			"""
 			for E in range(len(outputs)):
 				for X in range(len(outputs[E][0])):
@@ -134,18 +178,20 @@ def main():
 						if mask[X][Y] == 0:
 							labels[E][X][Y] = predicted[E][X][Y]
 			"""
+			# Check whether estimation is right
 			c = (predicted == labels).squeeze() ##この辺怪しい
 			#print("c:", c.size())
 			
-			for i in range(len(predicted)):
-				for j in range(len(predicted[i])):
-					for k in range(len(predicted[i][j])):
+			for i in range(len(c)):
+				for j in range(len(c[i])):
+					for k in range(len(c[i][j])):
 						correct_train += c[i][j][k].item()
 						total_train += 1
 			# Backward + Optimize
-			#loss = criterion(outputs, labels)
-			loss = criterion(outputs, labels, mask)
-			#print(loss)
+			#outputs.requires_grad = True
+			#loss = criterion(outputs, targets)
+			loss = criterion(outputs, targets, mask_tensor)
+			print(loss)
 			loss.backward()
 			optimizer.step()
 			# Add loss

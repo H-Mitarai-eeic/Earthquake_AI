@@ -124,6 +124,12 @@ def main():
 
 	#csv出力
 	predicted_map = predicted.clone().squeeze().tolist()
+	for X in range(len(predicted_map)):
+		for Y in range(len(predicted_map[X])):
+			if mask[X][Y] == 0:
+				predicted_map[X][Y] =0
+				#predicted_map[X][Y] = predicted_map[X][Y]
+
 	#print(predicted_map)
 	with open(args.output + 'predicted/' + args.ID + '_predicted.csv', "w") as fo:
 		writer = csv.writer(fo)
@@ -131,7 +137,7 @@ def main():
 
 	for i in range(10):
 		print("class", i ,"at 100 100:", outputs[0][i][100][100])
-		print("at 50 100:", outputs[0][i][50][100])
+		print("class", i, "at 50 100:", outputs[0][i][50][100])
 
 if __name__ == '__main__':
 	main()
