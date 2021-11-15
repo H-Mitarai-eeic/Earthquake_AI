@@ -10,6 +10,7 @@ from torchvision import datasets, transforms
 from fcn8s import FCN8s
 from fcn32s import FCN32s
 from dataset import MyDataSet
+from myfcn import MYFCN
 
 def main():
 	parser = argparse.ArgumentParser(description='Pytorch example: CIFAR-10')
@@ -28,7 +29,7 @@ def main():
 	print('')
 
 	# Set up a neural network to test
-	net = FCN32s(10)
+	net = MYFCN(10)
 	# Load designated network weight
 	net.load_state_dict(torch.load(args.model))
 	# Set model to GPU
@@ -59,6 +60,10 @@ def main():
 			# Forward
 			outputs = net(images)
 			# Predict the label
+			# for i in range(0,255,20):
+			# 	for j in range(0,255,20):
+			# 		print("[{}, {}]".format(i,j), outputs[0, :, i, j])
+
 			_, predicted = torch.max(outputs, 1)
 			# Check whether estimation is right
 			c = (predicted == labels).squeeze()

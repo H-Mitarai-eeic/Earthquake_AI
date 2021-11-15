@@ -2,3 +2,5 @@ data/
 *.sh
 result/
 *.out
+result_myfcn/
+result_myfcn2/

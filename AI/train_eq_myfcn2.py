@@ -7,10 +7,12 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
+import sys
 
 # from network import CifarCNN
 from fcn8s import FCN8s
 from fcn32s import FCN32s
+from myfcn2 import MYFCN2
 from dataset import MyDataSet
 # from network import EQCNN
 
@@ -24,7 +26,7 @@ def main():
 						help='Frequency of taking a snapshot')
 	parser.add_argument('--gpu', '-g', type=int, default=-1,
 						help='GPU ID (negative value indicates CPU)')
-	parser.add_argument('--out', '-o', default='result',
+	parser.add_argument('--out', '-o', default='result_myfcn2',
 						help='Directory to output the result')
 	parser.add_argument('--resume', '-r', default='',
 						help='Resume the training from snapshot')
@@ -38,7 +40,7 @@ def main():
 	print('')
 
 	# Set up a neural network to train
-	net = FCN32s(10)
+	net = MYFCN2(10)
 	# Load designated network weight
 	if args.resume:
 		net.load_state_dict(torch.load(args.resume))
@@ -51,7 +53,7 @@ def main():
 
 	# Setup a loss and an optimizer
 	criterion = nn.CrossEntropyLoss()
-	optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+	optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9) #lr 0.001
 
 	# Load the CIFAR-10
 
@@ -92,18 +94,13 @@ def main():
 			# Reset the parameter gradients
 			optimizer.zero_grad()
 
-			#print("before forward")
 			# Forward
 			outputs = net(inputs)
-			#print("after forward")
+	
 			# Predict the label
-			#print("outputs:", outputs.size())
 			_, predicted = torch.max(outputs, 1)
 			# Check whether estimation is right
-			#print("predicted:",predicted.size())
-			#print("labels:",labels.size())
 			c = (predicted == labels).squeeze() ##この辺怪しい
-			#print("c:", c.size())
 
 			for i in range(len(predicted)):
 				for j in range(len(predicted[i])):
