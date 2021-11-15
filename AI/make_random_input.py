@@ -1,8 +1,8 @@
 import csv
 import random
 
-for i in range(10):
-    path = "data/Earthquake_random/test/random_sample_{}.csv".format(i)
+for i in range(100):
+    path = "data/Earthquake_random/train/random_sample_{}.csv".format(i)
     with open(path, "w") as f:
         writer = csv.writer(f)
         x = random.randrange(20,230)
