@@ -36,14 +36,19 @@ def main():
     	net = net.to(device)    
     # Load the input
     inputs = torch.zeros(1, 2, 256, 256)
+    print("x:", int(args.x))
+    print("y:", int(args.y))
+    print("depth:", args.depth)
+    print("mag:", args.magnitude)
     inputs[0][0][int(args.x)][int(args.y)] = float(args.depth)
     inputs[0][1][int(args.x)][int(args.y)] = float(args.magnitude)
+    print("inputs:", inputs[0])
 
     if args.gpu >= 0:
         inputs = inputs.to(device)
 
     outputs = net(inputs)
-    print(outputs[0])
+    print("outputs:", outputs[0])
     _, predicted = torch.max(outputs, 1)
     pre_list = np.array(predicted).squeeze().tolist()
     print("max:", max(list(map(lambda x: max(x), pre_list))))
