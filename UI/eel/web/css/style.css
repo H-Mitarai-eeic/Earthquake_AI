@@ -171,6 +171,22 @@ input:not(:active) + #h4-container h4 {
   border-radius: 20px;
   border: 2px solid #ff5100;
   background: #ff5100;
+  font-size: 20px;
+}
+#buttonRun {
+  min-width: 150px;
+  height: 60px;
+  color: #fff;
+  padding: 5px 10px;
+  /* font-weight: bold; */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 20px;
+  border: 2px solid #ff5100;
+  background: #ff5100;
   font-size: 25px;
 }
 .css-button-fully-rounded--red:hover {

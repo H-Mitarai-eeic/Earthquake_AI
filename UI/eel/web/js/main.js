@@ -3,6 +3,13 @@ const canvasHeight = 512
 const bitSize = 256
 const gridSize = canvasWidth / bitSize
 
+
+const longtitudeMax = 46
+const latitudeMin = 128
+const longtitudeSpan = 16
+const latitudeSpan = 18
+
+
 const canvas = document.getElementById("test_canvas");
 var test_context = document.getElementById('test_canvas').getContext('2d');
 let imagePath = "../fig/japan.png";
@@ -17,17 +24,6 @@ canvas.addEventListener("click", getPosition);
 var offsetX = 0
 var offsetY = 0
 var datalist = []
-
-// >>> for get INPUT >>>
-function getPosition(e) {
-  offsetX = e.offsetX;
-  offsetY = e.offsetY;
-  offsetX = Math.floor(offsetX / 2)
-  offsetY = Math.floor(offsetY / 2)
-  createFig(mode = "pin")
-  console.log(offsetX, offsetY, Number(inputElemDepth.value), Number(inputElemMag.value))
-  document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ")</p>";
-}
 
 const color = ["#005FFF",
   "#136FFF",
@@ -50,8 +46,19 @@ const color = ["#005FFF",
   "#FF570D",
   "#FF4F02"]
 
-const currentValueDepth = document.getElementById('currentDepth'); // 埋め込む先のspan要素
+const currentValueDepth = document.getElementById('currentDepth'); // 埋め込む先のspan要素  
 const currentValueMag = document.getElementById('currentMag'); // 埋め込む先のspan要素
+
+// >>> for get INPUT >>>
+function getPosition(e) {
+  offsetX = e.offsetX;
+  offsetY = e.offsetY;
+  offsetX = Math.floor(offsetX / gridSize)
+  offsetY = Math.floor(offsetY / gridSize)
+  createFig(mode = "pin")
+  console.log(offsetX, offsetY, Number(inputElemDepth.value), Number(inputElemMag.value))
+  document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ")</p>";
+}
 
 // 現在の値をspanに埋め込む関数
 const setCurrentValue = (val1, val2) => {
@@ -71,6 +78,37 @@ window.onload = () => {
 }
 // <<< for get INPUT <<<
 
+
+
+function setKanto() {
+  offsetX = Math.round((139 - latitudeMin) * bitSize / latitudeSpan);
+  offsetY = Math.round((longtitudeMax - 35) * bitSize / longtitudeSpan);
+  inputElemDepth.value = 25;
+  inputElemMag.value = 7.9;
+  createFig(mode = "pin");
+  document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ")</p>";
+  setCurrentValue(inputElemDepth.value, inputElemMag.value); // ページ読み込み時に値をセット
+}
+
+function setHigashinihon() {
+  offsetX = Math.round((142 - latitudeMin) * bitSize / latitudeSpan);
+  offsetY = Math.round((longtitudeMax - 38) * bitSize / longtitudeSpan);
+  inputElemDepth.value = 24;
+  inputElemMag.value = 9;
+  createFig(mode = "pin");
+  document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ")</p>";
+  setCurrentValue(inputElemDepth.value, inputElemMag.value); // ページ読み込み時に値をセット
+}
+
+function setNankai() {
+  offsetX = Math.round((134 - latitudeMin) * bitSize / latitudeSpan);
+  offsetY = Math.round((longtitudeMax - 33) * bitSize / longtitudeSpan);
+  inputElemDepth.value = 35;
+  inputElemMag.value = 9;
+  createFig(mode = "pin");
+  document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ")</p>";
+  setCurrentValue(inputElemDepth.value, inputElemMag.value); // ページ読み込み時に値をセット
+}
 
 
 function createFig(mode = "run") {
@@ -128,7 +166,7 @@ function createFig(mode = "run") {
     }
 
     if (mode == "pin" || mode == "run") {
-      // >>> create × >>>
+      // >>> create × on Map >>>
       let frameSize = (5 + Number(inputElemMag.value)) * 3 + 1
       const side = 5 + Number(inputElemMag.value)
       let pinColor = 255 * (1 - Number(inputElemDepth.value) / 2000)
@@ -154,6 +192,7 @@ function createFig(mode = "run") {
       }
 
 
+      // <<< create × on Map <<<
     }
   });
   image.src = imagePath;

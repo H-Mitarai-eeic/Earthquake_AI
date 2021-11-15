@@ -10,17 +10,10 @@
     <br />
     <br />
     <br />
-    <br />
-    <br />
-    <br />
     <h1>Earthquake-AI</h1>
-    <!-- <div class="main"> -->
-    <!-- <div> -->
-    <!-- <img class="fit-picture" src="../fig/japan.png" alt="japan" id="figJapan" /> -->
     <br />
-    <!-- </div> -->
     <h2>マグニチュード <span id="currentMag"></span></h2>
-    <input type="range" min="0" max="12" step="1" value="0" id="inputMag" />
+    <input type="range" min="0" max="12" step="0.1" value="0" id="inputMag" />
     <div id="h4-container">
       <div id="h4-subcontainer">
         <h4>0<span></span></h4>
@@ -60,6 +53,33 @@
       height="512"
       style="border: 1px solid"
     ></canvas>
+    <br />
+    <br />
+    <button
+      class="css-button-fully-rounded--red"
+      id="buttonKanto"
+      onclick="setKanto()"
+    >
+      <span> 関東大震災 </span>
+    </button>
+    <button
+      class="css-button-fully-rounded--red"
+      id="buttonHigashinihon"
+      onclick="setHigashinihon()"
+    >
+      <span> 東日本大地震 </span>
+    </button>
+    <button
+      class="css-button-fully-rounded--red"
+      id="buttonNankai"
+      onclick="setNankai()"
+    >
+      <span> 南海トラフ </span>
+    </button>
+    <br />
+    <br />
+    <br />
+    <br />
     <br />
   </body>
   <script
