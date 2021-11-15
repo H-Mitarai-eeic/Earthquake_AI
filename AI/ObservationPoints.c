@@ -3,13 +3,15 @@
 #include <string.h>
 
 #define OB_LIST_N 6740
-#define MESH_SIZE 256
+#define MESH_SIZE 64
 
-#define JAPAN_LAT_S 10.0    //10.0
+#define JAPAN_LAT_S 30.0    //10.0
 #define JAPAN_LAT_N 46.0    //46.0
 
-#define JAPAN_LON_E 154.0   //154.0
-#define JAPAN_LON_W 122.0   //122.0
+#define JAPAN_LON_E 146.0   //154.0
+#define JAPAN_LON_W 128.0   //122.0
+//japan S10.0 N46.0 E154.0 W122.0
+//honshu S30.0 N46.0 E146.0 W128.0
 
 typedef struct{
     int ob_p_ID;
@@ -25,7 +27,7 @@ double degmin2_100(double tude);
 
 int main(void){
     char filename_list[] = "Earthquake_Data/data/code_p.dat";
-    char filename_out[] = "Earthquake_Data/data_shaped/ObservationPointsMap.csv";
+    char filename_out[] = "Earthquake_Data/data_shaped/ObservationPointsMap_honshu6464.csv";
     FILE  *fp_list, *fp_out;
 
     OB_LIST ob_list[OB_LIST_N];

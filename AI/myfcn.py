@@ -188,3 +188,139 @@ class MYFCN(nn.Module):
             l2 = getattr(self, name)
             l2.weight.data = l1.weight.data.view(l2.weight.size())
             l2.bias.data = l1.bias.data.view(l2.bias.size())
+    
+
+class MYFCN2(nn.Module):
+
+    pretrained_model = \
+        osp.expanduser('~/data/models/pytorch/fcn32s_from_caffe.pth')
+
+    @classmethod
+    def download(cls):
+        return fcn.data.cached_download(
+            url='https://drive.google.com/uc?id=11k2Q0bvRQgQbT6-jYWeh6nmAsWlSCY3f',  # NOQA
+            path=cls.pretrained_model,
+            md5='d3eb467a80e7da0468a20dfcbc13e6c8',
+        )
+
+    def __init__(self, n_class=21):
+        super(MYFCN2, self).__init__()
+        # convTranspose1
+        self.convTrans1 = nn.ConvTranspose2d(2, 4, 13, padding=100, stride=5)
+        self.relu1 = nn.ReLU(inplace=True)
+
+        self.convconvTrans2 = nn.ConvTranspose2d(4, 8, 10, padding=0, stride=1)
+        self.relu2 = nn.ReLU(inplace=True)
+
+        #self.linear3 = nn.Linear(8, 8)
+
+        # conv2
+        self.conv4 = nn.Conv2d(8, 16, 10, padding=0, stride=1)
+        self.relu4 = nn.ReLU(inplace=True)
+
+        self.conv5 = nn.Conv2d(16, 10, 64, padding=0, stride=1)
+        self.relu5 = nn.ReLU(inplace=True)
+
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                m.weight.data.zero_()
+                if m.bias is not None:
+                    m.bias.data.zero_()
+            if isinstance(m, nn.ConvTranspose2d):
+                assert m.kernel_size[0] == m.kernel_size[1]
+                initial_weight = get_upsampling_weight(
+                    m.in_channels, m.out_channels, m.kernel_size[0])
+                m.weight.data.copy_(initial_weight)
+
+    def forward(self, x):
+        #print("x:",x.size())
+        
+        h = x
+        h = self.relu1(self.convTrans1(h))
+        h = self.relu2(self.convTrans2(h))
+
+        #h = self.linear3(h)
+
+        h = self.relu4(self.conv4(h))
+        h = self.relu5(self.conv5(h))
+
+        return h
+
+    def copy_params_from_vgg16(self, vgg16):
+        features = [
+            self.conv1_1, self.relu1_1,
+            self.conv1_2, self.relu1_2,
+            self.pool1,
+            self.conv2_1, self.relu2_1,
+            self.conv2_2, self.relu2_2,
+            self.pool2,
+            self.conv3_1, self.relu3_1,
+            self.conv3_2, self.relu3_2,
+            self.conv3_3, self.relu3_3,
+            self.pool3,
+            # self.conv4_1, self.relu4_1,
+            # self.conv4_2, self.relu4_2,
+            # self.conv4_3, self.relu4_3,
+            # self.pool4,
+            # self.conv5_1, self.relu5_1,
+            # self.conv5_2, self.relu5_2,
+            # self.conv5_3, self.relu5_3,
+            # self.pool5,
+        ]
+        for l1, l2 in zip(vgg16.features, features):
+            if isinstance(l1, nn.Conv2d) and isinstance(l2, nn.Conv2d):
+                assert l1.weight.size() == l2.weight.size()
+                assert l1.bias.size() == l2.bias.size()
+                l2.weight.data = l1.weight.data
+                l2.bias.data = l1.bias.data
+        for i, name in zip([0, 3], ['fc6', 'fc7']):
+            l1 = vgg16.classifier[i]
+            l2 = getattr(self, name)
+            l2.weight.data = l1.weight.data.view(l2.weight.size())
+            l2.bias.data = l1.bias.data.view(l2.bias.size())
+
+class MYFCN3(nn.Module):
+    def __init__(self, n_class=21):
+        super(MYFCN3, self).__init__()
+        # convTranspose1
+        self.conv1 = nn.Conv2d(2, 8, 13, padding=0, stride=3, stride=3)
+        self.relu1 = nn.ReLU(inplace=True)
+
+        self.conv2 = nn.Conv2d(8, 16, 10, padding=0, stride=1)
+        self.relu2 = nn.ReLU(inplace=True)
+
+        self.linear3 = nn.Linear(1296, 1296)
+
+        # conv2
+        self.convTrans4 = nn.ConvTrans2d(1296, 16, 9, output_padding=9, stride=2)
+        self.relu4 = nn.ReLU(inplace=True)
+
+        self.convTrans5 = nn.ConvTrans2d(16, 64, n_class, padding=0, stride=2)
+        self.relu5 = nn.ReLU(inplace=True)
+
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                m.weight.data.zero_()
+                if m.bias is not None:
+                    m.bias.data.zero_()
+            if isinstance(m, nn.ConvTranspose2d):
+                assert m.kernel_size[0] == m.kernel_size[1]
+                initial_weight = get_upsampling_weight(
+                    m.in_channels, m.out_channels, m.kernel_size[0])
+                m.weight.data.copy_(initial_weight)
+
+    def forward(self, x):
+        #print("x:",x.size())
+        
+        h = x
+        h = self.relu1(self.conv1(h))
+        h = self.relu2(self.conv2(h))
+
+        h = self.linear3(h)
+
+        h = self.relu4(self.convTrans4(h))
+        h = self.relu5(self.convTrans5(h))
+
+        return h

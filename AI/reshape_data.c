@@ -5,13 +5,18 @@
 #define OB_LIST_N 6740
 #define YEAR_S 1997 //1997
 #define YEAR_E 2019 //2017
-#define MESH_SIZE 256
+#define MESH_SIZE 64
 
-#define JAPAN_LAT_S 10.0    //10.0
+#define JAPAN_LAT_S 30.0    //10.0
 #define JAPAN_LAT_N 46.0    //46.0
 
-#define JAPAN_LON_E 154.0   //154.0
-#define JAPAN_LON_W 122.0   //122.0
+#define JAPAN_LON_E 146.0   //154.0
+#define JAPAN_LON_W 128.0   //122.0
+//japan S10.0 N46.0 E154.0 W122.0
+//honshu S30.0 N46.0 E146.0 W128.0
+
+#define MAGNITUDE_THRESHOLD 5.0
+#define OUT_FILE_PATH "Earthquake_Data/data_reshaped_honshu6464_mag50/"
 
 typedef struct{
     int EarthQuake_ID;
@@ -66,7 +71,7 @@ int main(void){
         }
         
         while(EOF != fscanf(fp_in_epic, "%d,%d,%lf,%lf,%lf,%lf", &epic.EarthQuake_ID, &epic.ob_n, &epic.latitude, &epic.longitude, &epic.depth, &epic.magnitude)){
-            char filename_out[100] = "Earthquake_Data/data_reshaped/";  //.csv
+            char filename_out[100] = OUT_FILE_PATH;  //.csv
             FILE *fp_out;
             char EarthQuake_ID_str[100];
             sprintf(EarthQuake_ID_str, "%d", epic.EarthQuake_ID);
@@ -88,8 +93,8 @@ int main(void){
                     }
                 }
             }
-
-            if(0 <= epic_x && epic_x < MESH_SIZE && 0 <= epic_y && epic_y < MESH_SIZE){
+            //printf("epic.magnitude:%f\n", epic.magnitude);
+            if(0 <= epic_x && epic_x < MESH_SIZE && 0 <= epic_y && epic_y < MESH_SIZE && epic.magnitude >= MAGNITUDE_THRESHOLD){
                 if ((fp_out = fopen(filename_out, "w")) == NULL){
                     printf("cannot open file:%s\n", filename_out);
                     return 1;

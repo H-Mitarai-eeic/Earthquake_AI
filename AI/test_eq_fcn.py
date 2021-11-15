@@ -13,6 +13,7 @@ from dataset import MyDataSet
 from myfcn import MYFCN
 
 import csv
+import copy
 
 def main():
 	parser = argparse.ArgumentParser(description='Pytorch example: CIFAR-10')
@@ -42,8 +43,8 @@ def main():
 		mask = [[int(row2) for row2 in row] for row in reader]
 
 	# Set up a neural network to test
-	#net = FCN32s(10)
-	net = MYFCN(10)
+	net = FCN32s(10)
+	#net = MYFCN(10)
 	# Load designated network weight
 	net.load_state_dict(torch.load(args.model))
 	# Set model to GPU
@@ -75,9 +76,16 @@ def main():
 			# Forward
 			outputs = net(images)
 			# Predict the label
-			_, predicted = torch.max(outputs, 1)
+			#_, predicted = torch.max(outputs, 1)
+			predicted = [[0 for i in range(len(labels[0][0]))] for j in range(len(labels[0]))]
+			for B in range(len(outputs)):
+				for C in range(len(outputs[B])):
+					for X in range(len(outputs[B][C])):
+						for Y in range(len(outputs[B][C][X])):
+							if outputs[B][C][X][Y].item() >= 0:
+								predicted[X][Y] = C
 			# Check whether estimation is right
-			c = (predicted == labels).squeeze()
+			#c = (predicted == labels).squeeze()
 			'''
 			print(len(output))
 			print(len(output[0]))
@@ -86,8 +94,8 @@ def main():
 			print(len(predicted[0]))
 			print(len(predicted)[0][0])
 			'''
-			print(outputs.size())
-			print(predicted.size())
+			print("outputs : ", outputs.size())
+			#print(predicted.size())
 			"""
 			for i in range(len(predicted)):
 				for j in range(len(predicted[i])):
@@ -98,6 +106,7 @@ def main():
 						total += 1
 						class_total[label] += 1
 			"""
+			"""
 			for i in range(len(predicted)):
 				for j in range(len(predicted[i])):
 					for k in range(len(predicted[i][j])):
@@ -107,16 +116,26 @@ def main():
 							class_diff_index = int(abs(label - predic))
 							class_diff[class_diff_index] += 1
 							total += 1 
+			"""
+			for B in range(len(labels)):
+				for X in range(len(labels[B])):
+					for Y in range(len(labels[B][X])):
+						if mask[X][Y] != 0:
+							label = labels[B][X][Y]
+							predic = predicted[X][Y]
+							class_diff_index = int(abs(label - predic))
+							class_diff[class_diff_index] += 1
+							total += 1 
 
 
 	# List of classes
 	classes = ("0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7")
 	classes_diff_ver = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
-	"""
+	
 	# Show accuracy
-	for i in range(10):
-		print('Accuracy of %5s : %2d %%' % (classes[i], 100 * class_correct[i] / class_total[i]))
-	print('Accuracy : %.3f %%' % (100 * correct / total))
+	"""	for i in range(10):
+			print('Accuracy of %5s : %2d %%' % (classes[i], 100 * class_correct[i] / class_total[i]))
+		print('Accuracy : %.3f %%' % (100 * correct / total))
 	"""
 	# Show accuracy
 	print("予測震度と実際の震度のずれの分布")
@@ -125,7 +144,8 @@ def main():
 
 
 	#csv出力
-	predicted_map = predicted.clone().squeeze().tolist()
+	#predicted_map = predicted.clone().squeeze().tolist()
+	predicted_map = copy.deepcopy(predicted)
 	for X in range(len(predicted_map)):
 		for Y in range(len(predicted_map[X])):
 			if mask[X][Y] == 0:
