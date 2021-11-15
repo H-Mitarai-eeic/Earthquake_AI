@@ -2,14 +2,17 @@ const canvasWidth = 512
 const canvasHeight = 512
 const bitSize = 256
 const gridSize = canvasWidth / bitSize
-let target = document.getElementById("test_canvas");
 
-target.style.border = "5px solid";
+const canvas = document.getElementById("test_canvas");
+var test_context = document.getElementById('test_canvas').getContext('2d');
+let imagePath = "../fig/japan.png";
+
+canvas.style.border = "5px solid";
 
 const inputElemDepth = document.getElementById('inputDepth');
 const inputElemMag = document.getElementById('inputMag');
 
-target.addEventListener("click", getPosition);
+canvas.addEventListener("click", getPosition);
 
 var offsetX = 0
 var offsetY = 0
@@ -17,9 +20,8 @@ var datalist = []
 
 // >>> for get INPUT >>>
 function getPosition(e) {
-  offsetX = e.offsetX; // =>図形左上からのx座標
-  offsetY = e.offsetY; // =>図形左上からのy座標
-
+  offsetX = e.offsetX;
+  offsetY = e.offsetY;
   offsetX = Math.floor(offsetX / 2)
   offsetY = Math.floor(offsetY / 2)
   createFig(mode = "pin")
@@ -69,19 +71,8 @@ window.onload = () => {
 }
 // <<< for get INPUT <<<
 
-var test_context = document.getElementById('test_canvas').getContext('2d');
-const canvas = document.getElementById("test_canvas");
-let imagePath = "../fig/japan.png";
-// >>> for OUTPUT >>>
-// function createFig(mode = "run") {
-//   draw(mode);
-// };
-// data[x] in image_data means
-// x mod 4 switch
-// 0:r
-// 1:g
-// 2:b
-// // 3:alpha
+
+
 function createFig(mode = "run") {
   console.log("draw");
   const image = new Image();
@@ -97,24 +88,19 @@ function createFig(mode = "run") {
         document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ") Running...</p>";
         return new Promise((resolve, reject) => {
           try {
-
-            // var image_data = test_context.createImageData(gridSize, gridSize);
-            // let server = document.getElementById("ntp").value;
             let server = "ntp.nict.jp";
             if (server.trim().length == 0) {
-              document.getElementById("result").innerHTML = "Enter NTP server address!";
+              console.log("Enter NTP server address!");
               return;
             }
+            // ここでPython側の処理を実行
             eel.ask_python_from_js_get_result(server, offsetX, offsetY, Number(inputElemDepth.value), Number(inputElemMag.value));
             console.log(datalist);
-            // console.log(typeof (datalist))
             if (!datalist.length) {
               console.log("Redo")
               createFig();
             }
-            // ここでPython側の処理を実行
             console.log("running...");
-            // const datalist = msg.split(",");
 
             for (var x = 0; x < bitSize; x++) {
               for (var y = 0; y < bitSize; y++) {
@@ -142,10 +128,17 @@ function createFig(mode = "run") {
     }
 
     if (mode == "pin" || mode == "run") {
+      // >>> create × >>>
       let frameSize = (5 + Number(inputElemMag.value)) * 3 + 1
       const side = 5 + Number(inputElemMag.value)
       let pinColor = 255 * (1 - Number(inputElemDepth.value) / 2000)
       var image_data = test_context.createImageData(1, 1);
+      // data[x] in image_data means
+      // x mod 4 switch
+      // 0:r
+      // 1:g
+      // 2:b
+      // 3:alpha
       image_data.data[0] = pinColor;
       image_data.data[1] = 0;
       image_data.data[2] = 0;
@@ -154,7 +147,6 @@ function createFig(mode = "run") {
       lineThickness = Math.min(3, frameSize / 4)
       for (var y = 0; y < frameSize; y++) {
         for (var x = 0; x < frameSize; x++) {
-          // var r = x;
           if (Math.abs(x - y) <= lineThickness || Math.abs(x + y - frameSize) <= lineThickness) {
             test_context.putImageData(image_data, 2 * offsetX + x - side, 2 * offsetY + y - side);
           }
@@ -168,12 +160,10 @@ function createFig(mode = "run") {
   console.log("done")
 }
 
-
 createFig(mode = "init")
-
 
 eel.expose(run_js_from_python);
 function run_js_from_python(msg) {
-  // document.getElementById("result").innerHTML = msg;
+  // datalist is defined in line 16 as a global list
   datalist = msg.split(",")
 }
