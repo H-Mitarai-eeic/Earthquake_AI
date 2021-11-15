@@ -4,6 +4,8 @@ const bitSize = 256
 const gridSize = canvasWidth / bitSize
 let target = document.getElementById("test_canvas");
 
+target.style.border = "5px solid";
+
 const inputElemDepth = document.getElementById('inputDepth');
 const inputElemMag = document.getElementById('inputMag');
 
@@ -103,7 +105,7 @@ function createFig(mode = "run") {
               document.getElementById("result").innerHTML = "Enter NTP server address!";
               return;
             }
-            eel.ask_python_from_js_get_result(server);
+            eel.ask_python_from_js_get_result(server, offsetX, offsetY, Number(inputElemDepth.value), Number(inputElemMag.value));
             console.log(datalist);
             // console.log(typeof (datalist))
             if (!datalist.length) {
@@ -124,48 +126,13 @@ function createFig(mode = "run") {
                 }
               }
             }
-
-            // var image_data = test_context.createImageData(gridSize, gridSize);
-            // for (var y = 0; y < bitSize; y++) {
-            //   for (var x = 0; x < bitSize; x++) {
-            //     // var r = random = Math.random() * 255;
-            //     // var r = x;
-            //     data_i = Number(datalist[y * bitSize + x])
-            //     if (x + y < 20) {
-            //       console.log(data_i, typeof (data_i));
-            //       console.log(image_data);
-            //     }
-            //     // if (data_i > 5) {
-            //     //   image_data.fillStyle = "#fff";
-            //     //   test_context.putImageData(image_data, gridSize * x, gridSize * y);
-            //     // }
-            //     if (data_i > 8) {
-            //       for (var ix = 0; ix < gridSize; ix++) {
-            //         for (var iy = 0; iy < gridSize; iy++) {
-            //           image_data.data[4 * ix + 0] = (data_i) * 200;
-            //           image_data.data[4 * ix + 1] = 0;
-            //           image_data.data[4 * ix + 2] = 0;
-            //           image_data.data[4 * ix + 3] = 255;
-            //         }
-            //       }
-            //       test_context.putImageData(image_data, gridSize * x, gridSize * y);
-            //     }
-            //   }
-            // }
-            // document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ")</p>";
-            // document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ") Finished</p>";
             resolve();
           } catch (e) {
             reject();
           }
         });
       }
-      // runmain().then(() => {
-      //   document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ") Finished</p>";
-      //   console.log("finished");
-      // }).catch(e => {
-      //   console.log("error occured");
-      // })
+
       async function execRun() {
         await runmain();
         document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ") Finished</p>";

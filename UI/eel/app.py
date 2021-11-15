@@ -12,7 +12,7 @@ bitSize = 256
 
 
 @eel.expose
-def ask_python_from_js_get_result(server):
+def ask_python_from_js_get_result(server, X, Y, Depth, Mag):
   # ここで処理を記述
   try:
     ntp_client = ntplib.NTPClient()
@@ -23,7 +23,7 @@ def ask_python_from_js_get_result(server):
     # NOTE
     # return now_time
     # JSの関数を呼び出す
-    command = ["python", "test.py"]
+    command = ["python", "test.py", str(X), str(Y), str(Depth), str(Mag)]
     proc = subprocess.Popen(command)  # ->コマンドが実行される(処理の終了は待たない)
     result = proc.communicate()
     f = open('data.txt', "r")
