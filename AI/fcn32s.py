@@ -35,12 +35,12 @@ class FCN32s(nn.Module):
             md5='d3eb467a80e7da0468a20dfcbc13e6c8',
         )
 
-    def __init__(self, n_class=21):
+    def __init__(self, in_channels=2,n_class=21):
         super(FCN32s, self).__init__()
         # conv1
         #self.upscore1_0 = nn.ConvTranspose2d(2, 2, 21, padding=10)
         self.relu1_10 = nn.ReLU(inplace=True)
-        self.conv1_1 = nn.Conv2d(2, 64, 3, padding=2)
+        self.conv1_1 = nn.Conv2d(in_channels, 64, 3, padding=2)
         self.relu1_1 = nn.ReLU(inplace=True)
         self.conv1_2 = nn.Conv2d(64, 64, 3, padding=1)
         self.relu1_2 = nn.ReLU(inplace=True)

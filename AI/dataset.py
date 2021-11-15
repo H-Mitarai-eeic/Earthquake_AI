@@ -49,9 +49,10 @@ class MyCifarDataset(Dataset):
 
 
 class MyDataSet(Dataset):
-	def __init__(self, root=None, train=True, transform=None, ID=None):
+	def __init__(self, chanels=2, root=None, train=True, transform=None, ID=None):
 		self.root = root
 		self.transform = transform
+		self.chanels = chanels
 		mode = "train" if train else "test"
 		
 		#全てのデータのパスを入れる
@@ -71,17 +72,15 @@ class MyDataSet(Dataset):
 		x, y, depth, mag = txt.split(",")
 		x, y, depth, mag = int(x), int(y), float(depth), float(mag)
 		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
-		img = torch.zeros(2, len(lbl_data), len(lbl_data))
-		
+		img = torch.zeros(self.chanels, len(lbl_data), len(lbl_data))
+		"""
 		img[0][x][y] = depth
 		img[1][x][y] = mag
 		"""
 		for i in range(x):
 			for j in range(y):
 				img[0][i][j] = depth
-				img[1][i][j] = mag / ((x-i)**2) / ((y-j)**2)
-		"""
+				img[1][i][j] = mag / (((x-i)**2) + ((y-j)**2))
+		
 		return img, lbl_data
-
-
 

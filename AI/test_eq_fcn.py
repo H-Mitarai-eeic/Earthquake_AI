@@ -11,6 +11,8 @@ from fcn8s import FCN8s
 from fcn32s import FCN32s
 from dataset import MyDataSet
 from myfcn import MYFCN
+from myfcn import MYFCN2
+from myfcn import MYFCN3
 
 import csv
 import copy
@@ -29,7 +31,7 @@ def main():
 						help='Root directory of outputfile')					
 	parser.add_argument('--ID', '-i', default='40278',
 						help='Erthquake ID for input/output files')
-	parser.add_argument('--mask', '-mask', default='ObservationPointsMap.csv',
+	parser.add_argument('--mask', '-mask', default='ObservationPointsMap_honshu6464.csv',
 						help='Root directory of dataset')
 	args = parser.parse_args()
 
@@ -43,8 +45,11 @@ def main():
 		mask = [[int(row2) for row2 in row] for row in reader]
 
 	# Set up a neural network to test
-	net = FCN32s(10)
+	data_channels = 3
+	#net = FCN32s(10)
 	#net = MYFCN(10)
+	#net = MYFCN2(in_channels=data_channels, n_class=10)
+	net = MYFCN3(in_channels=data_channels, n_class=10)
 	# Load designated network weight
 	net.load_state_dict(torch.load(args.model))
 	# Set model to GPU
@@ -55,7 +60,7 @@ def main():
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor()])
-	testset = MyDataSet(root=args.dataset, train=False, transform=transform, ID=args.ID)
+	testset = MyDataSet(chanels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID)
 	testloader = torch.utils.data.DataLoader(testset, batch_size=args.batchsize,
 											 shuffle=False, num_workers=2)
 
@@ -73,39 +78,38 @@ def main():
 			if args.gpu >= 0:
 				images = images.to(device)
 				labels = labels.to(device)
+			#images成形
+			print("images:", images.size())
+			print("mask:", len(mask))
+			if data_channels == 3:
+				for B in range(len(images)):
+					for X in range(len(images[B][0])):
+						for Y in range(len(images[B][0][X])):
+							images[B][2][X][Y] = mask[X][Y]
+			for B in range(len(images)):
+				for X in range(len(images[B][1])):
+					for Y in range(len(images[B][1][X])):
+						if mask[X][Y] == 0:
+							images[B][1][X][Y] = 0
 			# Forward
 			outputs = net(images)
 			# Predict the label
 			#_, predicted = torch.max(outputs, 1)
 			predicted = [[0 for i in range(len(labels[0][0]))] for j in range(len(labels[0]))]
+			print("output:", outputs.size())
+			
 			for B in range(len(outputs)):
 				for C in range(len(outputs[B])):
 					for X in range(len(outputs[B][C])):
 						for Y in range(len(outputs[B][C][X])):
-							if outputs[B][C][X][Y].item() >= 0:
+							if outputs[B][C][X][Y].item() > 0:
 								predicted[X][Y] = C
+			
 			# Check whether estimation is right
 			#c = (predicted == labels).squeeze()
-			'''
-			print(len(output))
-			print(len(output[0]))
-			print(len(output)[0][0])
-			print(len(predicted))
-			print(len(predicted[0]))
-			print(len(predicted)[0][0])
-			'''
+
 			print("outputs : ", outputs.size())
 			#print(predicted.size())
-			"""
-			for i in range(len(predicted)):
-				for j in range(len(predicted[i])):
-					for k in range(len(predicted[i][j])):
-						label = labels[i][j][k]
-						correct += c[i][j][k].item()
-						class_correct[label] += c[i][j][k].item()
-						total += 1
-						class_total[label] += 1
-			"""
 			"""
 			for i in range(len(predicted)):
 				for j in range(len(predicted[i])):
@@ -126,7 +130,7 @@ def main():
 							class_diff_index = int(abs(label - predic))
 							class_diff[class_diff_index] += 1
 							total += 1 
-
+			
 
 	# List of classes
 	classes = ("0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7")
@@ -158,8 +162,8 @@ def main():
 		writer.writerows(predicted_map)
 
 	for i in range(10):
-		print("class", i ,"at 100 100:", outputs[0][i][100][100])
-		print("class", i, "at 50 100:", outputs[0][i][50][100])
+		print("class", i ,"at 100 100:", outputs[0][i][10][10])
+		print("class", i, "at 50 100:", outputs[0][i][20][10])
 
 if __name__ == '__main__':
 	main()

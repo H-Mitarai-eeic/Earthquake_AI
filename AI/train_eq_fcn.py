@@ -15,6 +15,7 @@ from dataset import MyDataSet
 from myloss import MyLoss
 from myfcn import MYFCN
 from myfcn import MYFCN2
+from myfcn import MYFCN3
 # from network import EQCNN
 
 import csv
@@ -45,10 +46,11 @@ def main():
 	print('')
 
 	# Set up a neural network to train
-	#net = FCN32s(10)
+	data_chanels = 3
+	#net = FCN32s(in_channels=data_chanels, n_class=10)
 	#net = MYFCN(10)
-	#net = MYFCN2(10)
-	net = MYFCN3(10)
+	#net = MYFCN2(in_channels=data_chanels, n_class=10)
+	net = MYFCN3(in_channels=data_chanels, n_class=10)
 	# Load designated network weight
 	if args.resume:
 		net.load_state_dict(torch.load(args.resume))
@@ -61,13 +63,12 @@ def main():
 	# Setup a loss and an optimizer
 	#criterion = nn.CrossEntropyLoss()
 	criterion = MyLoss()
-	optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+	optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
 
 	# Load the CIFAR-10
-
 	transform = transforms.Compose([transforms.ToTensor()])
 
-	trainvalset = MyDataSet(root=args.dataset, train=True, transform=transform)
+	trainvalset = MyDataSet(chanels=data_chanels, root=args.dataset, train=True, transform=transform)
 	# Split train/val
 	n_samples = len(trainvalset)
 	print("n_samples:", n_samples)
@@ -110,9 +111,22 @@ def main():
 		for s, data in enumerate(trainloader, 0):
 			# Get the inputs; data is a list of [inputs, labels]
 			inputs, labels = data
+			#input成形
+			if data_chanels == 3:
+				for B in range(len(inputs)):
+					for X in range(len(inputs[B][0])):
+						for Y in range(len(inputs[B][0][X])):
+							inputs[B][2][X][Y] = mask[X][Y]
+			for B in range(len(inputs)):
+				for X in range(len(inputs[B][1])):
+					for Y in range(len(inputs[B][1][X])):
+						if mask[X][Y] == 0:
+							inputs[B][1][X][Y] = 0
+							inputs[B][0][X][Y] = 0
 			#targetsの生成
 			targets = (-1) * torch.ones(len(labels), 10, len(labels[0]), len(labels[0][0]))
-			"""for B in range(len(labels)):
+			"""
+			for B in range(len(labels)):
 				for X in range(len(labels[B])):
 					for Y in range(len(labels[B][X])):
 						C = labels[B][X][Y]
@@ -127,7 +141,7 @@ def main():
 						Class = labels[B][X][Y]
 						for C in range(0, Class + 1):
 							targets[B][C][X][Y] = 1
-
+			
 			#maskを生成
 			mask_tensor = torch.ones(len(labels), 10, len(labels[0]), len(labels[0][0]))
 			"""
@@ -195,11 +209,15 @@ def main():
 			c = (predicted == labels).squeeze() ##この辺怪しい
 			#print("c:", c.size())
 			
-			for i in range(len(c)):
-				for j in range(len(c[i])):
-					for k in range(len(c[i][j])):
-						correct_train += c[i][j][k].item()
-						total_train += 1
+			for i in range(len(predicted)):
+				for j in range(len(predicted[i])):
+					for k in range(len(predicted[i][j])):
+						if len(predicted) == 1:
+							correct_train += c[j][k].item()
+							total_train += 1
+						else:
+							correct_train += c[i][j][k].item()
+							total_train += 1
 			# Backward + Optimize
 			#loss = criterion(outputs, targets)
 			loss = criterion(outputs, targets, mask_tensor)
@@ -229,12 +247,20 @@ def main():
 				# Predict the label
 				_, predicted = torch.max(outputs, 1)
 				# Check whether estimation is right
+				
 				c = (predicted == labels).squeeze()
+				print("c:", c.size())
+				print("predicted:", predicted.size())
 				for i in range(len(predicted)):
 					for j in range(len(predicted[i])):
 						for k in range(len(predicted[i][j])):
-							correct_val += c[i][j][k].item()
-							total_val += 1
+							if len(predicted) == 1:
+								correct_val += c[j][k].item()
+								total_val += 1
+							else:
+								correct_val += c[i][j][k].item()
+								total_val += 1
+				
 
 		# Record result
 		x.append(ep + 1)
