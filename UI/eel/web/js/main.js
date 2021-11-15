@@ -5,8 +5,9 @@ const gridSize = canvasWidth / bitSize
 
 
 const longtitudeMax = 46
-const latitudeMin = 128
+// const longtitudeMin = 30
 const longtitudeSpan = 16
+const latitudeMin = 128
 const latitudeSpan = 18
 
 
@@ -49,6 +50,13 @@ const color = ["#005FFF",
 const currentValueDepth = document.getElementById('currentDepth'); // 埋め込む先のspan要素  
 const currentValueMag = document.getElementById('currentMag'); // 埋め込む先のspan要素
 
+function pixelXtoLatitude(X) {
+  return Math.round(latitudeMin + X * latitudeSpan / 256);
+}
+function pixelYtoLongtitude(Y) {
+  return Math.round(longtitudeMax - Y * longtitudeSpan / 256);
+}
+
 // >>> for get INPUT >>>
 function getPosition(e) {
   offsetX = e.offsetX;
@@ -57,7 +65,8 @@ function getPosition(e) {
   offsetY = Math.floor(offsetY / gridSize)
   createFig(mode = "pin")
   console.log(offsetX, offsetY, Number(inputElemDepth.value), Number(inputElemMag.value))
-  document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ")</p>";
+  document.getElementById('currentXY').innerHTML = "<p>(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + ")</p>";
+  // document.getElementById('currentXY').innerHTML = "<p>(経度,緯度)=(" + offsetX + "," + offsetY + ")</p>";
 }
 
 // 現在の値をspanに埋め込む関数
@@ -86,7 +95,7 @@ function setKanto() {
   inputElemDepth.value = 25;
   inputElemMag.value = 7.9;
   createFig(mode = "pin");
-  document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ")</p>";
+  document.getElementById('currentXY').innerHTML = "<p>(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + ")</p>";
   setCurrentValue(inputElemDepth.value, inputElemMag.value); // ページ読み込み時に値をセット
 }
 
@@ -96,7 +105,7 @@ function setHigashinihon() {
   inputElemDepth.value = 24;
   inputElemMag.value = 9;
   createFig(mode = "pin");
-  document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ")</p>";
+  document.getElementById('currentXY').innerHTML = "<p>(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + ")</p>";
   setCurrentValue(inputElemDepth.value, inputElemMag.value); // ページ読み込み時に値をセット
 }
 
@@ -106,7 +115,7 @@ function setNankai() {
   inputElemDepth.value = 35;
   inputElemMag.value = 9;
   createFig(mode = "pin");
-  document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ")</p>";
+  document.getElementById('currentXY').innerHTML = "<p>(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + ")</p>";
   setCurrentValue(inputElemDepth.value, inputElemMag.value); // ページ読み込み時に値をセット
 }
 
@@ -123,7 +132,7 @@ function createFig(mode = "run") {
 
     if (mode == "run") {
       function runmain() {
-        document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ") Running...</p>";
+        document.getElementById('currentXY').innerHTML = "<p>(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + ") Running...</p>";
         return new Promise((resolve, reject) => {
           try {
             let server = "ntp.nict.jp";
@@ -159,7 +168,7 @@ function createFig(mode = "run") {
 
       async function execRun() {
         await runmain();
-        document.getElementById('currentXY').innerHTML = "<p>(X,Y)=(" + offsetX + "," + offsetY + ") Finished</p>";
+        document.getElementById('currentXY').innerHTML = "<p>(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + ") Finished</p>";
         console.log("finished");
       }
       execRun();
