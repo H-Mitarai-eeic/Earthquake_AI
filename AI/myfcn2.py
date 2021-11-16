@@ -132,10 +132,10 @@ class MYFCN2(nn.Module):
     def forward(self, x):
         
         h = x
-        h = self.pool1(h)
+        # h = self.pool1(h)
         h = self.relu1(self.conv1(h))
         h = self.relu2(self.conv2(h))
-        h = self.pool1(h)
+        # h = self.pool1(h)
         h = self.relu3(self.conv3(h))
         h = self.relu4(self.conv4(h))
         h = self.relu5(self.conv5(h))
@@ -167,7 +167,7 @@ class MYFCN2(nn.Module):
         # h = self.relu31(self.conv31(h))
         # h = self.relu32(self.conv32(h))
         h = self.score_fr(h)
-        h = self.upscore(h)
+        # h = self.upscore(h)
         return h
 
     def copy_params_from_vgg16(self, vgg16):

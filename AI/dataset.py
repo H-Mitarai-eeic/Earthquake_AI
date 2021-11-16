@@ -29,8 +29,8 @@ class MyDataSet(Dataset):
 		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
 		#print(lbl_data)
 		img = torch.zeros(2, len(lbl_data), len(lbl_data))
-		img[0][x][y] = depth
-		img[1][x][y] = mag
+		img[0][x][y] = depth / 1000
+		img[1][x][y] = mag / 10
 		return img, lbl_data
 
 

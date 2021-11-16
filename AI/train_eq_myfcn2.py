@@ -55,7 +55,7 @@ def main():
 	criterion = nn.CrossEntropyLoss()
 	# optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9) #lr 0.001
 	lr = 1
-	optimizer = optim.Adadelta(net.parameters(), lr)
+	optimizer = optim.Adam(net.parameters(), lr)
 
 	# Load the CIFAR-10
 

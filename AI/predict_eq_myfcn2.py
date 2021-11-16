@@ -40,8 +40,8 @@ def main():
     print("y:", int(args.y))
     print("depth:", args.depth)
     print("mag:", args.magnitude)
-    inputs[0][0][int(args.x)][int(args.y)] = float(args.depth)
-    inputs[0][1][int(args.x)][int(args.y)] = float(args.magnitude)
+    inputs[0][0][int(args.x)][int(args.y)] = float(args.depth) / 1000
+    inputs[0][1][int(args.x)][int(args.y)] = float(args.magnitude) / 10
     print("inputs:", inputs[0])
 
     if args.gpu >= 0:
