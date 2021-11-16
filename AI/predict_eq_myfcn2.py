@@ -3,6 +3,7 @@ import torch
 import numpy as np
 from myfcn2 import MYFCN2
 import csv
+len_data = 64
 
 def main():
     parser = argparse.ArgumentParser(description='Pytorch example: CIFAR-10')
@@ -35,14 +36,22 @@ def main():
     	device = 'cuda:' + str(args.gpu)
     	net = net.to(device)    
     # Load the input
-    inputs = torch.zeros(1, 2, 256, 256)
+    inputs = torch.zeros(1, 2, len_data, len_data)
     print("x:", int(args.x))
     print("y:", int(args.y))
     print("depth:", args.depth)
     print("mag:", args.magnitude)
-    inputs[0][0][int(args.x)][int(args.y)] = float(args.depth) / 1000
-    inputs[0][1][int(args.x)][int(args.y)] = float(args.magnitude) / 10
+    for i in range(int(args.x)-10, int(args.x)+11):
+        for j in range(int(args.y)-10, int(args.y)+11):
+            print(i,j)
+            if 0 <= i < len_data and 0 <= j < len_data:
+                inputs[0][0][i][j] = float(args.depth) / 1000
+                print("inputs:", inputs[0][0][i][j].item())
+                inputs[0][1][i][j] = float(args.magnitude) / 10
+    # inputs[0][0][int(args.x)][int(args.y)] = float(args.depth) / 1000
+    # inputs[0][1][int(args.x)][int(args.y)] = float(args.magnitude) / 10
     print("inputs:", inputs[0])
+    print("input max:", torch.max(inputs[0]).item())
 
     if args.gpu >= 0:
         inputs = inputs.to(device)

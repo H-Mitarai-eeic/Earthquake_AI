@@ -4,7 +4,7 @@ import fcn
 import numpy as np
 import torch
 import torch.nn as nn
-
+len_data = 64
 
 # https://github.com/shelhamer/fcn.berkeleyvision.org/blob/master/surgery.py
 def get_upsampling_weight(in_channels, out_channels, kernel_size):
@@ -39,24 +39,25 @@ class MYFCN2(nn.Module):
     def __init__(self, n_class=21):
         super(MYFCN2, self).__init__()
         # conv1 256*256
+        #Hout = floor((Hin + 2*padding - kernel)/stride + 1)
         self.pool1 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
-        self.conv1 = nn.Conv2d(2, 8, 5, padding=2)
+        self.conv1 = nn.Conv2d(2, 8, 33, padding=16)
         self.relu1 = nn.ReLU(inplace=True)
-        self.conv2 = nn.Conv2d(8, 8, 5, padding=2)
+        self.conv2 = nn.Conv2d(8, 8, 33, padding=16)
         self.relu2 = nn.ReLU(inplace=True)
-        self.pool2 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
-        self.conv3 = nn.Conv2d(8, 8, 5, padding=2)
-        self.relu3 = nn.ReLU(inplace=True)
-        self.conv4 = nn.Conv2d(8, 8, 5, padding=2)
-        self.relu4 = nn.ReLU(inplace=True)
-        self.conv5 = nn.Conv2d(8, 8, 5, padding=2)
-        self.relu5 = nn.ReLU(inplace=True)
-        self.conv6 = nn.Conv2d(8, 8, 5, padding=2)
-        self.relu6 = nn.ReLU(inplace=True)
-        self.conv7 = nn.Conv2d(8, 8, 5, padding=2)
-        self.relu7 = nn.ReLU(inplace=True)
-        self.conv8 = nn.Conv2d(8, 8, 5, padding=2)
-        self.relu8 = nn.ReLU(inplace=True)
+        # self.pool2 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
+        # self.conv3 = nn.Conv2d(8, 8, 5, padding=2)
+        # self.relu3 = nn.ReLU(inplace=True)
+        # self.conv4 = nn.Conv2d(8, 8, 5, padding=2)
+        # self.relu4 = nn.ReLU(inplace=True)
+        # self.conv5 = nn.Conv2d(8, 8, 5, padding=2)
+        # self.relu5 = nn.ReLU(inplace=True)
+        # self.conv6 = nn.Conv2d(8, 8, 5, padding=2)
+        # self.relu6 = nn.ReLU(inplace=True)
+        # self.conv7 = nn.Conv2d(8, 8, 5, padding=2)
+        # self.relu7 = nn.ReLU(inplace=True)
+        # self.conv8 = nn.Conv2d(8, 8, 5, padding=2)
+        # self.relu8 = nn.ReLU(inplace=True)
         # self.conv9 = nn.Conv2d(8, 8, 5, padding=2)
         # self.relu9 = nn.ReLU(inplace=True)
         # self.conv10 = nn.Conv2d(8, 8, 5, padding=2)
@@ -105,6 +106,7 @@ class MYFCN2(nn.Module):
         # self.relu31 = nn.ReLU(inplace=True)
         # self.conv32 = nn.Conv2d(8, 8, 5, padding=2)
         # self.relu32 = nn.ReLU(inplace=True)
+        self.fc = nn.Linear(int(2*len_data*len_data/16), n_class*len_data*len_data)
         
 
         # fc7
@@ -132,16 +134,17 @@ class MYFCN2(nn.Module):
     def forward(self, x):
         
         h = x
+        batch_size = len(x)
         # h = self.pool1(h)
-        h = self.relu1(self.conv1(h))
-        h = self.relu2(self.conv2(h))
+        # h = self.relu1(self.conv1(h))
+        # h = self.relu2(self.conv2(h))
         # h = self.pool1(h)
-        h = self.relu3(self.conv3(h))
-        h = self.relu4(self.conv4(h))
-        h = self.relu5(self.conv5(h))
-        h = self.relu6(self.conv6(h))
-        h = self.relu7(self.conv7(h))
-        h = self.relu8(self.conv8(h))
+        # h = self.relu3(self.conv3(h))
+        # h = self.relu4(self.conv4(h))
+        # h = self.relu5(self.conv5(h))
+        # h = self.relu6(self.conv6(h))
+        # h = self.relu7(self.conv7(h))
+        # h = self.relu8(self.conv8(h))
         # h = self.relu9(self.conv9(h))
         # h = self.relu10(self.conv10(h))
         # h = self.relu11(self.conv11(h))
@@ -166,8 +169,13 @@ class MYFCN2(nn.Module):
         # h = self.relu30(self.conv30(h))
         # h = self.relu31(self.conv31(h))
         # h = self.relu32(self.conv32(h))
-        h = self.score_fr(h)
+        # h = self.score_fr(h)
         # h = self.upscore(h)
+        h = self.pool1(h)
+        h = self.pool1(h)
+        h = h.view(-1, int(2*len_data*len_data/16))
+        h = self.fc(h)
+        h = h.view(batch_size, 10, len_data, len_data)
         return h
 
     def copy_params_from_vgg16(self, vgg16):
