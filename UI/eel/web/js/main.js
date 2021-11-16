@@ -149,7 +149,7 @@ function createFig(mode = "run") {
     console.log("load!");
 
     if (mode == "run") {
-      function runmain() {
+      async function runmain() {
         document.getElementById('currentXY').innerHTML = "<p>(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + ") Running...</p>";
         return new Promise((resolve, reject) => {
           try {
@@ -159,6 +159,7 @@ function createFig(mode = "run") {
               return;
             }
             // ここでPython側の処理を実行
+            // datalist = []
             eel.ask_python_from_js_get_result(server, offsetX, offsetY, Number(inputElemDepth.value), Number(inputElemMag.value));
             console.log(datalist);
             if (!datalist.length) {
@@ -178,7 +179,7 @@ function createFig(mode = "run") {
         await runmain();
         document.getElementById('currentXY').innerHTML = "<p>(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + ") Finished</p>";
         console.log("finished");
-        test_context.fillText("(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + "), 深さ=" + inputElemDepth.value + "km, マグニチュード=" + inputElemMag.value, 10, 20)
+        test_context.fillText("(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + "), 深さ:" + inputElemDepth.value + "km, マグニチュード:" + inputElemMag.value, 10, 20)
         // test_context.fillText("(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + "), Depth=" + inputElemDepth.value, ", Mag=" + inputElemMag.value, 0, 0)
         for (var x = 0; x < bitSize; x++) {
           for (var y = 0; y < bitSize; y++) {
@@ -195,6 +196,7 @@ function createFig(mode = "run") {
             }
           }
         }
+        datalist = []
       }
       execRun();
     }

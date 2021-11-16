@@ -36,14 +36,16 @@ def ask_python_from_js_get_result(server, X, Y, Depth, Mag):
     msg = ""
     if proc.returncode == 0:
       f = open('./web/python/predicted_data.csv', "r")
-      for i in range(bitSize):
-        line = f.readline()
-        # line = list(map(int, line.split()))
-        # l[i] = line
-        msg += line
-        msg += ","
+      # for i in range(bitSize):
+      line = f.readline()
+      # line = list(map(int, line.split()))
+      # l[i] = line
+      msg += line
+      # msg += ","
       f.close()
+      proc2 = subprocess.run(["rm", "./web/python/predicted_data.csv"])
       # procRm = subprocess.run(['rm', './web/python/predicted_data.csv'])
+
     eel.run_js_from_python(msg)
 
 
