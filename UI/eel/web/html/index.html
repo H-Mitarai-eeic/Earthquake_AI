@@ -10,6 +10,9 @@
     <br />
     <br />
     <br />
+    <br />
+    <br />
+    <br />
     <h1>Earthquake-AI</h1>
     <br />
     <h2>マグニチュード <span id="currentMag"></span></h2>
@@ -47,12 +50,22 @@
     </button>
     <br />
     <br />
-    <canvas
-      id="test_canvas"
-      width="512"
-      height="512"
-      style="border: 1px solid"
-    ></canvas>
+    <div>
+      <canvas
+        id="test_canvas"
+        width="512"
+        height="512"
+        style="border: 1px solid"
+      ></canvas>
+      <!-- <ul>
+        <li class="series1">系列1</li>
+        <li class="series2">系列2</li>
+        <li class="series3">系列3</li>
+        <li class="series4">系列4</li>
+        <li class="series5">系列5</li>
+        <li class="series6">系列6</li>
+      </ul> -->
+    </div>
     <br />
     <br />
     <button
@@ -78,7 +91,13 @@
     </button>
     <br />
     <br />
-    <br />
+    <button
+      onclick="saveCanvas('preview');"
+      class="css-button-fully-rounded--red"
+      id="saveFig"
+    >
+      結果を保存する
+    </button>
     <br />
     <br />
   </body>
@@ -94,7 +113,7 @@
         $("h4").html(rangePercent * 10 + "<span></span>");
         $('[id="inputDepth"], h4>span').css(
           "filter",
-          "hue-rotate(-" + rangePercent + "deg)"
+          "hue-rotate(-" + rangePercent / 2 + "deg)"
         );
         // $('h4').css({'transform': 'translateX(calc(-50% - 20px)) scale(' + (1+(rangePercent/100)) + ')', 'left': rangePercent+'%'});
         $("h4").css({
@@ -112,7 +131,7 @@
         $("h4").html(rangePercent * rate + "<span></span>");
         $('[id="inputMag"], h4>span').css(
           "filter",
-          "hue-rotate(-" + rangePercent + "deg)"
+          "hue-rotate(-" + rangePercent / 2 + "deg)"
         );
         // $('h4').css({'transform': 'translateX(calc(-50% - 20px)) scale(' + (1+(rangePercent/100)) + ')', 'left': rangePercent+'%'});
         $("h4").css({

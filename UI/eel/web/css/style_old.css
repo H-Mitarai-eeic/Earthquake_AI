@@ -7,11 +7,10 @@ html {
   justify-content: center;
   /* font-family: "Work Sans", sans-serif; */
   font-family: "Ubuntu Mono", monospace;
-  color: rgb(149, 247, 245);
-  /* color: rgb(160, 245, 95); */
+
   text-align: center;
   zoom: 1;
-  background-color: rgb(1, 19, 36);
+  background-color: #a7ecec;
 }
 
 html h1,
@@ -24,10 +23,9 @@ html h6 {
 }
 
 html h1 {
-  color: rgb(160, 245, 95);
-  /* color: #333; */
+  color: #333;
   font-weight: 500;
-  font-size: 400%;
+  font-size: 350%;
 }
 
 html h2 {
@@ -84,16 +82,14 @@ html input[type="range"] {
     height: 40px;
     cursor: ew-resize;
     background: #fff;
-    box-shadow: -340px 0 0 320px rgb(255, 5, 145),
-      inset 0 0 0 40px rgb(255, 5, 145);
+    box-shadow: -340px 0 0 320px #ff5100, inset 0 0 0 40px #ff5100;
     border-radius: 50%;
     transition: box-shadow 0.2s ease-in-out;
     position: relative;
   }
   html input[type="range"]:active::-webkit-slider-thumb {
     background: #fff;
-    box-shadow: -340px 0 0 320px rgb(255, 5, 145),
-      inset 0 0 0 3px rgb(255, 5, 145);
+    box-shadow: -340px 0 0 320px #ff5100, inset 0 0 0 3px #ff5100;
   }
 }
 
@@ -147,7 +143,7 @@ html input[type="range"]::-ms-fill-upper {
   height: 100%;
   top: 0;
   left: 0;
-  background-color: rgb(255, 5, 145);
+  background-color: #ff5100;
   border-radius: 0 50% 50% 50%;
   transform: rotate(45deg);
   z-index: -1;
@@ -173,17 +169,13 @@ input:not(:active) + #h4-container h4 {
   display: inline-block;
   outline: none;
   border-radius: 20px;
-  border: 2px solid rgb(0, 202, 199);
-  background: rgb(0, 202, 199);
+  border: 2px solid #0167ff;
+  background: #0167ff;
   font-size: 20px;
 }
-.css-button-fully-rounded--red:hover {
-  background: #fff;
-  color: rgb(0, 202, 199);
-}
 #buttonRun {
-  min-width: 250px;
-  height: 100px;
+  min-width: 200px;
+  height: 80px;
   color: #fff;
   padding: 5px 10px;
   /* font-weight: bold; */
@@ -193,80 +185,15 @@ input:not(:active) + #h4-container h4 {
   display: inline-block;
   outline: none;
   border-radius: 20px;
-  border: 2px solid rgb(0, 202, 199);
-  background: rgb(0, 202, 199);
-  font-size: 35px;
+  border: 2px solid #ff5100;
+  background: #ff5100;
+  font-size: 30px;
+}
+.css-button-fully-rounded--red:hover {
+  background: #fff;
+  color: #0167ff;
 }
 #buttonRun:hover {
   background: #fff;
-  color: rgb(0, 202, 199);
-}
-
-#saveFig {
-  min-width: 150px;
-  height: 60px;
-  color: rgb(1, 19, 36);
-  padding: 5px 10px;
-  /* font-weight: bold; */
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  display: inline-block;
-  outline: none;
-  border-radius: 20px;
-  border: 2px solid rgb(160, 245, 95);
-  background: rgb(160, 245, 95);
-  font-size: 18px;
-}
-#saveFig:hover {
-  background: rgb(1, 19, 36);
-  color: rgb(160, 245, 95);
-}
-
-/* 凡例 */
-/*リスト本体の設定*/
-li {
-  list-style-type: none;
-  margin: 2px;
-  padding: 0.5em 0.5em 0.5em 0.5em;
-  /* background: white; */
-  border-color: white;
-  border-style: none none dotted none;
-  width: 300px;
-}
-
-/*リストの各要素に前要素として■を付ける*/
-li:before {
-  content: "";
-  display: inline-block;
-  height: 15px;
-  width: 15px;
-  margin-right: 5px;
-}
-
-/*リストの各要素の前要素のデザインを設定*/
-li.series1:before {
-  background: rgba(245, 177, 46, 0.8);
-  border-radius: 10;
-}
-li.series2:before {
-  background: rgba(25, 0, 179, 0.8);
-  border-radius: 10;
-}
-li.series3:before {
-  background: rgba(173, 21, 0, 0.8);
-  border-radius: 10;
-}
-
-li.series4:before {
-  background: #9696d5;
-  border-radius: 2;
-}
-li.series5:before {
-  background: #da2550;
-  border-radius: 2;
-}
-li.series6:before {
-  background: #341f47;
-  border-radius: 2;
+  color: #ff5100;
 }

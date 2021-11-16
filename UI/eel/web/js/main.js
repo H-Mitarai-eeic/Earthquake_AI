@@ -3,6 +3,7 @@ const canvasHeight = 512
 const bitSize = 64
 const gridSize = canvasWidth / bitSize
 
+let notRuninng = true
 
 const longtitudeMax = 46
 // const longtitudeMin = 30
@@ -15,7 +16,8 @@ const canvas = document.getElementById("test_canvas");
 var test_context = document.getElementById('test_canvas').getContext('2d');
 let imagePath = "../fig/japan.png";
 
-canvas.style.border = "5px solid";
+canvas.style.border = "5px solid rgb(149, 247, 245)";
+// canvas.style.border = "5px solid rgb(0, 202, 199)";
 
 const inputElemDepth = document.getElementById('inputDepth');
 const inputElemMag = document.getElementById('inputMag');
@@ -47,6 +49,21 @@ const color = [
   "#FF5F17",
   "#FF570D",
   "#FF4F02"]
+
+colorRed = [
+  "#F8E0E0",
+  "#F6CECE",
+  "#F5A9A9",
+  "#F78181",
+  "#FA5858",
+  "#FE2E2E",
+  "#FF0000",
+  "#DF0101",
+  "#B40404",
+  "#8A0808",
+  "#610B0B",
+  "#3B0B0B"
+]
 
 const currentValueDepth = document.getElementById('currentDepth'); // 埋め込む先のspan要素  
 const currentValueMag = document.getElementById('currentMag'); // 埋め込む先のspan要素
@@ -149,22 +166,11 @@ function createFig(mode = "run") {
               createFig();
             }
             console.log("running...");
-
-            for (var x = 0; x < bitSize; x++) {
-              for (var y = 0; y < bitSize; y++) {
-                data_i = Number(datalist[y * bitSize + x])
-                // if (true) {
-                if (data_i > 0) {
-                  test_context.fillStyle = color[color.length - 2 * data_i];
-                  // test_context.fillStyle = `rgb(${Math.floor(255 - 0.5 * x)}, ${Math.floor(255 - 0.5 * y)}, 0)`;
-                  test_context.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
-                }
-              }
-            }
             resolve();
           } catch (e) {
             reject();
           }
+
         });
       }
 
@@ -172,6 +178,23 @@ function createFig(mode = "run") {
         await runmain();
         document.getElementById('currentXY').innerHTML = "<p>(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + ") Finished</p>";
         console.log("finished");
+        test_context.fillText("(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + "), 深さ=" + inputElemDepth.value + "km, マグニチュード=" + inputElemMag.value, 10, 20)
+        // test_context.fillText("(経度,緯度)=(" + pixelXtoLatitude(offsetX) + "," + pixelYtoLongtitude(offsetY) + "), Depth=" + inputElemDepth.value, ", Mag=" + inputElemMag.value, 0, 0)
+        for (var x = 0; x < bitSize; x++) {
+          for (var y = 0; y < bitSize; y++) {
+            data_i = Number(datalist[y * bitSize + x])
+            // if (true) {
+            if (data_i > 0) {
+              test_context.fillStyle = colorRed[data_i + 2];
+              // test_context.fillStyle = color[color.length - data_i];
+              // test_context.fillStyle = `rgb(${Math.floor(255 - 0.5 * x)}, ${Math.floor(255 - 0.5 * y)}, 0)`;
+              test_context.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
+              test_context.font = gridSize - 2 + 'px';
+              test_context.fillStyle = "black"
+              test_context.fillText(datalist[y * bitSize + x], x * gridSize, y * gridSize + gridSize)
+            }
+          }
+        }
       }
       execRun();
     }
@@ -216,4 +239,16 @@ eel.expose(run_js_from_python);
 function run_js_from_python(msg) {
   // datalist is defined in line 16 as a global list
   datalist = msg.split(",")
+}
+
+function saveCanvas(canvas_id) {
+  // var canvas = document.getElementById(canvas_id);
+  //アンカータグを作成
+  var a = document.createElement('a');
+  //canvasをJPEG変換し、そのBase64文字列をhrefへセット
+  a.href = canvas.toDataURL('image/jpeg', 0.85);
+  //ダウンロード時のファイル名を指定
+  a.download = 'EarthquakeData' + 'X' + offsetX + 'Y' + offsetY + 'Depth' + inputElemDepth.value + 'Mag' + inputElemMag.value + '.jpg';
+  //クリックイベントを発生させる
+  a.click();
 }
