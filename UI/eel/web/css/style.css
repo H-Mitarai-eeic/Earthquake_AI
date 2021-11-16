@@ -169,8 +169,8 @@ input:not(:active) + #h4-container h4 {
   display: inline-block;
   outline: none;
   border-radius: 20px;
-  border: 2px solid #ff5100;
-  background: #ff5100;
+  border: 2px solid #0167ff;
+  background: #0167ff;
   font-size: 20px;
 }
 #buttonRun {
@@ -190,6 +190,10 @@ input:not(:active) + #h4-container h4 {
   font-size: 30px;
 }
 .css-button-fully-rounded--red:hover {
+  background: #fff;
+  color: #0167ff;
+}
+#buttonRun:hover {
   background: #fff;
   color: #ff5100;
 }

@@ -31,7 +31,7 @@ def ask_python_from_js_get_result(server, X, Y, Depth, Mag):
     result = proc.communicate()
     """ 
     """
-    # time.sleep(10)
+    # time.sleep(5)
     f = open('./web/python/predicted_data.csv', "r")
     msg = ""
     for i in range(bitSize):
@@ -40,8 +40,8 @@ def ask_python_from_js_get_result(server, X, Y, Depth, Mag):
       # l[i] = line
       msg += line
       msg += ","
-    eel.run_js_from_python(msg)
     f.close()
+    eel.run_js_from_python(msg)
 
 
 # ウエブコンテンツを持つフォルダー
