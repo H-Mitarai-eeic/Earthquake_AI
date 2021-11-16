@@ -1,6 +1,6 @@
 const canvasWidth = 512
 const canvasHeight = 512
-const bitSize = 256
+const bitSize = 64
 const gridSize = canvasWidth / bitSize
 
 
@@ -26,7 +26,8 @@ var offsetX = 0
 var offsetY = 0
 var datalist = []
 
-const color = ["#005FFF",
+const color = [
+  "#005FFF",
   "#136FFF",
   "#2C7CFF",
   "#4689FF",
@@ -152,7 +153,8 @@ function createFig(mode = "run") {
             for (var x = 0; x < bitSize; x++) {
               for (var y = 0; y < bitSize; y++) {
                 data_i = Number(datalist[y * bitSize + x])
-                if (data_i > 6) {
+                // if (true) {
+                if (data_i > 0) {
                   test_context.fillStyle = color[color.length - data_i];
                   // test_context.fillStyle = `rgb(${Math.floor(255 - 0.5 * x)}, ${Math.floor(255 - 0.5 * y)}, 0)`;
                   test_context.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
@@ -195,7 +197,7 @@ function createFig(mode = "run") {
       for (var y = 0; y < frameSize; y++) {
         for (var x = 0; x < frameSize; x++) {
           if (Math.abs(x - y) <= lineThickness || Math.abs(x + y - frameSize) <= lineThickness) {
-            test_context.putImageData(image_data, 2 * offsetX + x - side, 2 * offsetY + y - side);
+            test_context.putImageData(image_data, gridSize * offsetX + x - side, gridSize * offsetY + y - side);
           }
         }
       }
