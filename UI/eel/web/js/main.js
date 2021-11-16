@@ -155,7 +155,7 @@ function createFig(mode = "run") {
                 data_i = Number(datalist[y * bitSize + x])
                 // if (true) {
                 if (data_i > 0) {
-                  test_context.fillStyle = color[color.length - data_i];
+                  test_context.fillStyle = color[color.length - 2 * data_i];
                   // test_context.fillStyle = `rgb(${Math.floor(255 - 0.5 * x)}, ${Math.floor(255 - 0.5 * y)}, 0)`;
                   test_context.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
                 }

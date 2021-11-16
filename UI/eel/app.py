@@ -25,13 +25,14 @@ def ask_python_from_js_get_result(server, X, Y, Depth, Mag):
     # NOTE
     # return now_time
     # JSの関数を呼び出す
-    # command = ["python3", "predict_eq_myfcn.py", "-m", "result_myfcn/model_final", "-x", str(X), "-y", str(Y), "-depth", str(Depth), "-mag", str(Mag)]
-    command = ["python3", path + "/web/python/test.py", str(X), str(Y), str(Depth), str(Mag)]
+    command = ["python3", "./web/python/predict_eq_myfcn2.py", "-m", "./web/python/model_13", "-x", str(X), "-y", str(Y), "-depth", str(Depth), "-mag", str(Mag)]
+    # command = ["python3", path + "/web/python/test.py", str(X), str(Y), str(Depth), str(Mag)]
     proc = subprocess.Popen(command)  # ->コマンドが実行される(処理の終了は待たない)
     result = proc.communicate()
     """ 
     """
-    f = open(path + '/web/data/predicted_data.csv', "r")
+    # time.sleep(10)
+    f = open('./web/python/predicted_data.csv', "r")
     msg = ""
     for i in range(bitSize):
       line = f.readline()
@@ -40,6 +41,7 @@ def ask_python_from_js_get_result(server, X, Y, Depth, Mag):
       msg += line
       msg += ","
     eel.run_js_from_python(msg)
+    f.close()
 
 
 # ウエブコンテンツを持つフォルダー
