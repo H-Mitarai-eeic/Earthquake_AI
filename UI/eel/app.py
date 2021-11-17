@@ -10,7 +10,8 @@ bitSize = 256
 import os
 # これを書くことでJSからアクセスができます
 
-path = os.path.dirname(__file__)
+path = "/Users/kakeru/Earthquake_AI/UI/eel"
+# path = os.path.dirname(__file__)
 
 
 @eel.expose
@@ -25,8 +26,8 @@ def ask_python_from_js_get_result(server, X, Y, Depth, Mag):
     # NOTE
     # return now_time
     # JSの関数を呼び出す
-    command = ["python3", "./web/python/predict_eq_myfcn2.py", "-m", "./web/python/model_13", "-x", str(X), "-y", str(Y), "-depth", str(Depth), "-mag", str(Mag)]
-    # command = ["python3", "./web/python/predict_eq_myfcn3.py", "-m", "./web/python/model_final", "-x", str(X), "-y", str(Y), "-depth", str(Depth), "-mag", str(Mag)]
+    command = ["python3", path + "/web/python/predict_eq_myfcn2.py", "-m", path + "/web/python/model_13", "-x", str(X), "-y", str(Y), "-depth", str(Depth), "-mag", str(Mag)]
+    # command = ["python3", path + "/web/python/predict_eq_myfcn3.py", "-m", path + "/web/python/model_final", "-x", str(X), "-y", str(Y), "-depth", str(Depth), "-mag", str(Mag)]
     # command = ["python3", path + "/web/python/test.py", str(X), str(Y), str(Depth), str(Mag)]
     # proc = subprocess.Popen(command)  # ->コマンドが実行される(処理の終了は待たない)
     proc = subprocess.run(command)
@@ -35,7 +36,7 @@ def ask_python_from_js_get_result(server, X, Y, Depth, Mag):
     msg = ""
     # if proc.returncode == 0:
     # f = open('./web/python/niigatachuetu.csv', "r")
-    f = open('./web/python/predicted_data.csv', "r")
+    f = open(path + '/web/python/predicted_data.csv', "r")
     # for i in range(bitSize):
     line = f.readline()
     # line = list(map(int, line.split()))

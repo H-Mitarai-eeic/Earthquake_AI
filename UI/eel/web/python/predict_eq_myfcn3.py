@@ -5,7 +5,7 @@ from myfcn3 import MYFCN3
 import csv
 len_data = 64
 import os
-path = os.path.dirname(__file__)
+path = "/Users/kakeru/Earthquake_AI/UI/eel/web/python"
 
 
 def main():
