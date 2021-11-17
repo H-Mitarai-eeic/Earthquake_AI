@@ -1,0 +1,199 @@
+@import url("https://fonts.googleapis.com/css?family=Ubuntu+Mono");
+
+html {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* font-family: "Work Sans", sans-serif; */
+  font-family: "Ubuntu Mono", monospace;
+
+  text-align: center;
+  zoom: 1;
+  background-color: #a7ecec;
+}
+
+html h1,
+html h2,
+html h3,
+html h4,
+html h5,
+html h6 {
+  margin: 0;
+}
+
+html h1 {
+  color: #333;
+  font-weight: 500;
+  font-size: 350%;
+}
+
+html h2 {
+  font-size: 150%;
+}
+
+html h3 {
+  color: #aaa;
+  font-weight: 500;
+  font-size: 20%;
+}
+
+html h4 {
+  color: #999;
+  font-weight: 500;
+}
+
+html h4:after {
+  content: "";
+  padding-left: 1px;
+}
+
+#h4Depth:after {
+  content: "km";
+  font-size: 60%;
+}
+
+html input[type="range"] {
+  outline: 0;
+  border: 0;
+  border-radius: 500px;
+  width: 400px;
+  max-width: 100%;
+  margin: 10px 0 16px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  html input[type="range"] {
+    overflow: hidden;
+    height: 40px;
+    -webkit-appearance: none;
+    background-color: #ddd;
+  }
+  html input[type="range"]::-webkit-slider-runnable-track {
+    height: 40px;
+    -webkit-appearance: none;
+    color: #444;
+    transition: box-shadow 0.2s ease-in-out;
+  }
+  html input[type="range"]::-webkit-slider-thumb {
+    width: 40px;
+    -webkit-appearance: none;
+    height: 40px;
+    cursor: ew-resize;
+    background: #fff;
+    box-shadow: -340px 0 0 320px #ff5100, inset 0 0 0 40px #ff5100;
+    border-radius: 50%;
+    transition: box-shadow 0.2s ease-in-out;
+    position: relative;
+  }
+  html input[type="range"]:active::-webkit-slider-thumb {
+    background: #fff;
+    box-shadow: -340px 0 0 320px #ff5100, inset 0 0 0 3px #ff5100;
+  }
+}
+
+html input[type="range"]::-moz-range-progress {
+  background-color: #43e5f7;
+}
+
+html input[type="range"]::-moz-range-track {
+  background-color: #9a905d;
+}
+
+html input[type="range"]::-ms-fill-lower {
+  background-color: #43e5f7;
+}
+
+html input[type="range"]::-ms-fill-upper {
+  background-color: #9a905d;
+}
+
+#h4-container {
+  width: 400px;
+  max-width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+#h4-container #h4-subcontainer {
+  width: 100%;
+  position: relative;
+}
+
+#h4-container #h4-subcontainer h4 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  color: #fff !important;
+  font-size: 12px;
+  transform-origin: center -10px;
+  transform: translateX(-50%);
+  transition: margin-top 0.15s ease-in-out, opacity 0.15s ease-in-out;
+}
+
+#h4-container #h4-subcontainer h4 span {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #ff5100;
+  border-radius: 0 50% 50% 50%;
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+input:not(:active) + #h4-container h4 {
+  opacity: 0;
+  margin-top: -50px;
+  pointer-events: none;
+}
+
+/*  */
+
+.css-button-fully-rounded--red {
+  min-width: 150px;
+  height: 60px;
+  color: #fff;
+  padding: 5px 10px;
+  /* font-weight: bold; */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 20px;
+  border: 2px solid #0167ff;
+  background: #0167ff;
+  font-size: 20px;
+}
+#buttonRun {
+  min-width: 200px;
+  height: 80px;
+  color: #fff;
+  padding: 5px 10px;
+  /* font-weight: bold; */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 20px;
+  border: 2px solid #ff5100;
+  background: #ff5100;
+  font-size: 30px;
+}
+.css-button-fully-rounded--red:hover {
+  background: #fff;
+  color: #0167ff;
+}
+#buttonRun:hover {
+  background: #fff;
+  color: #ff5100;
+}
