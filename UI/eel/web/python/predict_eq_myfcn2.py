@@ -4,6 +4,8 @@ import numpy as np
 from myfcn2 import MYFCN2
 import csv
 len_data = 64
+import os
+path = os.path.dirname(__file__)
 
 
 def main():
@@ -62,6 +64,7 @@ def main():
   _, predicted = torch.max(outputs, 1)
   pre_list = np.array(predicted).squeeze().tolist()
   print("max:", max(list(map(lambda x: max(x), pre_list))))
+  # with open(path + '/predicted_data.csv', 'w') as file:
   with open('./web/python/predicted_data.csv', 'w') as file:
     writer = csv.writer(file, lineterminator=',')
     writer.writerows(pre_list)

@@ -10,7 +10,7 @@ bitSize = 256
 import os
 # これを書くことでJSからアクセスができます
 
-path = '/Users/kakeru/Earthquake_AI/UI/eel'
+path = os.path.dirname(__file__)
 
 
 @eel.expose
@@ -30,21 +30,19 @@ def ask_python_from_js_get_result(server, X, Y, Depth, Mag):
     # proc = subprocess.Popen(command)  # ->コマンドが実行される(処理の終了は待たない)
     proc = subprocess.run(command)
     # result = proc.communicate()
-    """ 
-    """
     # time.sleep(5)
     msg = ""
-    if proc.returncode == 0:
-      f = open('./web/python/predicted_data.csv', "r")
-      # for i in range(bitSize):
-      line = f.readline()
-      # line = list(map(int, line.split()))
-      # l[i] = line
-      msg += line
-      # msg += ","
-      f.close()
-      proc2 = subprocess.run(["rm", "./web/python/predicted_data.csv"])
-      # procRm = subprocess.run(['rm', './web/python/predicted_data.csv'])
+    # if proc.returncode == 0:
+    f = open('./web/python/predicted_data.csv', "r")
+    # for i in range(bitSize):
+    line = f.readline()
+    # line = list(map(int, line.split()))
+    # l[i] = line
+    msg += line
+    # msg += ","
+    f.close()
+    # proc2 = subprocess.run(["rm", "./web/python/predicted_data.csv"])
+    # procRm = subprocess.run(['rm', './web/python/predicted_data.csv'])
 
     eel.run_js_from_python(msg)
 
