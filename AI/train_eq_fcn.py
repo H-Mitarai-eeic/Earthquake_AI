@@ -46,11 +46,11 @@ def main():
 	print('')
 
 	# Set up a neural network to train
-	data_chanels = 3
-	#net = FCN32s(in_channels=data_chanels, n_class=10)
+	data_channels = 2
+	#net = FCN32s(in_channels=data_channels, n_class=10)
 	#net = MYFCN(10)
-	#net = MYFCN2(in_channels=data_chanels, n_class=10)
-	net = MYFCN3(in_channels=data_chanels, n_class=10)
+	#net = MYFCN2(in_channels=data_channels, n_class=10)
+	net = MYFCN3(in_channels=data_channels, n_class=10)
 	# Load designated network weight
 	if args.resume:
 		net.load_state_dict(torch.load(args.resume))
@@ -60,15 +60,20 @@ def main():
 		device = 'cuda:' + str(args.gpu)
 		net = net.to(device)
 
+	#open mask
+	with open(args.mask, "r") as f_mask:
+		reader = csv.reader(f_mask)
+		mask = [[int(row2) for row2 in row] for row in reader]
+
 	# Setup a loss and an optimizer
 	#criterion = nn.CrossEntropyLoss()
 	criterion = MyLoss()
-	optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
+	optimizer = optim.SGD(net.parameters(), lr=0.0001, momentum=0.9)
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor()])
 
-	trainvalset = MyDataSet(chanels=data_chanels, root=args.dataset, train=True, transform=transform)
+	trainvalset = MyDataSet(channels=data_channels, root=args.dataset, train=True, transform=transform, mask=mask)
 	# Split train/val
 	n_samples = len(trainvalset)
 	print("n_samples:", n_samples)
@@ -81,20 +86,7 @@ def main():
 	valloader = torch.utils.data.DataLoader(valset, batch_size=args.batchsize,
 											shuffle=True, num_workers=2)
 	
-	#open mask
-	with open(args.mask, "r") as f_mask:
-		reader = csv.reader(f_mask)
-		mask = [[int(row2) for row2 in row] for row in reader]
-	"""
-	mask_tensor = torch.zeros(args.batchsize, 10, len(mask), len(mask[0]))
-	for B in range(args.batchsize):
-		for C in range(10):
-			for X in range(len(mask)):
-				for Y in range(len(mask[X])):
-					if mask[X][Y] != 0:
-						mask_tensor[B][C][X][Y] = 1 
-	"""
-	
+
 	# Setup result holder
 	x = []
 	ac_train = []
@@ -111,18 +103,6 @@ def main():
 		for s, data in enumerate(trainloader, 0):
 			# Get the inputs; data is a list of [inputs, labels]
 			inputs, labels = data
-			#input成形
-			if data_chanels == 3:
-				for B in range(len(inputs)):
-					for X in range(len(inputs[B][0])):
-						for Y in range(len(inputs[B][0][X])):
-							inputs[B][2][X][Y] = mask[X][Y]
-			for B in range(len(inputs)):
-				for X in range(len(inputs[B][1])):
-					for Y in range(len(inputs[B][1][X])):
-						if mask[X][Y] == 0:
-							inputs[B][1][X][Y] = 0
-							inputs[B][0][X][Y] = 0
 			#targetsの生成
 			targets = (-1) * torch.ones(len(labels), 10, len(labels[0]), len(labels[0][0]))
 			"""
@@ -145,12 +125,12 @@ def main():
 			#maskを生成
 			mask_tensor = torch.ones(len(labels), 10, len(labels[0]), len(labels[0][0]))
 			"""
-			for B in range(len(labels)):
-				for C in range(10):
-					for X in range(len(labels[B])):
-						for Y in range(len(labels[B][X])):
-							if mask[X][Y] != 0:
-								mask_tensor[B][C][X][Y] = 1 
+				for B in range(len(labels)):
+					for C in range(10):
+						for X in range(len(labels[B])):
+							for Y in range(len(labels[B][X])):
+								if mask[X][Y] != 0:
+									mask_tensor[B][C][X][Y] = 1 
 			"""
 			"""
 				for B in range(len(labels)):

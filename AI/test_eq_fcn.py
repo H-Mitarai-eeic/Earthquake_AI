@@ -45,7 +45,7 @@ def main():
 		mask = [[int(row2) for row2 in row] for row in reader]
 
 	# Set up a neural network to test
-	data_channels = 3
+	data_channels = 2
 	#net = FCN32s(10)
 	#net = MYFCN(10)
 	#net = MYFCN2(in_channels=data_channels, n_class=10)
@@ -60,7 +60,7 @@ def main():
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor()])
-	testset = MyDataSet(chanels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID)
+	testset = MyDataSet(channels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID, mask=mask)
 	testloader = torch.utils.data.DataLoader(testset, batch_size=args.batchsize,
 											 shuffle=False, num_workers=2)
 
@@ -81,16 +81,7 @@ def main():
 			#images成形
 			print("images:", images.size())
 			print("mask:", len(mask))
-			if data_channels == 3:
-				for B in range(len(images)):
-					for X in range(len(images[B][0])):
-						for Y in range(len(images[B][0][X])):
-							images[B][2][X][Y] = mask[X][Y]
-			for B in range(len(images)):
-				for X in range(len(images[B][1])):
-					for Y in range(len(images[B][1][X])):
-						if mask[X][Y] == 0:
-							images[B][1][X][Y] = 0
+
 			# Forward
 			outputs = net(images)
 			# Predict the label
@@ -162,8 +153,8 @@ def main():
 		writer.writerows(predicted_map)
 
 	for i in range(10):
-		print("class", i ,"at 100 100:", outputs[0][i][10][10])
-		print("class", i, "at 50 100:", outputs[0][i][20][10])
+		print("class", i ,"at 10 10:", outputs[0][i][10][10])
+		print("class", i, "at 20 20:", outputs[0][i][20][20])
 
 if __name__ == '__main__':
 	main()

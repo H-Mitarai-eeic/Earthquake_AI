@@ -202,7 +202,7 @@ class MYFCN2(nn.Module):
             md5='d3eb467a80e7da0468a20dfcbc13e6c8',
         )
 
-    def __init__(self, in_channels=2, n_class=21):
+    def __init__(self, in_channels=2, n_class=10):
         super(MYFCN2, self).__init__()
         # convTranspose1
         self.convTrans1 = nn.ConvTranspose2d(in_channels, 4, 13, padding=100, stride=5)
@@ -280,7 +280,7 @@ class MYFCN2(nn.Module):
             l2.bias.data = l1.bias.data.view(l2.bias.size())
 
 class MYFCN3(nn.Module):
-    def __init__(self, in_channels=2,n_class=21):
+    def __init__(self, in_channels=2,n_class=10):
         super(MYFCN3, self).__init__()
         # convTranspose1
         self.conv1 = nn.Conv2d(in_channels, 8, 13, padding=0, stride=3)
@@ -289,14 +289,14 @@ class MYFCN3(nn.Module):
         self.conv2 = nn.Conv2d(8, 32, 10, padding=0, stride=1)
         self.relu2 = nn.ReLU(inplace=True)
 
-        #self.linear3 = nn.Linear(1296, 1296)
+        self.linear3 = nn.Linear(1296, 1296)
 
         # conv2
-        self.convTrans4 = nn.ConvTranspose2d(32, 16, 10, stride=2)
-        self.relu4 = nn.ReLU(inplace=True)
+        #self.convTrans4 = nn.ConvTranspose2d(32, 16, 10, stride=2)
+        #self.relu4 = nn.ReLU(inplace=True)
 
-        self.convTrans5 = nn.ConvTranspose2d(16, n_class, 14, padding=0, stride=2)
-        self.relu5 = nn.ReLU(inplace=True)
+        #self.convTrans5 = nn.ConvTranspose2d(16, n_class, 14, padding=0, stride=2)
+        #self.relu5 = nn.ReLU(inplace=True)
 
     def _initialize_weights(self):
         for m in self.modules():
@@ -323,3 +323,4 @@ class MYFCN3(nn.Module):
         h = self.relu5(self.convTrans5(h))
 
         return h
+
