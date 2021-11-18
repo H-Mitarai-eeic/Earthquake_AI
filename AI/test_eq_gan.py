@@ -39,8 +39,10 @@ def main():
 
 	data_channels = 2
 	lr = 0.001
+	noise_div = 100
+	with_noise = 1
 	# Set up a neural network to train
-	net = MYFCN4gan(in_channels=data_channels + 1, n_class=1)
+	net = MYFCN4gan(in_channels=data_channels + with_noise, n_class=1)
 	# Load designated network weight
 	net.load_state_dict(torch.load(args.model))
 	# Set model to GPU
@@ -65,7 +67,7 @@ def main():
 		for data in testloader:
 			# Get the inputs; data is a list of [inputs, labels]
 			epic_data, real_data = data
-			noise = (torch.rand(real_data.shape[0], 1, real_data.shape[2], real_data.shape[3]) - 0.5) / 0.5
+			noise = (torch.rand(real_data.shape[0], 1, real_data.shape[2], real_data.shape[3]) - 0.5) / 0.5 / noise_div
 			epic_data_noise = torch.cat((epic_data, noise), dim = 1)
 			if args.gpu >= 0:
 				real_data = real_data.to(device)
@@ -73,7 +75,10 @@ def main():
 				noise = noise.to(device)
 				epic_data_noise = epic_data_noise.to(device)
 
-			predicted_data = net(epic_data_noise)	#偽物生成　ノイズ追加
+			if with_noise == 1:
+				predicted_data = net(epic_data_noise)	#偽物生成　ノイズ追加
+			else:
+				predicted_data = net(epic_data)
 			predicted_data = predicted_data.squeeze()
 			real_data = real_data.squeeze()
 			print("realdata: ", real_data.size())
@@ -86,6 +91,8 @@ def main():
 					class_diff_index = int(abs(real_data_tmp - predic))
 					if class_diff_index > 9:
 						class_diff_index = 9
+					elif class_diff_index < 0:
+						class_diff_index = 0
 					class_diff[class_diff_index] += 1
 					#total += 1 
 		

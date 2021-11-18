@@ -81,8 +81,8 @@ class MyDataSet4gan(Dataset):
 				labels[0][X][Y] = int(lbl_data[X][Y].item())
 
 		img = torch.zeros(self.channels, len(lbl_data), len(lbl_data))
-		img[0][x][y] = depth
-		img[1][x][y] = mag
+		img[0][x][y] = depth / 1000
+		img[1][x][y] = mag / 10
 
 		return img, labels
 

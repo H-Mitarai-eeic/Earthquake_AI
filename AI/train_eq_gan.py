@@ -45,6 +45,7 @@ def main():
 
 	data_channels = 2
 	lr = 0.001
+	noise_div = 100
 	# Set up a neural network to train
 	net = MYFCN4gan(in_channels=data_channels + 1, n_class=1)
 	D = MyDiscriminator(in_channels = 1 + data_channels)
@@ -94,7 +95,7 @@ def main():
 			# Get the inputs; data is a list of [inputs, labels]
 			#Dの学習
 			epic_data, real_data = data
-			noise = (torch.rand(real_data.shape[0], 1, real_data.shape[2], real_data.shape[3]) - 0.5) / 0.5
+			noise = (torch.rand(real_data.shape[0], 1, real_data.shape[2], real_data.shape[3]) - 0.5) / 0.5 / noise_div
 
 			if args.gpu >= 0:
 				real_data = real_data.to(device)
@@ -106,20 +107,23 @@ def main():
 				real_data_epic_data = real_data_epic_data.to(device)
 			real_outputs = D(real_data_epic_data)	#本物をDで評価　epicenter_data追加
 
-			real_label = torch.ones(real_data.shape[0], 1)
+			#real_label = torch.ones(real_data.shape[0], 1)	# 正解レベル all 1
+			real_label = torch.rand(real_data.shape[0], 1) * 0.55 + 0.675 # 正解レベル 0.675 ~ 1.225
 
 			epic_data_noise = torch.cat((epic_data, noise), dim = 1)
 			if args.gpu >= 0:
 				epic_data_noise = epic_data_noise.to(device)
 
 			predicted_data = net(epic_data_noise)	#偽物生成　ノイズ追加
+			#predicted_data = net(epic_data)
 
 			predicted_data_epic_data = torch.cat((predicted_data, epic_data), dim = 1)
 			if args.gpu >= 0:
 				predicted_data_epic_data = predicted_data_epic_data.to(device)
 			predicted_data_outputs = D(predicted_data_epic_data)	#偽物をDで評価epicenter_data追加
 
-			predicted_data_label = torch.zeros(predicted_data.shape[0], 1)
+			#predicted_data_label = torch.zeros(predicted_data.shape[0], 1)
+			predicted_data_label = torch.rand(predicted_data.shape[0], 1) * 0.35
 
 			if args.gpu >= 0:
 				real_label = real_label.to(device)
@@ -134,7 +138,7 @@ def main():
 			D_optimizer.step()
 
 			#networkの学習
-			noise = (torch.rand(real_data.shape[0], 1, real_data.shape[2], real_data.shape[3]) - 0.5) / 0.5
+			noise = (torch.rand(real_data.shape[0], 1, real_data.shape[2], real_data.shape[3]) - 0.5) / 0.5 / noise_div
 			if args.gpu >= 0:
 				noise = noise.to(device)
 
@@ -143,13 +147,14 @@ def main():
 				epic_data_noise = epic_data_noise.to(device)
 
 			predicted_data = net(epic_data_noise)	#偽物生成　ノイズ追加
+			#predicted_data = net(epic_data)
 			
 			predicted_data_epic_data = torch.cat((predicted_data, epic_data), dim = 1)
 			if args.gpu >= 0:
 				predicted_data_epic_data = predicted_data_epic_data.to(device)
 
 			predicted_data_outputs = D(predicted_data_epic_data)	#偽物をDで評価epicenter_data追加
-			predicted_data_targets = torch.zeros(predicted_data.shape[0], 1)
+			predicted_data_targets = torch.ones(predicted_data.shape[0], 1)
 
 			if args.gpu >= 0:
 				real_label = real_label.to(device)
