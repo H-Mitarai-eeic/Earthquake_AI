@@ -39,7 +39,10 @@ def main():
 	parser.add_argument('--mask', '-mask', default='ObservationPointsMap_honshu6464.csv',
 						help='Root directory of dataset')
 	args = parser.parse_args()
-
+	print("train_eq_fcn")
+	print("output: " ,args.out)
+	print("dataset: ", args.dataset)
+	print("mask: ", args.mask)
 	print('GPU: {}'.format(args.gpu))
 	print('# Minibatch-size: {}'.format(args.batchsize))
 	print('# epoch: {}'.format(args.epoch))
@@ -47,6 +50,10 @@ def main():
 
 	# Set up a neural network to train
 	data_channels = 2
+	lr = 0.001
+	printf("data_channels: ", data_channels)
+	printf("learning rate: ", lr)
+	print('')
 	#net = FCN32s(in_channels=data_channels, n_class=10)
 	#net = MYFCN(10)
 	#net = MYFCN2(in_channels=data_channels, n_class=10)
@@ -68,7 +75,7 @@ def main():
 	# Setup a loss and an optimizer
 	#criterion = nn.CrossEntropyLoss()
 	criterion = MyLoss()
-	optimizer = optim.SGD(net.parameters(), lr=0.0001, momentum=0.9)
+	optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9)
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor()])
@@ -107,38 +114,38 @@ def main():
 			targets = (-1) * torch.ones(len(labels), 10, len(labels[0]), len(labels[0][0]))
 			"""
 			for B in range(len(labels)):
-				for X in range(len(labels[B])):
-					for Y in range(len(labels[B][X])):
-						C = labels[B][X][Y]
+				for Y in range(len(labels[B])):
+					for X in range(len(labels[B][Y])):
+						C = labels[B][Y][X]
 						if C == 0:
-							targets[B][C][X][Y] = 1
+							targets[B][C][Y][X] = 1
 						else:
-							targets[B][C][X][Y] = 1
+							targets[B][C][Y][X] = 1
 			"""
 			for B in range(len(labels)):
-				for X in range(len(labels[B])):
-					for Y in range(len(labels[B][X])):
-						Class = labels[B][X][Y]
+				for Y in range(len(labels[B])):
+					for X in range(len(labels[B][Y])):
+						Class = labels[B][Y][X]
 						for C in range(0, Class + 1):
-							targets[B][C][X][Y] = 1
+							targets[B][C][Y][X] = 1
 			
 			#maskを生成
-			mask_tensor = torch.ones(len(labels), 10, len(labels[0]), len(labels[0][0]))
+			mask_tensor = torch.zeros(len(labels), 10, len(labels[0]), len(labels[0][0]))
+			
+			for B in range(len(labels)):
+				for C in range(10):
+					for Y in range(len(labels[B])):
+						for X in range(len(labels[B][Y])):
+							if mask[Y][X] != 0:
+								mask_tensor[B][C][Y][X] = 1 
+		
 			"""
 				for B in range(len(labels)):
 					for C in range(10):
-						for X in range(len(labels[B])):
-							for Y in range(len(labels[B][X])):
-								if mask[X][Y] != 0:
-									mask_tensor[B][C][X][Y] = 1 
-			"""
-			"""
-				for B in range(len(labels)):
-					for C in range(10):
-						for X in range(len(labels[B])):
-							for Y in range(len(labels[B][X])):
-								if labels[B][X][Y] != 0:
-									mask_tensor[B][C][X][Y] = 1
+						for Y in range(len(labels[B])):
+							for X in range(len(labels[B][Y])):
+								if labels[B][Y][X] != 0:
+									mask_tensor[B][C][Y][X] = 1
 			"""
 			if args.gpu >= 0:
 				inputs = inputs.to(device)
@@ -156,10 +163,10 @@ def main():
 
 			# Predict the label
 			print("")
-			print("outputs:", outputs.size())
-			print("targets:", targets.size())
-			print("labels:", labels.size())
-			print("mask_tensor:", mask_tensor.size())
+			#print("outputs:", outputs.size())
+			#print("targets:", targets.size())
+			#print("labels:", labels.size())
+			#print("mask_tensor:", mask_tensor.size())
 			_, predicted = torch.max(outputs, 1)
 
 			"""
@@ -172,18 +179,18 @@ def main():
 				#targets = targets * mask_tensor
 			"""
 				for E in range(len(outputs)):
-					for X in range(len(outputs[E][0])):
-						for Y in range(len(outputs[E][0][X])):
-							if mask[X][Y] == 0:
-								outputs[E][0][X][Y] = 0.1
+					for Y in range(len(outputs[E][0])):
+						for X in range(len(outputs[E][0][Y])):
+							if mask[Y][X] == 0:
+								outputs[E][0][Y][X] = 0.1
 								for cl in range(1, 10):
-									outputs[E][cl][X][Y] = -0.1
+									outputs[E][cl][Y][X] = -0.1
 				
 				for E in range(len(predicted)):
-					for X in range(len(predicted[E])):
-						for Y in range(len(predicted[E][X])):
-							if mask[X][Y] == 0:
-								labels[E][X][Y] = predicted[E][X][Y]
+					for Y in range(len(predicted[E])):
+						for X in range(len(predicted[E][Y])):
+							if mask[Y][X] == 0:
+								labels[E][Y][X] = predicted[E][Y][X]
 			"""
 			# Check whether estimation is right
 			c = (predicted == labels).squeeze() ##この辺怪しい
@@ -229,8 +236,8 @@ def main():
 				# Check whether estimation is right
 				
 				c = (predicted == labels).squeeze()
-				print("c:", c.size())
-				print("predicted:", predicted.size())
+				#print("c:", c.size())
+				#print("predicted:", predicted.size())
 				for i in range(len(predicted)):
 					for j in range(len(predicted[i])):
 						for k in range(len(predicted[i][j])):

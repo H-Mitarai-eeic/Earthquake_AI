@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
@@ -83,10 +83,10 @@ def main():
 			real_data = real_data.squeeze()
 			print("realdata: ", real_data.size())
 			print("predicted_data: ", predicted_data.size())
-			for X in range(len(real_data)):
-				for Y in range(len(real_data[X])):
-					real_data_tmp = real_data[X][Y].item()
-					predic = round(predicted_data[X][Y].item())
+			for Y in range(len(real_data)):
+				for X in range(len(real_data[Y])):
+					real_data_tmp = real_data[Y][X].item()
+					predic = round(predicted_data[Y][X].item())
 					#print("predic: ", predic, "real: ", real_data_tmp)
 					class_diff_index = int(abs(real_data_tmp - predic))
 					if class_diff_index > 9:
@@ -108,9 +108,9 @@ def main():
 
 	#csv出力
 	predicted_map = predicted_data.clone().squeeze().tolist()
-	for X in range(len(predicted_map)):
-		for Y in range(len(predicted_map[X])):
-			predicted_map[X][Y] = round(predicted_map[X][Y])
+	for Y in range(len(predicted_map)):
+		for X in range(len(predicted_map[Y])):
+			predicted_map[Y][X] = round(predicted_map[Y][X])
 
 	with open(args.output + 'predicted/' + args.ID + '_predicted.csv', "w") as fo:
 		writer = csv.writer(fo)

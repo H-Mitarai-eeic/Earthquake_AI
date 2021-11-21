@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-from fcn8s import FCN8s
-from fcn32s import FCN32s
+#from fcn8s import FCN8s
+#from fcn32s import FCN32s
 from dataset import MyDataSet
-from myfcn import MYFCN
-from myfcn import MYFCN2
+#from myfcn import MYFCN
+#from myfcn import MYFCN2
 from myfcn import MYFCN3
 
 import csv
@@ -91,10 +91,10 @@ def main():
 			
 			for B in range(len(outputs)):
 				for C in range(len(outputs[B])):
-					for X in range(len(outputs[B][C])):
-						for Y in range(len(outputs[B][C][X])):
-							if outputs[B][C][X][Y].item() > 0:
-								predicted[X][Y] = C
+					for Y in range(len(outputs[B][C])):
+						for X in range(len(outputs[B][C][Y])):
+							if outputs[B][C][Y][X].item() > 0:
+								predicted[Y][X] = C
 			
 			# Check whether estimation is right
 			#c = (predicted == labels).squeeze()
@@ -113,11 +113,11 @@ def main():
 							total += 1 
 			"""
 			for B in range(len(labels)):
-				for X in range(len(labels[B])):
-					for Y in range(len(labels[B][X])):
-						if mask[X][Y] != 0:
-							label = labels[B][X][Y]
-							predic = predicted[X][Y]
+				for Y in range(len(labels[B])):
+					for X in range(len(labels[B][Y])):
+						if mask[Y][X] != 0:
+							label = labels[B][Y][X]
+							predic = predicted[Y][X]
 							class_diff_index = int(abs(label - predic))
 							class_diff[class_diff_index] += 1
 							total += 1 
@@ -141,11 +141,11 @@ def main():
 	#csv出力
 	#predicted_map = predicted.clone().squeeze().tolist()
 	predicted_map = copy.deepcopy(predicted)
-	for X in range(len(predicted_map)):
-		for Y in range(len(predicted_map[X])):
-			if mask[X][Y] == 0:
-				#predicted_map[X][Y] =0
-				predicted_map[X][Y] = predicted_map[X][Y]
+	for Y in range(len(predicted_map)):
+		for X in range(len(predicted_map[Y])):
+			if mask[Y][X] == 0:
+				#predicted_map[Y][X] =0
+				predicted_map[Y][X] = predicted_map[Y][X]
 
 	#print(predicted_map)
 	with open(args.output + 'predicted/' + args.ID + '_predicted.csv', "w") as fo:

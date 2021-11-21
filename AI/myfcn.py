@@ -283,20 +283,39 @@ class MYFCN3(nn.Module):
     def __init__(self, in_channels=2,n_class=10):
         super(MYFCN3, self).__init__()
         # convTranspose1
-        self.conv1 = nn.Conv2d(in_channels, 8, 13, padding=0, stride=3)
+        self.convtrans1 = nn.ConvTranspose2d(in_channels, in_channels, 63, padding=31, stride=1)
         self.relu1 = nn.ReLU(inplace=True)
 
-        self.conv2 = nn.Conv2d(8, 32, 10, padding=0, stride=1)
+        self.convtrans2 = nn.ConvTranspose2d(in_channels, 4, 7, padding=3, stride=1)
         self.relu2 = nn.ReLU(inplace=True)
 
-        self.linear3 = nn.Linear(1296, 1296)
+        self.convtrans3 = nn.ConvTranspose2d(4, 6, 7, padding=3, stride=1)
+        self.relu3 = nn.ReLU(inplace=True)
 
-        # conv2
-        #self.convTrans4 = nn.ConvTranspose2d(32, 16, 10, stride=2)
-        #self.relu4 = nn.ReLU(inplace=True)
+        self.convtrans4 = nn.ConvTranspose2d(6, 10, 7, padding=3, stride=1)
+        self.relu4 = nn.ReLU(inplace=True)
 
-        #self.convTrans5 = nn.ConvTranspose2d(16, n_class, 14, padding=0, stride=2)
-        #self.relu5 = nn.ReLU(inplace=True)
+        self.convtrans5 = nn.ConvTranspose2d(10, 16, 7, padding=3, stride=1)
+        self.relu5 = nn.ReLU(inplace=True)
+
+        self.convtrans6 = nn.ConvTranspose2d(16, 26, 7, padding=3, stride=1)
+        self.relu6 = nn.ReLU(inplace=True)
+
+        self.convtrans7 = nn.ConvTranspose2d(26, 42, 7, padding=3, stride=1)
+        self.relu7 = nn.ReLU(inplace=True)
+
+        self.convtrans8 = nn.ConvTranspose2d(42, 68, 7, padding=3, stride=1)
+        self.relu8 = nn.ReLU(inplace=True)
+
+        self.convtrans9 = nn.ConvTranspose2d(68, 42, 7, padding=3, stride=1)
+        self.relu9 = nn.ReLU(inplace=True)
+
+        self.convtrans10 = nn.ConvTranspose2d(42, 16, 7, padding=3, stride=1)
+        self.relu10 = nn.ReLU(inplace=True)
+
+        self.convtrans11 = nn.ConvTranspose2d(16, n_class, 7, padding=3, stride=1)
+        self.tanh11 = nn.Tanh()
+
 
     def _initialize_weights(self):
         for m in self.modules():
@@ -314,13 +333,18 @@ class MYFCN3(nn.Module):
         #print("x:",x.size())
         
         h = x
-        h = self.relu1(self.conv1(h))
-        h = self.relu2(self.conv2(h))
+        h = self.relu1(self.convtrans1(h))
+        h = self.relu2(self.convtrans2(h))
+        h = self.relu3(self.convtrans3(h))
+        h = self.relu4(self.convtrans4(h))
+        h = self.relu5(self.convtrans5(h))
+        h = self.relu6(self.convtrans6(h))
+        h = self.relu7(self.convtrans7(h))
+        h = self.relu8(self.convtrans8(h))
 
-        #h = self.linear3(h)
-
-        h = self.relu4(self.convTrans4(h))
-        h = self.relu5(self.convTrans5(h))
+        h = self.relu9(self.convtrans9(h))
+        h = self.relu10(self.convtrans10(h))
+        h = self.tanh11(self.convtrans11(h))
 
         return h
 

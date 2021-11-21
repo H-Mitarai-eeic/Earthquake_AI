@@ -31,8 +31,8 @@ class MyDataSet(Dataset):
 		x, y, depth, mag = int(x), int(y), float(depth), float(mag)
 		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
 		img = torch.zeros(self.channels, len(lbl_data), len(lbl_data))
-		img[0][x][y] = depth
-		img[1][x][y] = mag
+		img[0][y][x] = depth
+		img[1][y][x] = mag
 		"""
 		for X in range(len(img[0])):
 			for Y in range(len(img[0][X])):
@@ -76,13 +76,13 @@ class MyDataSet4gan(Dataset):
 		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
 
 		labels = torch.zeros(1, len(lbl_data), len(lbl_data[0]))
-		for X in range(len(lbl_data)):
-			for Y in range(len(lbl_data[0])):
-				labels[0][X][Y] = int(lbl_data[X][Y].item())
+		for Y in range(len(lbl_data)):
+			for X in range(len(lbl_data[0])):
+				labels[0][Y][X] = int(lbl_data[Y][X].item())
 
 		img = torch.zeros(self.channels, len(lbl_data), len(lbl_data))
-		img[0][x][y] = depth / 1000
-		img[1][x][y] = mag / 10
+		img[0][y][x] = depth / 1000
+		img[1][y][x] = mag / 10
 
 		return img, labels
 

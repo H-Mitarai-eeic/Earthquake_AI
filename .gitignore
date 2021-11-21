@@ -16,6 +16,7 @@
 /AI/data1000_*
 /AI/data_all
 /AI/result_all
+/AI/result_fcn*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
