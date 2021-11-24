@@ -39,7 +39,7 @@ class FCN32s(nn.Module):
         super(FCN32s, self).__init__()
         # conv1
         #self.upscore1_0 = nn.ConvTranspose2d(2, 2, 21, padding=10)
-        self.relu1_10 = nn.ReLU(inplace=True)
+        #self.relu1_10 = nn.ReLU(inplace=True)
         self.conv1_1 = nn.Conv2d(in_channels, 64, 3, padding=2)
         self.relu1_1 = nn.ReLU(inplace=True)
         self.conv1_2 = nn.Conv2d(64, 64, 3, padding=1)

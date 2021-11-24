@@ -12,7 +12,7 @@ from torchvision import datasets, transforms
 from dataset import MyDataSet
 #from myfcn import MYFCN
 #from myfcn import MYFCN2
-from myfcn import MYFCN3
+from myfcn import MYFCN4
 
 import csv
 import copy
@@ -49,7 +49,7 @@ def main():
 	#net = FCN32s(10)
 	#net = MYFCN(10)
 	#net = MYFCN2(in_channels=data_channels, n_class=10)
-	net = MYFCN3(in_channels=data_channels, n_class=10)
+	net = MYFCN4(in_channels=data_channels, n_class=10)
 	# Load designated network weight
 	net.load_state_dict(torch.load(args.model))
 	# Set model to GPU
@@ -75,15 +75,22 @@ def main():
 		for data in testloader:
 			# Get the inputs; data is a list of [inputs, labels]
 			images, labels = data
+			mask_tensor4net = torch.zeros(len(labels), 1, len(labels[0]), len(labels[0][0]))
+			for B in range(len(labels)):
+				for Y in range(len(labels[B])):
+					for X in range(len(labels[B][Y])):
+						if mask[Y][X] != 0:
+							mask_tensor4net[B][0][Y][X] = 1
 			if args.gpu >= 0:
 				images = images.to(device)
 				labels = labels.to(device)
+				mask_tensor4net = mask_tensor4net.to(device)
 			#images成形
 			print("images:", images.size())
 			print("mask:", len(mask))
 
 			# Forward
-			outputs = net(images)
+			outputs = net(images, mask_tensor4net)
 			# Predict the label
 			#_, predicted = torch.max(outputs, 1)
 			predicted = [[0 for i in range(len(labels[0][0]))] for j in range(len(labels[0]))]

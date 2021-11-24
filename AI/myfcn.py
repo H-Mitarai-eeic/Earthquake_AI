@@ -348,3 +348,114 @@ class MYFCN3(nn.Module):
 
         return h
 
+
+class MYFCN4(nn.Module):
+    def __init__(self, in_channels=2,n_class=10):
+        super(MYFCN4, self).__init__()
+        # convTranspose1
+        self.convtrans1 = nn.ConvTranspose2d(in_channels, in_channels, 63, padding=31, stride=1)
+        self.relu1 = nn.ReLU(inplace=True)
+
+        self.convtrans2 = nn.ConvTranspose2d(in_channels, 4, 7, padding=3, stride=1)
+        self.relu2 = nn.ReLU(inplace=True)
+
+        self.convtrans3 = nn.ConvTranspose2d(4, 6, 7, padding=3, stride=1)
+        self.relu3 = nn.ReLU(inplace=True)
+
+        self.convtrans4 = nn.ConvTranspose2d(6, 10, 7, padding=3, stride=1)
+        self.relu4 = nn.ReLU(inplace=True)
+
+        self.convtrans5 = nn.ConvTranspose2d(10, 16, 7, padding=3, stride=1)
+        self.relu5 = nn.ReLU(inplace=True)
+
+        self.convtrans6 = nn.ConvTranspose2d(16, 26, 7, padding=3, stride=1)
+        self.relu6 = nn.ReLU(inplace=True)
+
+        self.convtrans7 = nn.ConvTranspose2d(26, 42, 7, padding=3, stride=1)
+        self.relu7 = nn.ReLU(inplace=True)
+
+        self.convtrans8 = nn.ConvTranspose2d(42, 68, 7, padding=3, stride=1)
+        self.relu8 = nn.ReLU(inplace=True)
+
+        self.convtrans9 = nn.ConvTranspose2d(68, 42, 7, padding=3, stride=1)
+        self.relu9 = nn.ReLU(inplace=True)
+
+        self.convtrans10 = nn.ConvTranspose2d(42, 16, 7, padding=3, stride=1)
+        self.relu10 = nn.ReLU(inplace=True)
+
+        self.convtrans11 = nn.ConvTranspose2d(16, in_channels, 7, padding=3, stride=1)
+        self.sig11 = nn.Sigmoid()
+
+        ##=======fcn========##
+        self.conv12 = nn.Conv2d(in_channels + 1, 64, 3, padding=1, stride=2)    #1/2
+        self.relu12 = nn.ReLU(inplace=True)
+
+        self.conv13 = nn.Conv2d(64, 128, 3, padding=1, stride=2)    #1/4
+        self.relu13 = nn.ReLU(inplace=True)
+
+        self.conv14 = nn.Conv2d(128, 256, 3, padding=1, stride=2)   #1/8
+        self.relu14 = nn.ReLU(inplace=True)
+
+        self.conv15 = nn.Conv2d(256, 512, 3, padding=1, stride=2)   #1/16
+        self.relu15 = nn.ReLU(inplace=True)
+
+        self.convtrans16 = nn.ConvTranspose2d(512, 256, 3, padding=1, stride=2, output_padding=1)   #1/8
+        self.relu16 = nn.ReLU(inplace=True)
+
+        self.convtrans17 = nn.ConvTranspose2d(256, 128, 3, padding=1, stride=2, output_padding=1)   #1/4
+        self.relu17 = nn.ReLU(inplace=True)
+
+        self.convtrans18 = nn.ConvTranspose2d(128, 64, 3, padding=1, stride=2, output_padding=1)   #1/2
+        self.relu18 = nn.ReLU(inplace=True)
+
+        self.convtrans19 = nn.ConvTranspose2d(64, n_class, 3, padding=1, stride=2, output_padding=1)   #1/2
+        self.tanh19 = nn.Tanh()
+
+
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                m.weight.data.zero_()
+                if m.bias is not None:
+                    m.bias.data.zero_()
+            if isinstance(m, nn.ConvTranspose2d):
+                assert m.kernel_size[0] == m.kernel_size[1]
+                initial_weight = get_upsampling_weight(
+                    m.in_channels, m.out_channels, m.kernel_size[0])
+                m.weight.data.copy_(initial_weight)
+
+    def forward(self, x, mask):
+        #print("x:",x.size())
+        
+        h = x
+        h = self.relu1(self.convtrans1(h))
+        h = self.relu2(self.convtrans2(h))
+        h = self.relu3(self.convtrans3(h))
+        h = self.relu4(self.convtrans4(h))
+        h = self.relu5(self.convtrans5(h))
+        h = self.relu6(self.convtrans6(h))
+        h = self.relu7(self.convtrans7(h))
+        h = self.relu8(self.convtrans8(h))
+
+        h = self.relu9(self.convtrans9(h))
+        h = self.relu10(self.convtrans10(h))
+        h = self.sig11(self.convtrans11(h))
+
+        ##======== cat mask =========##
+
+        h = torch.cat((h, mask), dim=1)
+
+        ##===========fcn=============##
+        h = self.relu12(self.conv12(h))
+        h = self.relu13(self.conv13(h))
+        h = self.relu14(self.conv14(h))
+        h = self.relu15(self.conv15(h))
+
+        h = self.relu16(self.convtrans16(h))
+        h = self.relu17(self.convtrans17(h))
+        h = self.relu18(self.convtrans18(h))
+        h = self.tanh19(self.convtrans19(h))
+
+
+        return h
+

@@ -32,7 +32,7 @@ class MyDataSet(Dataset):
 		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
 		img = torch.zeros(self.channels, len(lbl_data), len(lbl_data))
 		img[0][y][x] = depth
-		img[1][y][x] = mag
+		img[1][y][x] = mag 
 		"""
 		for X in range(len(img[0])):
 			for Y in range(len(img[0][X])):

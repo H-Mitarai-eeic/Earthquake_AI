@@ -9,13 +9,13 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
 # from network import CifarCNN
-from fcn8s import FCN8s
-from fcn32s import FCN32s
+#from fcn8s import FCN8s
+#from fcn32s import FCN32s
 from dataset import MyDataSet
 from myloss import MyLoss
-from myfcn import MYFCN
-from myfcn import MYFCN2
-from myfcn import MYFCN3
+#from myfcn import MYFCN
+#from myfcn import MYFCN2
+from myfcn import MYFCN4
 # from network import EQCNN
 
 import csv
@@ -50,14 +50,14 @@ def main():
 
 	# Set up a neural network to train
 	data_channels = 2
-	lr = 0.001
-	printf("data_channels: ", data_channels)
-	printf("learning rate: ", lr)
+	lr = 0.1
+	print("data_channels: ", data_channels)
+	print("learning rate: ", lr)
 	print('')
 	#net = FCN32s(in_channels=data_channels, n_class=10)
 	#net = MYFCN(10)
 	#net = MYFCN2(in_channels=data_channels, n_class=10)
-	net = MYFCN3(in_channels=data_channels, n_class=10)
+	net = MYFCN4(in_channels=data_channels, n_class=10)
 	# Load designated network weight
 	if args.resume:
 		net.load_state_dict(torch.load(args.resume))
@@ -113,14 +113,14 @@ def main():
 			#targetsの生成
 			targets = (-1) * torch.ones(len(labels), 10, len(labels[0]), len(labels[0][0]))
 			"""
-			for B in range(len(labels)):
-				for Y in range(len(labels[B])):
-					for X in range(len(labels[B][Y])):
-						C = labels[B][Y][X]
-						if C == 0:
-							targets[B][C][Y][X] = 1
-						else:
-							targets[B][C][Y][X] = 1
+				for B in range(len(labels)):
+					for Y in range(len(labels[B])):
+						for X in range(len(labels[B][Y])):
+							C = labels[B][Y][X]
+							if C == 0:
+								targets[B][C][Y][X] = 1
+							else:
+								targets[B][C][Y][X] = 1
 			"""
 			for B in range(len(labels)):
 				for Y in range(len(labels[B])):
@@ -131,6 +131,7 @@ def main():
 			
 			#maskを生成
 			mask_tensor = torch.zeros(len(labels), 10, len(labels[0]), len(labels[0][0]))
+			mask_tensor4net = torch.zeros(len(labels), 1, len(labels[0]), len(labels[0][0]))
 			
 			for B in range(len(labels)):
 				for C in range(10):
@@ -138,6 +139,7 @@ def main():
 						for X in range(len(labels[B][Y])):
 							if mask[Y][X] != 0:
 								mask_tensor[B][C][Y][X] = 1 
+								mask_tensor4net[B][0][Y][X] = 1
 		
 			"""
 				for B in range(len(labels)):
@@ -152,13 +154,14 @@ def main():
 				labels = labels.to(device)
 				targets = targets.to(device)
 				mask_tensor = mask_tensor.to(device)
+				mask_tensor4net = mask_tensor4net.to(device)
 			# Reset the parameter gradients
 			optimizer.zero_grad()
 
 			#print("before forward")
 			# Forward
 			inputs.requires_grad = True
-			outputs = net(inputs)
+			outputs = net(inputs, mask_tensor4net)
 			#print("outputs.requires_grad:", outputs.requires_grad)
 
 			# Predict the label
@@ -224,41 +227,45 @@ def main():
 			torch.save(net.state_dict(), path)
 
 		# Validation
-		with torch.no_grad():
-			for data in valloader:
-				images, labels = data
-				if args.gpu >= 0:
-					images = images.to(device)
-					labels = labels.to(device)
-				outputs = net(images)
-				# Predict the label
-				_, predicted = torch.max(outputs, 1)
-				# Check whether estimation is right
-				
-				c = (predicted == labels).squeeze()
-				#print("c:", c.size())
-				#print("predicted:", predicted.size())
-				for i in range(len(predicted)):
-					for j in range(len(predicted[i])):
-						for k in range(len(predicted[i][j])):
-							if len(predicted) == 1:
-								correct_val += c[j][k].item()
-								total_val += 1
-							else:
-								correct_val += c[i][j][k].item()
-								total_val += 1
-				
+		"""
+			with torch.no_grad():
+				for data in valloader:
+					images, labels = data
+					if args.gpu >= 0:
+						images = images.to(device)
+						labels = labels.to(device)
+					outputs = net(images, mask_tensor4net)
+					# Predict the label
+					_, predicted = torch.max(outputs, 1)
+					# Check whether estimation is right
+					
+					c = (predicted == labels).squeeze()
+					#print("c:", c.size())
+					#print("predicted:", predicted.size())
+					for i in range(len(predicted)):
+						for j in range(len(predicted[i])):
+							for k in range(len(predicted[i][j])):
+								if len(predicted) == 1:
+									correct_val += c[j][k].item()
+									total_val += 1
+								else:
+									correct_val += c[i][j][k].item()
+									total_val += 1
+		"""
 
 		# Record result
-		x.append(ep + 1)
-		ac_train.append(100 * correct_train / total_train)
-		ac_val.append(100 * correct_val / total_val)
+		"""
+			x.append(ep + 1)
+			ac_train.append(100 * correct_train / total_train)
+			ac_val.append(100 * correct_val / total_val)
+		"""
 
 	print('Finished Training')
 	path = args.out + "/model_final"
 	torch.save(net.state_dict(), path)
 
 	# Draw graph
+	"""
 	fig = plt.figure()
 	ax = fig.add_subplot(1, 1, 1)
 	ax.plot(x, ac_train, label='Training')
@@ -270,6 +277,7 @@ def main():
 
 	plt.savefig(args.out + '/accuracy_cifar.png')
 	#plt.show()
+	"""
 
 if __name__ == '__main__':
 	main()
