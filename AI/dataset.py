@@ -6,11 +6,11 @@ import glob
 import numpy as np
 
 class MyDataSet(Dataset):
-	def __init__(self, channels=2, root=None, train=True, transform=None, ID=None, mask=None):
+	def __init__(self, channels=4, root=None, train=True, transform=None, ID=None, mesh_size=64):
 		self.root = root
 		self.transform = transform
 		self.channels = channels
-		self.mask = mask
+		self.mesh_size = mesh_size
 		mode = "train" if train else "test"
 		
 		#全てのデータのパスを入れる
@@ -30,24 +30,11 @@ class MyDataSet(Dataset):
 		x, y, depth, mag = txt.split(",")
 		x, y, depth, mag = int(x), int(y), float(depth), float(mag)
 		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
-		img = torch.zeros(self.channels, len(lbl_data), len(lbl_data))
-		img[0][y][x] = depth
-		img[1][y][x] = mag 
-		"""
-		for X in range(len(img[0])):
-			for Y in range(len(img[0][X])):
-				if self.mask[X][Y] != 0:
-					img[0][X][Y] = depth
-					if X == x and Y == y:
-						img[1][X][Y] = mag
-						img[0][X][Y] = mag
-					else:
-						img[1][X][Y] = mag / (((x-X)**2) + ((y-Y)**2))
-						img[0][X][Y] = mag / (((x-X)**2) + ((y-Y)**2))
-				if self.channels == 3:
-					img[2][X][Y] = self.mask[X][Y]
-		"""
-
+		img = torch.zeros(self.channels)
+		img[0] = mag / 10 + 1
+		img[1] = x / self.mesh_size
+		img[2] = y / self.mesh_size
+		img[3] = depth / 1000 
 		return img, lbl_data
 
 class MyDataSet4gan(Dataset):
