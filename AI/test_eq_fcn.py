@@ -41,7 +41,7 @@ def main():
 		mask = [[int(row2) for row2 in row] for row in reader]
 
 	# Set up a neural network to test
-	data_channels = 4
+	data_channels = 3
 	net = MYFCN(in_channels=data_channels, mesh_size=64)
 	# Load designated network weight
 	net.load_state_dict(torch.load(args.model))
@@ -85,6 +85,8 @@ def main():
 							#predicted[Y][X] = outputs[B][Y][X].item()
 							if predicted[Y][X] > 9:
 								predicted[Y][X] = 9
+							if predicted[Y][X] < 0:
+								predicted[Y][X] = 0
 			
 			for B in range(len(labels)):
 				for Y in range(len(labels[B])):
