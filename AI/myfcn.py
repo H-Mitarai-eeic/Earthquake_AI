@@ -6,9 +6,9 @@ import torch.nn as nn
 class MYFCN(nn.Module):
     def __init__(self, in_channels=3, mesh_size=64):
         super(MYFCN, self).__init__()
-
+        
         self.fc0 = nn.Linear(in_channels, 64*64)
-
+        
         self.fc1 = nn.Linear(in_channels, 16)
         self.relu1 = nn.ReLU(inplace=True)
 
@@ -35,6 +35,7 @@ class MYFCN(nn.Module):
 
         self.fc9 = nn.Linear(2048, 4096)
         #self.relu9 = nn.ReLU(inplace=True)
+        
 
     def forward(self, x):
         #print("x:",x.size())
@@ -52,7 +53,7 @@ class MYFCN(nn.Module):
         h = self.fc9(h)
         """
         h = self.fc0(h)
-
+        
         h = h.view(len(x), 64, 64)
         return h
 

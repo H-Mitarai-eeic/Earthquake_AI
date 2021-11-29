@@ -44,8 +44,8 @@ def main():
 
 	# Set up a neural network to train
 	data_channels = 3
-	lr = 0.1
-	weight = (0.5, 0.5)
+	lr = 1
+	weight = (0.9, 0.1)
 	print("data_channels: ", data_channels)
 	print("learning rate: ", lr)
 	print("weight: ", weight)
@@ -117,6 +117,7 @@ def main():
 				for Y in range(len(labels[B])):
 					for X in range(len(labels[B][Y])):
 						if mask[Y][X] != 0:
+						#if labels[B][Y][X] > 0:
 							mask_tensor[B][Y][X] = 1 
 		
 			if args.gpu >= 0:
@@ -145,7 +146,7 @@ def main():
 			"""
 
 			# Backward + Optimize
-			loss = criterion(outputs=outputs, targets=targets, mask=mask_tensor, weight=(0.5, 0.5))
+			loss = criterion(outputs=outputs, targets=targets, mask=None, weight=weight)
 			#print(loss)
 			loss.backward()
 			optimizer.step()
@@ -159,7 +160,6 @@ def main():
 
 		# Report loss of the epoch
 		print('[epoch %d] loss: %.3f' % (ep + 1, running_loss))
-		print('')
 
 		# Save the model
 		if (ep + 1) % args.frequency == 0:
@@ -191,13 +191,14 @@ def main():
 					mask_tensor = mask_tensor.to(device)
 
 				outputs = net(images)
-				loss = criterion(outputs=outputs, targets=targets, mask=mask_tensor, weight=(0.5, 0.5))
-
+				loss = criterion(outputs=outputs, targets=targets, mask=mask_tensor, weight=weight)
+				print("validation loss: ", loss.item())
 				#record loss for drawing graph
 				loss_val += loss.item()
 				total_val += 1
 
 		# Record result
+			print('')
 			x.append(ep + 1)
 			ac_train.append(loss_train / total_train)
 			ac_val.append(loss_val / total_val)
@@ -215,7 +216,7 @@ def main():
 	ax.legend()
 	ax.set_xlabel("Epoch")
 	ax.set_ylabel("Accuracy [%]")
-	ax.set_ylim(0, 100)
+	ax.set_ylim(0, 2)
 
 	plt.savefig(args.out + '/accuracy_cifar.png')
 	#plt.show()

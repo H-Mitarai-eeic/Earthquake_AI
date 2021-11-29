@@ -23,7 +23,7 @@ class MyLoss(nn.Module):
         mask: 観測地点のあるところを 1 、ないところを 0 としたマスク。テンソル。サイズはoutputsやtargetsと同じにすること
         weight: maxpoolして誤差とるのと, avgpoolして誤差とるのの重みづけのタプル。weight[0] がmaxの重み, weight[1] がavgの重み
         """
-        if type(mask) != 'NoneType':
+        if type(mask) != type(None):
             outputs = outputs * mask
             targets = targets * mask
             N = mask.sum(dim=(0,1,2))
