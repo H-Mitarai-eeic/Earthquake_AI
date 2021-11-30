@@ -80,7 +80,7 @@ def main():
 			for B in range(len(outputs)):
 				for Y in range(len(outputs[B])):
 					for X in range(len(outputs[B][Y])):
-						if mask[Y][X] > 0 or True:
+						if mask[Y][X] > 0:
 							predicted[Y][X] = round(outputs[B][Y][X].item())
 							#predicted[Y][X] = outputs[B][Y][X].item()
 							if predicted[Y][X] > 9:
