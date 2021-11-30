@@ -41,7 +41,7 @@ class MYFCN(nn.Module):
         #print("x:",x.size())
         
         h = x
-        """
+        
         h = self.relu1(self.fc1(h))
         h = self.relu2(self.fc2(h))
         h = self.relu3(self.fc3(h))
@@ -53,7 +53,7 @@ class MYFCN(nn.Module):
         h = self.fc9(h)
         """
         h = self.fc0(h)
-        
+        """
         h = h.view(len(x), 64, 64)
         return h
 
