@@ -8,7 +8,8 @@ class MYFCN(nn.Module):
         super(MYFCN, self).__init__()
         
         self.fc0 = nn.Linear(in_channels, 64*64)
-        
+        self.relu0 = nn.ReLU6(inplace=True)
+        """
         self.fc1 = nn.Linear(in_channels, 16)
         self.relu1 = nn.ReLU(inplace=True)
 
@@ -35,13 +36,14 @@ class MYFCN(nn.Module):
 
         self.fc9 = nn.Linear(2048, 4096)
         #self.relu9 = nn.ReLU(inplace=True)
+        """
         
 
     def forward(self, x):
         #print("x:",x.size())
         
         h = x
-        
+        """
         h = self.relu1(self.fc1(h))
         h = self.relu2(self.fc2(h))
         h = self.relu3(self.fc3(h))
@@ -52,8 +54,8 @@ class MYFCN(nn.Module):
         h = self.relu8(self.fc8(h))
         h = self.fc9(h)
         """
-        h = self.fc0(h)
-        """
+        h = self.relu0(self.fc0(h)) * 9 / 6
+        
         h = h.view(len(x), 64, 64)
         return h
 
