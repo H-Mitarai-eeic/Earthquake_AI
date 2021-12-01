@@ -31,9 +31,9 @@ class MyDataSet(Dataset):
 		x, y, depth, mag = int(x), int(y), float(depth), float(mag)
 		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
 		img = torch.zeros(self.channels)
-		img[0] = (x / self.mesh_size) * (mag/10 + 1)
-		img[1] = (y / self.mesh_size) * (mag/10 + 1)
-		img[2] = (depth / 1000) * (mag/10 + 1)
+		img[0] = (x / self.mesh_size) * (mag/10)
+		img[1] = (y / self.mesh_size) * (mag/10)
+		img[2] = (depth / 1000) * (mag/10 )
 		return img, lbl_data
 
 class MyDataSet4gan(Dataset):
