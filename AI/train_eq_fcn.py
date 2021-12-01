@@ -46,7 +46,7 @@ def main():
 	data_channels = 3
 	lr = 1
 	weight = (0.2, 0.0, 0.8)
-	exponent = 8
+	exponent = 4
 	print("data_channels: ", data_channels)
 	print("learning rate: ", lr)
 	print("weight: ", weight)
