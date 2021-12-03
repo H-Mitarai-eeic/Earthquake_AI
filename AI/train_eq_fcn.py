@@ -45,8 +45,8 @@ def main():
 	# Set up a neural network to train
 	data_channels = 4
 	lr = 1
-	weight = (0.0, 0.0, 1.0, 0.0)
-	exponent = (4, 3)
+	weight = (0.1,) * 10
+	exponent = (2, 0)
 	print("data_channels: ", data_channels)
 	print("learning rate: ", lr)
 	print("weight: ", weight)
@@ -148,8 +148,8 @@ def main():
 			"""
 
 			# Backward + Optimize
-			loss = criterion(outputs=outputs, targets=targets, mask=mask_tensor, weight=weight, exponent=exponent)
-			#print(loss)
+			loss, _, _ = criterion(outputs=outputs, targets=targets, mask=mask_tensor, weight=weight, exponent=exponent)
+			print(loss)
 			loss.backward()
 			optimizer.step()
 
@@ -193,7 +193,7 @@ def main():
 					mask_tensor = mask_tensor.to(device)
 
 				outputs = net(images)
-				loss = criterion(outputs=outputs, targets=targets, mask=mask_tensor, weight=weight, exponent=exponent)
+				loss, _, _ = criterion(outputs=outputs, targets=targets, mask=mask_tensor, weight=weight, exponent=exponent)
 				print("validation loss: ", loss.item())
 				#record loss for drawing graph
 				loss_val += loss.item()
