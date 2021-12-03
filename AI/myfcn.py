@@ -7,7 +7,7 @@ class MYFCN(nn.Module):
     def __init__(self, in_channels=3, mesh_size=64):
         super(MYFCN, self).__init__()
         
-        self.fc0 = nn.Linear(in_channels, 64*64)
+        self.fc0 = nn.Linear(in_channels, 64*64, bias=False)
         #self.relu0 = nn.ReLU6(inplace=True)
         """
         self.fc1 = nn.Linear(in_channels, 16)
@@ -38,6 +38,7 @@ class MYFCN(nn.Module):
         #self.relu9 = nn.ReLU(inplace=True)
         """
         
+       
 
     def forward(self, x):
         #print("x:",x.size())

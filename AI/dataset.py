@@ -6,7 +6,7 @@ import glob
 import numpy as np
 
 class MyDataSet(Dataset):
-	def __init__(self, channels=3, root=None, train=True, transform=None, ID=None, mesh_size=64):
+	def __init__(self, channels=4, root=None, train=True, transform=None, ID=None, mesh_size=64):
 		self.root = root
 		self.transform = transform
 		self.channels = channels
@@ -31,9 +31,10 @@ class MyDataSet(Dataset):
 		x, y, depth, mag = int(x), int(y), float(depth), float(mag)
 		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
 		img = torch.zeros(self.channels)
-		img[0] = (x / self.mesh_size) * (mag/10)
-		img[1] = (y / self.mesh_size) * (mag/10)
-		img[2] = (depth / 1000) * (mag/10 )
+		img[0] = (x / self.mesh_size)
+		img[1] = (y / self.mesh_size)
+		img[2] = (depth / 1000)
+		img[3] = mag / 10
 		return img, lbl_data
 
 class MyDataSet4gan(Dataset):

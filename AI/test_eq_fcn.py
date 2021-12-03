@@ -41,7 +41,7 @@ def main():
 		mask = [[int(row2) for row2 in row] for row in reader]
 
 	# Set up a neural network to test
-	data_channels = 3
+	data_channels = 4
 	net = MYFCN(in_channels=data_channels, mesh_size=64)
 	# Load designated network weight
 	net.load_state_dict(torch.load(args.model))

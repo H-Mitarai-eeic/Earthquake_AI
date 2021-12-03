@@ -15,7 +15,7 @@ class MyLoss(nn.Module):
         self.avgpool = nn.AvgPool2d(kernel_size, stride=stride)
 
 
-    def forward(self, outputs, targets, mask=None, weight=(0.5, 0.0, 0.5, 0.0), exponent=2):
+    def forward(self, outputs, targets, mask=None, weight=(0.5, 0.0, 0.5, 0.0), exponent=(2, 1)):
         """
         =======引数=======
         outputs: 予測結果のテンソル
@@ -30,10 +30,10 @@ class MyLoss(nn.Module):
         else:
             N = 4096
 
-        loss_maxpool = ((self.maxpool(outputs) - self.maxpool(targets)).pow(exponent)).sum(dim=(0,1,2))
-        loss_avgpool = ((self.avgpool(outputs) - self.avgpool(targets)).pow(exponent)).sum(dim=(0,1,2))
-        loss_nonpool = ((outputs - targets).pow(exponent)).sum(dim=(0,1,2))
-        loss_nonpool_linear = ((targets - outputs).pow(1)).sum(dim=(0,1,2))
+        loss_maxpool = ((self.maxpool(outputs) - self.maxpool(targets)).pow(exponent[0])).sum(dim=(0,1,2))
+        loss_avgpool = ((self.avgpool(outputs) - self.avgpool(targets)).pow(exponent[0])).sum(dim=(0,1,2))
+        loss_nonpool = ((outputs - targets).pow(exponent[0])).sum(dim=(0,1,2))
+        loss_nonpool_linear = ((targets - outputs).pow(exponent[1])).sum(dim=(0,1,2))
         #loss = ((outputs - targets) * (outputs - targets)).mean(dim=(0,1,2,3))
         loss = weight[0] * loss_maxpool + weight[1] * loss_avgpool + weight[2] * loss_nonpool + weight[3] * loss_nonpool_linear
         return loss / N

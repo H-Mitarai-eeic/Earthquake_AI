@@ -43,10 +43,10 @@ def main():
 	print('')
 
 	# Set up a neural network to train
-	data_channels = 3
+	data_channels = 4
 	lr = 1
-	weight = (0.2, 0.0, 0.8)
-	exponent = 4
+	weight = (0.0, 0.0, 1.0, 0.0)
+	exponent = (4, 3)
 	print("data_channels: ", data_channels)
 	print("learning rate: ", lr)
 	print("weight: ", weight)
