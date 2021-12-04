@@ -46,7 +46,7 @@ def main():
 	data_channels = 4
 	lr = 1
 	weight = (0.1,) * 10
-	exponent = (2, 0)
+	exponent = (4, 0)
 	print("data_channels: ", data_channels)
 	print("learning rate: ", lr)
 	print("weight: ", weight)
@@ -68,7 +68,7 @@ def main():
 		mask = [[int(row2) for row2 in row] for row in reader]
 
 	# Setup a loss and an optimizer
-	criterion = MyLoss()
+	criterion = MyLoss(gpu=args.gpu)
 	optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9)
 
 	# Load the CIFAR-10

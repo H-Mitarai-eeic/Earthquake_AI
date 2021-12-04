@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 
 class MyLoss(nn.Module):
-    def __init__(self, kernel_size=2, stride=None):
+    def __init__(self, kernel_size=2, stride=None, gpu=-1):
         super().__init__()
         """
         pooling層のkernel_sizeとstrideは、最初に指定してください。
@@ -14,6 +14,8 @@ class MyLoss(nn.Module):
 
         self.maxpool = nn.MaxPool2d(kernel_size, stride=stride)
         self.avgpool = nn.AvgPool2d(kernel_size, stride=stride)
+
+        self.gpu = gpu
 
 
     def forward(self, outputs, targets, mask=None, weight=(0.1,)*10, exponent=(2, 0)):
@@ -38,6 +40,11 @@ class MyLoss(nn.Module):
         Class_N = [0 for i in range(10)]    #震度 i が観測された地点数
         loss = torch.tensor(0.)     #返り値の誤差
 
+        if self.gpu >= 0:
+            device = 'cuda:' + str(self.gpu)
+            IntensityMask = IntensityMask.to(device)
+            Loss4eachIintensity = Loss4eachIintensity.to(device)
+            loss = loss.to(device)
 
         for i in range(10):
             for B in range(len(targets)):
