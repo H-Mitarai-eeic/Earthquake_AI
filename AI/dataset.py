@@ -6,11 +6,12 @@ import glob
 import numpy as np
 
 class MyDataSet(Dataset):
-	def __init__(self, channels=4, root=None, train=True, transform=None, ID=None, mesh_size=64):
+	def __init__(self, channels=1, root=None, train=True, transform=None, ID=None, mesh_size=(64, 64, 64), depth_max=1000):
 		self.root = root
 		self.transform = transform
 		self.channels = channels
-		self.mesh_size = mesh_size
+		self.mesh_size = mesh_size	#tuple x, y, z
+		self.depth_max = depth_max	#in km
 		mode = "train" if train else "test"
 		
 		#全てのデータのパスを入れる
@@ -30,12 +31,20 @@ class MyDataSet(Dataset):
 		x, y, depth, mag = txt.split(",")
 		x, y, depth, mag = int(x), int(y), float(depth), float(mag)
 		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
-		img = torch.zeros(self.channels)
-		img[0] = (x / self.mesh_size)
-		img[1] = (y / self.mesh_size)
-		img[2] = (depth / 1000)
-		img[3] = mag / 10
+
+		img = torch.zeros(self.channels, self.mesh_size[2], self.mesh_size[1], self.mesh_size[0])
+		z = self.depth2Z(depth)
+
+		img[0][z][y][x] = mag
+
 		return img, lbl_data
+
+	def depth2Z(self, depth):
+		Z = int( self.mesh_size[2] * depth / self.depth_max)
+		if Z >= self.mesh_size[2]:
+			return self.mesh_size[2] - 1
+		else:
+			return Z
 
 class MyDataSet4gan(Dataset):
 	def __init__(self, channels=2, root=None, train=True, transform=None, ID=None):

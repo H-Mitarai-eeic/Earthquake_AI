@@ -43,16 +43,20 @@ def main():
 	print('')
 
 	# Set up a neural network to train
-	data_channels = 4
+	mesh_size = (64, 64, 64)
+	data_channels = 1
+	depth_max = 1000
 	lr = 1
 	weight = (0.1,) * 10
-	exponent = (4, 0)
-	print("data_channels: ", data_channels)
+	exponent = (2, 0)
+	print("mesh_size: ", mesh_size)
+	print("data_channels", data_channels)
+	print("depth_max", depth_max)
 	print("learning rate: ", lr)
 	print("weight: ", weight)
 	print("exponent: ", exponent)
 	print('')
-	net = MYFCN(in_channels=data_channels, mesh_size=64)
+	net = MYFCN(mesh_size=mesh_size, in_channels=data_channels)
 	# Load designated network weight
 	if args.resume:
 		net.load_state_dict(torch.load(args.resume))
@@ -74,7 +78,7 @@ def main():
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor()])
 
-	trainvalset = MyDataSet(channels=data_channels, root=args.dataset, train=True, transform=transform, mesh_size=64)
+	trainvalset = MyDataSet(channels=data_channels, root=args.dataset, train=True, transform=transform, mesh_size=mesh_size, depth_max=depth_max)
 	# Split train/val
 	n_samples = len(trainvalset)
 	print("n_samples:", n_samples)
@@ -135,12 +139,12 @@ def main():
 			outputs = net(inputs)
 
 			# Predict the label
-			#print("")
-			#print("outputs:", outputs.size())
-			#print("outputs:", outputs.size())
-			#print("targets:", targets.size())
-			#print("labels:", labels.size())
-			#print("mask_tensor:", mask_tensor.size())
+				#print("")
+				#print("outputs:", outputs.size())
+				#print("outputs:", outputs.size())
+				#print("targets:", targets.size())
+				#print("labels:", labels.size())
+				#print("mask_tensor:", mask_tensor.size())
 
 			"""
 				print("labels:",labels.size())
@@ -218,7 +222,7 @@ def main():
 	ax.legend()
 	ax.set_xlabel("Epoch")
 	ax.set_ylabel("Accuracy [%]")
-	ax.set_ylim(0, 2)
+	ax.set_ylim(0, max(ac_val))
 
 	plt.savefig(args.out + '/accuracy_cifar.png')
 	#plt.show()
