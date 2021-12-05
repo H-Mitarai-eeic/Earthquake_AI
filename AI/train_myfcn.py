@@ -10,7 +10,6 @@ from torchvision import datasets, transforms
 import sys
 
 # from network import CifarCNN
-from fcn8s import FCN8s
 from fcn32s import FCN32s
 from myfcn import MYFCN
 from dataset import MyDataSet
