@@ -28,7 +28,7 @@ class MyLoss(nn.Module):
             targets = targets * mask
             N = mask.sum(dim=(0,1,2))
         else:
-            N = 4096
+            N = 64*64
 
         loss_maxpool = ((self.maxpool(outputs) - self.maxpool(targets)).pow(exponent)).sum(dim=(0,1,2))
         loss_avgpool = ((self.avgpool(outputs) - self.avgpool(targets)).pow(exponent)).sum(dim=(0,1,2))

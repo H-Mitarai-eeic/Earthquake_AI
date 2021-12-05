@@ -6,6 +6,7 @@ import torch.nn as nn
 class MYFCN(nn.Module):
     def __init__(self, in_channels=1, mesh_size=(64, 64, 64)):
         super(MYFCN, self).__init__()
+        self.mesh_size = mesh_size
         
         self.conv1 = nn.Conv3d(in_channels, 1, 5, stride=1,padding=2,bias=False)
         self.relu1 = nn.ReLU(inplace=True)
@@ -22,7 +23,7 @@ class MYFCN(nn.Module):
         self.conv5 = nn.Conv3d(1, 1, 5, stride=1,padding=2,bias=False)
         self.relu5 = nn.ReLU(inplace=True)
         
-        self.fc0 = nn.Linear(64**3, 64**2, bias=False)
+        self.fc0 = nn.Linear(mesh_size[0] * mesh_size[1] * mesh_size[2], 64**2, bias=False)
         #self.relu0 = nn.ReLU6(inplace=True)
 
 
@@ -37,9 +38,9 @@ class MYFCN(nn.Module):
         h = self.relu4(self.conv4(h))
         h = self.relu5(self.conv5(h))
 
-        h = h.view(-1, 64**3)
+        h = h.view(-1, self.mesh_size[0] * self.mesh_size[1] * self.mesh_size[2])
         h = self.fc0(h)
-        h = h.view(len(x), 64, 64)
+        h = h.view(len(x), self.mesh_size[0], self.mesh_size[1])
 
         return h
 

@@ -43,20 +43,33 @@ def main():
 	print('')
 
 	# Set up a neural network to train
-	mesh_size = (64, 64, 64)
+	mesh_size = (64, 64, 10)
 	data_channels = 1
 	depth_max = 1000
 	lr = 1
-	weight = (0.1,) * 10
-	exponent = (2, 0)
+	weight = (0.5, 0.0, 0.5)
+	exponent = 4
+	kernel_size = 2
+	stride = None
 	print("mesh_size: ", mesh_size)
 	print("data_channels", data_channels)
 	print("depth_max", depth_max)
 	print("learning rate: ", lr)
 	print("weight: ", weight)
 	print("exponent: ", exponent)
+	print("kernel_size: ", kernel_size)
+	print("stride: ", stride)
 	print('')
 	net = MYFCN(mesh_size=mesh_size, in_channels=data_channels)
+
+	# Setup a loss and an optimizer
+	criterion = MyLoss(kernel_size=kernel_size, stride=stride)
+	optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9)
+
+	# Load the CIFAR-10
+	transform = transforms.Compose([transforms.ToTensor()])
+	trainvalset = MyDataSet(channels=data_channels, root=args.dataset, train=True, transform=transform, mesh_size=mesh_size, depth_max=depth_max)
+
 	# Load designated network weight
 	if args.resume:
 		net.load_state_dict(torch.load(args.resume))
@@ -71,14 +84,6 @@ def main():
 		reader = csv.reader(f_mask)
 		mask = [[int(row2) for row2 in row] for row in reader]
 
-	# Setup a loss and an optimizer
-	criterion = MyLoss(gpu=args.gpu)
-	optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9)
-
-	# Load the CIFAR-10
-	transform = transforms.Compose([transforms.ToTensor()])
-
-	trainvalset = MyDataSet(channels=data_channels, root=args.dataset, train=True, transform=transform, mesh_size=mesh_size, depth_max=depth_max)
 	# Split train/val
 	n_samples = len(trainvalset)
 	print("n_samples:", n_samples)
@@ -152,8 +157,8 @@ def main():
 			"""
 
 			# Backward + Optimize
-			loss, _, _ = criterion(outputs=outputs, targets=targets, mask=mask_tensor, weight=weight, exponent=exponent)
-			print(loss)
+			loss = criterion(outputs=outputs, targets=targets, mask=mask_tensor, weight=weight, exponent=exponent)
+			#print(loss)
 			loss.backward()
 			optimizer.step()
 
@@ -197,7 +202,7 @@ def main():
 					mask_tensor = mask_tensor.to(device)
 
 				outputs = net(images)
-				loss, _, _ = criterion(outputs=outputs, targets=targets, mask=mask_tensor, weight=weight, exponent=exponent)
+				loss = criterion(outputs=outputs, targets=targets, mask=mask_tensor, weight=weight, exponent=exponent)
 				print("validation loss: ", loss.item())
 				#record loss for drawing graph
 				loss_val += loss.item()

@@ -41,8 +41,10 @@ def main():
 		mask = [[int(row2) for row2 in row] for row in reader]
 
 	# Set up a neural network to test
-	data_channels = 4
-	net = MYFCN(in_channels=data_channels, mesh_size=64)
+	mesh_size = (64, 64, 10)
+	data_channels = 1
+	depth_max = 1000
+	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size)
 	# Load designated network weight
 	net.load_state_dict(torch.load(args.model))
 	# Set model to GPU
@@ -53,7 +55,7 @@ def main():
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor()])
-	testset = MyDataSet(channels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID, mesh_size=64)
+	testset = MyDataSet(channels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID, mesh_size=mesh_size, depth_max=depth_max)
 	testloader = torch.utils.data.DataLoader(testset, batch_size=args.batchsize,
 											 shuffle=False, num_workers=2)
 
