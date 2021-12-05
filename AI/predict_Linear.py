@@ -11,7 +11,7 @@ def main():
     parser = argparse.ArgumentParser(description='Earthquaker')
     parser.add_argument('--gpu', '-g', type=int, default=-1,
                         help='GPU ID (negative value indicates CPU)')
-    parser.add_argument('--model', '-m', default='../result/model_final',
+    parser.add_argument('--model', '-m', default='./result/model_final',
                         help='Path to the model for test')
 
     parser.add_argument('--x', '-x', default='0',

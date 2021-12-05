@@ -10,7 +10,7 @@ from torchvision import datasets, transforms
 import sys
 
 # from network import CifarCNN
-from Linear import Linear
+from DNN import DNN
 from dataset import MyDataSet
 
 
@@ -38,7 +38,7 @@ def main():
 	print('')
 
 	# Set up a neural network to train
-	net = Linear(10)
+	net = DNN(10)
 	# Load designated network weight
 	if args.resume:
 		net.load_state_dict(torch.load(args.resume))
@@ -52,8 +52,8 @@ def main():
 	# Setup a loss and an optimizer
 	criterion = nn.CrossEntropyLoss()
 	# optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9) #lr 0.001
-	lr = 1
-	optimizer = optim.Adam(net.parameters(), lr)
+	lr = 0.01
+	optimizer = optim.SGD(net.parameters(), lr)
 
 	# Load the data
 
