@@ -4,38 +4,40 @@ import numpy as np
 from Linear import Linear
 import csv
 len_data = 64
-#予測プログラム
+# 予測プログラム
+
 
 def main():
     parser = argparse.ArgumentParser(description='Earthquaker')
     parser.add_argument('--gpu', '-g', type=int, default=-1,
                         help='GPU ID (negative value indicates CPU)')
     parser.add_argument('--model', '-m', default='../result/model_final',
-						help='Path to the model for test')
-    
+                        help='Path to the model for test')
+
     parser.add_argument('--x', '-x', default='0',
-						help='x zahyou')
+                        help='x zahyou')
     parser.add_argument('--y', '-y', default='0',
-						help='y zahyou')
+                        help='y zahyou')
     parser.add_argument('--depth', '-depth', default='10',
-						help='depth of shingen')
+                        help='depth of shingen')
     parser.add_argument('--magnitude', '-mag', default='7',
-						help='magnitude of earthquake')
+                        help='magnitude of earthquake')
     args = parser.parse_args()
 
     print('GPU: {}'.format(args.gpu))
-    
-    print('')   
+
+    print('')
     # Set up a neural network to test
     net = Linear(10)
     # Load designated network weight
-    net.load_state_dict(torch.load(args.model, map_location=torch.device('cpu')))
+    net.load_state_dict(torch.load(
+        args.model, map_location=torch.device('cpu')))
     # Set model to GPU
     if args.gpu >= 0:
-    	# Make a specified GPU current
-    	print("GPU using")
-    	device = 'cuda:' + str(args.gpu)
-    	net = net.to(device)    
+        # Make a specified GPU current
+        print("GPU using")
+        device = 'cuda:' + str(args.gpu)
+        net = net.to(device)
     # Load the input
     inputs = torch.zeros(1, 2, len_data, len_data)
     for i in range(int(args.x)-10, int(args.x)+11):
@@ -57,4 +59,4 @@ def main():
 
 
 if __name__ == '__main__':
-	main()
+    main()
