@@ -39,6 +39,7 @@ class MYFCN(nn.Module):
         h = self.relu5(self.conv5(h))
 
         h = h.view(-1, self.mesh_size[0] * self.mesh_size[1] * self.mesh_size[2])
+        
         h = self.fc0(h)
         h = h.view(len(x), self.mesh_size[0], self.mesh_size[1])
 

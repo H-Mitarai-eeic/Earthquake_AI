@@ -46,7 +46,7 @@ def main():
 	mesh_size = (64, 64, 10)
 	data_channels = 1
 	depth_max = 1000
-	lr = 1
+	lr = 0.01
 	weight = (0.5, 0.0, 0.5)
 	exponent = 4
 	kernel_size = 2

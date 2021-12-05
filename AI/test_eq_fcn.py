@@ -46,6 +46,7 @@ def main():
 	depth_max = 1000
 	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size)
 	# Load designated network weight
+	print("loading Model...")
 	net.load_state_dict(torch.load(args.model))
 	# Set model to GPU
 	if args.gpu >= 0:
@@ -60,6 +61,7 @@ def main():
 											 shuffle=False, num_workers=2)
 
 	# Test
+	print("Test")
 	correct = 0
 	total = 0
 	class_correct = list(0. for i in range(10))

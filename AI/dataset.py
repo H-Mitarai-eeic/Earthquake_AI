@@ -36,6 +36,15 @@ class MyDataSet(Dataset):
 		z = self.depth2Z(depth)
 
 		img[0][z][y][x] = mag
+		for C in range(self.channels):
+			for Z in range(mesh_size[2]):
+				for Y in range(mesh_size[1]):
+					for X in range(mesh_size[0]):
+						r2 = (x-X)**2 + (y-Y)**2 + (z-Z)**2
+						if r2 == 0:
+							img[C][Z][Y][X] = mag
+						else:
+							img[C][Z][Y][X] = mag / r2
 
 		return img, lbl_data
 
