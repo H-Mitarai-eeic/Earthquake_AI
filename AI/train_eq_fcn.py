@@ -10,7 +10,9 @@ from torchvision import datasets, transforms
 
 from dataset import MyDataSet
 from myloss import MyLoss
+from myloss import MyLoss2
 from myfcn import MYFCN
+
 
 import csv
 
@@ -46,9 +48,10 @@ def main():
 	mesh_size = (64, 64, 10)
 	data_channels = 1
 	depth_max = 1000
-	lr = 0.01
-	weight = (0.5, 0.0, 0.5)
-	exponent = 4
+	lr = 0.1
+	weight = (0.2, 0.0, 0.8)
+	weight = (0.1,)*10
+	exponent = 2
 	kernel_size = 2
 	stride = None
 	print("mesh_size: ", mesh_size)
@@ -63,7 +66,8 @@ def main():
 	net = MYFCN(mesh_size=mesh_size, in_channels=data_channels)
 
 	# Setup a loss and an optimizer
-	criterion = MyLoss(kernel_size=kernel_size, stride=stride)
+	#criterion = MyLoss(kernel_size=kernel_size, stride=stride)
+	criterion = MyLoss2(kernel_size=kernel_size, stride=stride, gpu=args.gpu)
 	optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9)
 
 	# Load the CIFAR-10

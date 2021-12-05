@@ -37,9 +37,9 @@ class MyDataSet(Dataset):
 
 		img[0][z][y][x] = mag
 		for C in range(self.channels):
-			for Z in range(mesh_size[2]):
-				for Y in range(mesh_size[1]):
-					for X in range(mesh_size[0]):
+			for Z in range(self.mesh_size[2]):
+				for Y in range(self.mesh_size[1]):
+					for X in range(self.mesh_size[0]):
 						r2 = (x-X)**2 + (y-Y)**2 + (z-Z)**2
 						if r2 == 0:
 							img[C][Z][Y][X] = mag
