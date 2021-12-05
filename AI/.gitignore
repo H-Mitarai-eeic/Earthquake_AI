@@ -1,7 +1,3 @@
 data/
-*.sh
 result/
 *.out
-result_myfcn/
-result_myfcn2/
-result_myfcn3/
