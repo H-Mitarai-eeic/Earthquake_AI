@@ -52,8 +52,8 @@ def main():
 	# Setup a loss and an optimizer
 	criterion = nn.CrossEntropyLoss()
 	# optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9) #lr 0.001
-	lr = 0.01
-	optimizer = optim.SGD(net.parameters(), lr)
+	lr = 1
+	optimizer = optim.Adam(net.parameters(), lr)
 
 	# Load the data
 
