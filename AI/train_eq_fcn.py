@@ -50,8 +50,8 @@ def main():
 	depth_max = 1000
 	lr = 0.1
 	weight = (0.2, 0.0, 0.8)
-	weight = (0.1,)*10
-	exponent = 2
+	#weight = (0.1,)*10
+	exponent = 4
 	kernel_size = 2
 	stride = None
 	print("mesh_size: ", mesh_size)
@@ -66,8 +66,8 @@ def main():
 	net = MYFCN(mesh_size=mesh_size, in_channels=data_channels)
 
 	# Setup a loss and an optimizer
-	#criterion = MyLoss(kernel_size=kernel_size, stride=stride)
-	criterion = MyLoss2(kernel_size=kernel_size, stride=stride, gpu=args.gpu)
+	criterion = MyLoss(kernel_size=kernel_size, stride=stride)
+	#criterion = MyLoss2(kernel_size=kernel_size, stride=stride, gpu=args.gpu)
 	optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9)
 
 	# Load the CIFAR-10
@@ -217,7 +217,7 @@ def main():
 			x.append(ep + 1)
 			ac_train.append(loss_train / total_train)
 			ac_val.append(loss_val / total_val)
-		
+
 
 	print('Finished Training')
 	path = args.out + "/model_final"

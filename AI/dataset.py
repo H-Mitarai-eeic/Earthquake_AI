@@ -30,7 +30,7 @@ class MyDataSet(Dataset):
 			txt = f.readlines()[0]
 		x, y, depth, mag = txt.split(",")
 		x, y, depth, mag = int(x), int(y), float(depth), float(mag)
-		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
+		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=float, skiprows=1)
 
 		img = torch.zeros(self.channels, self.mesh_size[2], self.mesh_size[1], self.mesh_size[0])
 		z = self.depth2Z(depth)
