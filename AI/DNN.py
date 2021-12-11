@@ -8,6 +8,8 @@ import torch.nn.functional as F
 len_data = 64
 
 # https://github.com/shelhamer/fcn.berkeleyvision.org/blob/master/surgery.py
+
+
 def get_upsampling_weight(in_channels, out_channels, kernel_size):
     """Make a 2D bilinear kernel suitable for upsampling"""
     factor = (kernel_size + 1) // 2
@@ -40,10 +42,9 @@ class DNN(nn.Module):
     def __init__(self, n_class=21):
         super(DNN, self).__init__()
         # self.pool1 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
-        self.layer1 = nn.Linear(2*len_data*len_data, 10 
-        *n_class*len_data*len_data)
-        self.layer2 = nn.Linear(10 
-        *n_class*len_data*len_data, n_class*len_data*len_data)
+        self.layer1 = nn.Linear(2*len_data*len_data, n_class*len_data*len_data)
+        self.layer2 = nn.Linear(n_class*len_data*len_data,
+                                n_class*len_data*len_data)
         self._initialize_weights()
 
     def _initialize_weights(self):
@@ -65,5 +66,4 @@ class DNN(nn.Module):
         h = F.relu(self.layer1(h))
         h = self.layer2(h)
         h = h.view(batch_size, 10, len_data, len_data)
-        h = F.softmax(h, dim=1)
         return h
