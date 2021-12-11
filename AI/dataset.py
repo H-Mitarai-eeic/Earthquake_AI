@@ -51,7 +51,7 @@ class MyDataSet(Dataset):
 
 	def depth2Z(self, depth):
 		Z = int(self.mesh_size[2] * math.log(1 + depth, self.depth_max))
-		if Z >= mesh_size:
+		if Z >= self.mesh_size[2]:
 			return self.mesh_size[2] - 1
 		else:
 			return  Z

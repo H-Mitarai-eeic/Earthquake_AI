@@ -47,11 +47,11 @@ def main():
 	# Set up a neural network to train
 	mesh_size = (64, 64, 10)
 	data_channels = 1
-	depth_max = 1000
+	depth_max = 800
 	lr = 0.1
 	weight = (0.2, 0.0, 0.8)
 	#weight = (0.1,)*10
-	exponent = 8
+	exponent = 2
 	kernel_size = 2
 	stride = None
 	print("mesh_size: ", mesh_size)
