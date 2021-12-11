@@ -4,6 +4,7 @@ import torch
 from torch.utils.data import Dataset
 import glob
 import numpy as np
+import math 
 
 class MyDataSet(Dataset):
 	def __init__(self, channels=1, root=None, train=True, transform=None, ID=None, mesh_size=(64, 64, 64), depth_max=1000):
@@ -49,11 +50,11 @@ class MyDataSet(Dataset):
 		return img, lbl_data
 
 	def depth2Z(self, depth):
-		Z = int( self.mesh_size[2] * depth / self.depth_max)
-		if Z >= self.mesh_size[2]:
+		Z = int(self.mesh_size[2] * math.log(1 + depth, self.depth_max))
+		if Z >= mesh_size:
 			return self.mesh_size[2] - 1
 		else:
-			return Z
+			return  Z
 
 class MyDataSet4gan(Dataset):
 	def __init__(self, channels=2, root=None, train=True, transform=None, ID=None):
