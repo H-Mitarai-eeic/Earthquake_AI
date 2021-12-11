@@ -8,15 +8,15 @@ class MYFCN(nn.Module):
         super(MYFCN, self).__init__()
         self.mesh_size = mesh_size
 
-        self.fc0 = nn.Linear(mesh_size[0] * mesh_size[1] * mesh_size[2], mesh_size[0]/2 * mesh_size[1]/2 * mesh_size[2]/2, bias=False)
+        self.fc0 = nn.Linear(mesh_size[0] * mesh_size[1] * mesh_size[2], 32 * 32 * 5, bias=False)
 
-        self.fc1 = nn.Linear(mesh_size[0]/2 * mesh_size[1]/2 * mesh_size[2]/2, mesh_size[0]/4 * mesh_size[1]/4 * mesh_size[2]/4, bias=False)
+        self.fc1 = nn.Linear(32 * 32 * 5, 16 * 16 * 4, bias=False)
 
-        self.fc2 = nn.Linear(mesh_size[0]/4 * mesh_size[1]/4 * mesh_size[2]/4, mesh_size[0]/4 * mesh_size[1]/4 * 3, bias=False)
+        self.fc2 = nn.Linear(16 * 16 * 4, 8 * 8 * 3, bias=False)
 
-        self.fc3 = nn.Linear(mesh_size[0]/4 * mesh_size[1]/4 * 3, mesh_size[0]/2 * mesh_size[1]/2 * 2, bias=False)
+        self.fc3 = nn.Linear(8 * 8 * 3, 32 * 32 * 2, bias=False)
 
-        self.fc4 = nn.Linear(mesh_size[0]/2 * mesh_size[1]/2 * 2, 64**2, bias=False)
+        self.fc4 = nn.Linear(32 * 32 * 2, 64**2, bias=False)
         #self.relu0 = nn.ReLU6(inplace=True)
 
 
