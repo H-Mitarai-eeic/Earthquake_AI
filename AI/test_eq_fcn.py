@@ -85,7 +85,8 @@ def main():
 				for Y in range(len(outputs[B])):
 					for X in range(len(outputs[B][Y])):
 						if mask[Y][X] > 0:
-							predicted[Y][X] = round(outputs[B][Y][X].item())
+							#predicted[Y][X] = round(outputs[B][Y][X].item())
+							predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[B][Y][X].item())
 							#predicted[Y][X] = outputs[B][Y][X].item()
 							if predicted[Y][X] > 9:
 								predicted[Y][X] = 9

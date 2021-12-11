@@ -35,7 +35,7 @@ class MyLoss(nn.Module):
         loss_nonpool = ((outputs - targets).pow(exponent)).sum(dim=(0,1,2))
         #loss = ((outputs - targets) * (outputs - targets)).mean(dim=(0,1,2,3))
         loss = weight[0] * loss_maxpool + weight[1] * loss_avgpool + weight[2] * loss_nonpool
-        return loss / N
+        return loss / N / 7
     
 
 
