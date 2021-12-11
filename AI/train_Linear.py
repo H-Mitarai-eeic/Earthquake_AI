@@ -50,11 +50,13 @@ def main():
         net = net.to(device)
 
     weights = torch.tensor(
-        [100.0, 10.0, 10.0, 10.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
+        [1.0, 133.0, 180.0, 416.0, 1250.0, 8600.0, 18758.0, 42000.0, 167380.0, 2175936.0])
+    if args.gpu >= 0:
+        weights = weights.to(device)
     # Setup a loss and an optimizer
     criterion = nn.CrossEntropyLoss(weight=weights)
     # optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9) #lr 0.001
-    lr = 1
+    lr = 0.1
     optimizer = optim.Adam(net.parameters(), lr)
 
     # Load the data
