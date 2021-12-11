@@ -42,9 +42,10 @@ class DNN(nn.Module):
     def __init__(self, n_class=21):
         super(DNN, self).__init__()
         # self.pool1 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
-        self.layer1 = nn.Linear(2*len_data*len_data, n_class*len_data*len_data)
-        self.layer2 = nn.Linear(n_class*len_data*len_data,
+        self.layer1 = nn.Linear(2*len_data*len_data, 8*len_data*len_data)
+        self.layer2 = nn.Linear(8*len_data*len_data,
                                 n_class*len_data*len_data)
+        self.relu = nn.ReLU(inplace=True)
         self._initialize_weights()
 
     def _initialize_weights(self):
@@ -63,7 +64,7 @@ class DNN(nn.Module):
         h = x
         batch_size = len(x)
         h = h.view(-1, 2*len_data*len_data)
-        h = F.relu(self.layer1(h))
+        h = self.relu(self.layer1(h))
         h = self.layer2(h)
         h = h.view(batch_size, 10, len_data, len_data)
         return h
