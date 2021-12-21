@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
 from dataset import MyDataSet
-from myfcdnn import MYFCN
+from mycfc import MYFCN
 
 import csv
 import copy
