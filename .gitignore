@@ -1,5 +1,5 @@
 #
-*.sh
+#*.sh
 *.o
 *.out
 /AI/BIN
