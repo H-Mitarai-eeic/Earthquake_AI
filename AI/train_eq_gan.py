@@ -43,12 +43,14 @@ def main():
 	print('# epoch: {}'.format(args.epoch))
 	print('')
 
-	data_channels = 2
+	data_channels = 1
 	lr = 0.001
 	noise_div = 10
+	mesh_size = (64, 64, 10)
+	depth_max = 800
 	# Set up a neural network to train
-	net = MYFCN4gan(in_channels=data_channels + 1, n_class=1)
-	D = MyDiscriminator(in_channels = 1 + data_channels)
+	net = MYFCN4gan(in_channels=data_channels + 0, out_channels=1, mesh_size=mesh_size)
+	D = MyDiscriminator(in_channels = 0 + data_channels, mesh_size=mesh_size)
 
 	# Load designated network weight
 	if args.resume:
@@ -66,7 +68,7 @@ def main():
 	D_optimizer = optim.Adam(D.parameters(), lr=lr, betas=(0.5, 0.999))
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5,), (0.5,))])
-	trainvalset = MyDataSet4gan(channels=data_channels, root=args.dataset, train=True, transform=transform)
+	trainvalset = MyDataSet(channels=data_channels, root=args.dataset, train=True, transform=transform, mesh_size=mesh_size)
 	
 	# Split train/val
 	n_samples = len(trainvalset)
@@ -114,8 +116,8 @@ def main():
 			if args.gpu >= 0:
 				epic_data_noise = epic_data_noise.to(device)
 
-			predicted_data = net(epic_data_noise)	#偽物生成　ノイズ追加
-			#predicted_data = net(epic_data)
+			#predicted_data = net(epic_data_noise)	#偽物生成　ノイズ追加
+			predicted_data = net(epic_data)
 
 			predicted_data_epic_data = torch.cat((predicted_data, epic_data), dim = 1)
 			if args.gpu >= 0:
@@ -146,8 +148,8 @@ def main():
 			if args.gpu >= 0:
 				epic_data_noise = epic_data_noise.to(device)
 
-			predicted_data = net(epic_data_noise)	#偽物生成　ノイズ追加
-			#predicted_data = net(epic_data)
+			#predicted_data = net(epic_data_noise)	#偽物生成　ノイズ追加
+			predicted_data = net(epic_data)
 			
 			predicted_data_epic_data = torch.cat((predicted_data, epic_data), dim = 1)
 			if args.gpu >= 0:

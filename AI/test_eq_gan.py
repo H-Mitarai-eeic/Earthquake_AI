@@ -40,9 +40,10 @@ def main():
 	data_channels = 2
 	lr = 0.001
 	noise_div = 100
-	with_noise = 1
+	with_noise = 0
+	mesh_size=(64, 64, 10)
 	# Set up a neural network to train
-	net = MYFCN4gan(in_channels=data_channels + with_noise, n_class=1)
+	net = MYFCN4gan(in_channels=data_channels + with_noise, mesh_size=mesh_size)
 	# Load designated network weight
 	net.load_state_dict(torch.load(args.model))
 	# Set model to GPU
@@ -53,7 +54,7 @@ def main():
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5,), (0.5,))])
-	testset = MyDataSet4gan(channels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID)
+	testset = MyDataSet4gan(channels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID, mesh_size=mesh_size)
 	testloader = torch.utils.data.DataLoader(testset, batch_size=args.batchsize,
 											 shuffle=False, num_workers=2)
 
