@@ -131,5 +131,27 @@ def main():
 		print("class", i ,"at 10 10:", outputs[0][i][10][10])
 		print("class", i, "at 20 20:", outputs[0][i][20][20])
 	"""
+def InstrumentalIntensity2SesimicIntensity(II):
+	if II < 0.5:
+		return 0
+	elif II < 1.5:
+		return 1
+	elif II < 2.5:
+		return 2
+	elif II < 3.5:
+		return 3
+	elif II < 4.5:
+		return 4
+	elif II < 5.0:
+		return 5	#5-
+	elif II < 5.5:
+		return 6	#5+
+	elif II < 6.0:
+		return 7	#6-
+	elif II < 6.5:
+		return 8	#6+
+	else:
+		return 9
+		
 if __name__ == '__main__':
 	main()
