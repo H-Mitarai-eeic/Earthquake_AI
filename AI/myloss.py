@@ -90,6 +90,7 @@ class MyLoss2(nn.Module):
                             Class_N[i] += 1
                         else:
                             IntensityMask[i][B][Y][X] = 0
+
         for i in range(10):
             if Class_N[i] > 0:
                 #lossに加算する
@@ -102,5 +103,5 @@ class MyLoss2(nn.Module):
                 loss += weight[i] * Loss4eachIintensity[i]
 
         #返り値　学習に使うのはlossだけ。他はtestとかに使う用
-        #return loss, Loss4eachIintensity, Class_N
-        return loss
+        return loss, Loss4eachIintensity, Class_N
+        #return loss

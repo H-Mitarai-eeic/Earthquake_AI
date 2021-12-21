@@ -35,4 +35,3 @@ class MYFCN(nn.Module):
         h = h.view(len(x), self.mesh_size[0], self.mesh_size[1])
 
         return h
-
