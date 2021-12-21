@@ -82,20 +82,30 @@ def main():
 				predicted_data = net(epic_data)
 			predicted_data = predicted_data.squeeze()
 			real_data = real_data.squeeze()
-			print("realdata: ", real_data.size())
-			print("predicted_data: ", predicted_data.size())
-			for Y in range(len(real_data)):
-				for X in range(len(real_data[Y])):
-					real_data_tmp = real_data[Y][X].item()
-					predic = round(predicted_data[Y][X].item())
-					#print("predic: ", predic, "real: ", real_data_tmp)
-					class_diff_index = int(abs(real_data_tmp - predic))
-					if class_diff_index > 9:
-						class_diff_index = 9
-					elif class_diff_index < 0:
-						class_diff_index = 0
-					class_diff[class_diff_index] += 1
-					#total += 1 
+
+			predicted = [[0 for i in range(len(labels[0][0]))] for j in range(len(labels[0]))]
+			
+			for B in range(len(predicted_data)):
+				for Y in range(len(predicted_data[B])):
+					for X in range(len(predicted_data[B][Y])):
+						if mask[Y][X] > 0:
+							#predicted[Y][X] = round(outputs[B][Y][X].item())
+							predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(predicted_data[B][Y][X].item())
+							#predicted[Y][X] = outputs[B][Y][X].item()
+							if predicted[Y][X] > 9:
+								predicted[Y][X] = 9
+							if predicted[Y][X] < 0:
+								predicted[Y][X] = 0
+			
+			for B in range(len(real_data)):
+				for Y in range(len(real_data[B])):
+					for X in range(len(real_data[B][Y])):
+						#if mask[Y][X] != 0:
+						label = real_data[B][Y][X]
+						predic = predicted[Y][X]
+						class_diff_index = int(abs(real_data - predic))
+						class_diff[class_diff_index] += 1
+						total += 1 
 		
 
 	# List of classes

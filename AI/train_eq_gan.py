@@ -10,7 +10,7 @@ from torchvision import datasets, transforms
 
 # from network import CifarCNN
 
-from dataset import MyDataSet4gan
+from dataset import MyDataSet
 
 from MyGanNet import MYFCN4gan
 from MyGanNet import MyDiscriminator
@@ -97,12 +97,12 @@ def main():
 			# Get the inputs; data is a list of [inputs, labels]
 			#Dの学習
 			epic_data, real_data = data
-			noise = (torch.rand(real_data.shape[0], 1, real_data.shape[2], real_data.shape[3]) - 0.5) / 0.5 / noise_div
+			#noise = (torch.rand(real_data.shape[0], 1, real_data.shape[2], real_data.shape[3]) - 0.5) / 0.5 / noise_div
 
 			if args.gpu >= 0:
 				real_data = real_data.to(device)
 				epic_data = epic_data.to(device)
-				noise = noise.to(device)
+				#noise = noise.to(device)
 				
 			real_data_epic_data = torch.cat((real_data, epic_data), dim = 1)
 			if args.gpu >= 0:
@@ -140,9 +140,9 @@ def main():
 			D_optimizer.step()
 
 			#networkの学習
-			noise = (torch.rand(real_data.shape[0], 1, real_data.shape[2], real_data.shape[3]) - 0.5) / 0.5 / noise_div
-			if args.gpu >= 0:
-				noise = noise.to(device)
+			#noise = (torch.rand(real_data.shape[0], 1, real_data.shape[2], real_data.shape[3]) - 0.5) / 0.5 / noise_div
+			#if args.gpu >= 0:
+				#noise = noise.to(device)
 
 			epic_data_noise = torch.cat((epic_data, noise), dim = 1)
 			if args.gpu >= 0:

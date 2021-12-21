@@ -46,6 +46,11 @@ class MyDataSet(Dataset):
 							img[C][Z][Y][X] = mag
 						else:
 							img[C][Z][Y][X] = mag / r2
+							
+		labels = torch.zeros(self.channels, 1, len(lbl_data), len(lbl_data[0]))
+		for Y in range(len(lbl_data)):
+			for X in range(len(lbl_data[0])):
+				labels[0][0][Y][X] = float(lbl_data[Y][X].item())
 
 		return img, lbl_data
 
