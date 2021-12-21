@@ -1,4 +1,4 @@
 data/
-*.sh
+#*.sh
 result/
 *.out
