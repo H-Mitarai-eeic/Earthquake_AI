@@ -105,3 +105,28 @@ class MyLoss2(nn.Module):
         #返り値　学習に使うのはlossだけ。他はtestとかに使う用
         return loss, Loss4eachIintensity, Class_N
         #return loss
+
+class MyLoss3(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, outputs, targets, mask=None, weight=(0.51,0.49), exponent=1):
+        """
+        =======引数=======
+        outputs: 予測結果のテンソル
+        targets: 実際のデータのテンソル
+        mask: 観測地点のあるところを 1 、ないところを 0 としたマスク。テンソル。サイズはoutputsやtargetsと同じにすること
+        weight: maxpoolして誤差とるのと, avgpoolして誤差とるのの重みづけのタプル。weight[0] がmaxの重み, weight[1] がavgの重み
+        exponent: 奇数
+        """
+        if type(mask) != type(None):
+            outputs = outputs * mask
+            targets = targets * mask
+            N = mask.sum(dim=(0,1,2))
+        else:
+            N = 64*64
+
+        loss_abs = (outputs - targets).pow(exponent).abs().sum(dim=(0,1,2))
+        loss_signed = (targets - outputs).pow(exponent).sum(dim=(0,1,2))
+        loss = weight[0] * loss_abs + weight[1] * loss_signed
+        return loss / N 

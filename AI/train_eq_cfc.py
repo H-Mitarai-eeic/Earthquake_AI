@@ -10,7 +10,7 @@ from torchvision import datasets, transforms
 
 from dataset import MyDataSet
 from myloss import MyLoss
-from myloss import MyLoss2
+from myloss import MyLoss3
 from mycfc import MYFCN
 
 
@@ -49,9 +49,10 @@ def main():
 	data_channels = 1
 	depth_max = 800
 	lr = 0.1
-	weight = (0.0, 0.0, 1.0)
+	#weight = (0.0, 0.0, 1.0)
+	weight = (0.51, 0.49)
 	#weight = (0.1,)*10
-	exponent = 4
+	exponent = 1
 	kernel_size = 2
 	stride = None
 	print("mesh_size: ", mesh_size)
@@ -66,7 +67,8 @@ def main():
 	net = MYFCN(mesh_size=mesh_size, in_channels=data_channels)
 
 	# Setup a loss and an optimizer
-	criterion = MyLoss(kernel_size=kernel_size, stride=stride)
+	#criterion = MyLoss(kernel_size=kernel_size, stride=stride)
+	criterion = MyLoss3()
 	#criterion = MyLoss2(kernel_size=kernel_size, stride=stride, gpu=args.gpu)
 	optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9)
 
@@ -117,7 +119,7 @@ def main():
 		for s, data in enumerate(trainloader, 0):
 			# Get the inputs; data is a list of [inputs, labels]
 			inputs, labels = data
-			print(inputs.size())
+			#print(inputs.size())
 			#targetsの生成
 			targets = torch.zeros(len(labels), len(labels[0]), len(labels[0][0]))
 
