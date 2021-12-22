@@ -49,9 +49,9 @@ def main():
 	data_channels = 1
 	depth_max = 800
 	lr = 0.1
-	weight = (0.2, 0.0, 0.8)
+	weight = (0.0, 0.0, 1.0)
 	#weight = (0.1,)*10
-	exponent = 4
+	exponent = 2
 	kernel_size = 2
 	stride = None
 	print("mesh_size: ", mesh_size)
@@ -117,6 +117,7 @@ def main():
 		for s, data in enumerate(trainloader, 0):
 			# Get the inputs; data is a list of [inputs, labels]
 			inputs, labels = data
+			print(inputs.size())
 			#targetsの生成
 			targets = torch.zeros(len(labels), len(labels[0]), len(labels[0][0]))
 
