@@ -37,8 +37,12 @@ def main():
 	print('# Minibatch-size: {}'.format(args.batchsize))
 	print('')
 
+	#open mask
+	with open(args.mask, "r") as f_mask:
+		reader = csv.reader(f_mask)
+		mask = [[int(row2) for row2 in row] for row in reader]
+
 	data_channels = 1
-	lr = 0.001
 	noise_div = 100
 	with_noise = 0
 	mesh_size=(64, 64, 10)
@@ -80,30 +84,30 @@ def main():
 				predicted_data = net(epic_data_noise)	#偽物生成　ノイズ追加
 			else:
 				predicted_data = net(epic_data)
+			print(predicted_data.size())
 			predicted_data = predicted_data.squeeze()
+			print(predicted_data.size())
 			real_data = real_data.squeeze()
 
-			predicted = [[0 for i in range(len(labels[0][0]))] for j in range(len(labels[0]))]
+			predicted = [[0 for i in range(mesh_size[1])] for j in range(mesh_size[0])]
 			
-			for B in range(len(predicted_data)):
-				for Y in range(len(predicted_data[B])):
-					for X in range(len(predicted_data[B][Y])):
-						if mask[Y][X] > 0:
-							#predicted[Y][X] = round(outputs[B][Y][X].item())
-							predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(predicted_data[B][Y][X].item())
-							#predicted[Y][X] = outputs[B][Y][X].item()
-							if predicted[Y][X] > 9:
-								predicted[Y][X] = 9
-							if predicted[Y][X] < 0:
-								predicted[Y][X] = 0
+			for Y in range(len(predicted_data)):
+				for X in range(len(predicted_data[Y])):
+					if mask[Y][X] > 0:
+						#predicted[Y][X] = round(outputs[B][Y][X].item())
+						predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(predicted_data[Y][X].item())
+						#predicted[Y][X] = outputs[B][Y][X].item()
+						if predicted[Y][X] > 9:
+							predicted[Y][X] = 9
+						if predicted[Y][X] < 0:
+							predicted[Y][X] = 0
 			
-			for B in range(len(real_data)):
-				for Y in range(len(real_data[B])):
-					for X in range(len(real_data[B][Y])):
-						#if mask[Y][X] != 0:
-						label = real_data[B][Y][X]
+			for Y in range(len(real_data)):
+				for X in range(len(real_data[Y])):
+					if mask[Y][X] != 0:
+						label = real_data[Y][X]
 						predic = predicted[Y][X]
-						class_diff_index = int(abs(real_data - predic))
+						class_diff_index = int(abs(label - predic))
 						class_diff[class_diff_index] += 1
 						total += 1 
 		
@@ -121,7 +125,8 @@ def main():
 	predicted_map = predicted_data.clone().squeeze().tolist()
 	for Y in range(len(predicted_map)):
 		for X in range(len(predicted_map[Y])):
-			predicted_map[Y][X] = round(predicted_map[Y][X])
+			#predicted_map[Y][X] = round(predicted_map[Y][X])
+			predicted_map[Y][X] = predicted[Y][X]
 
 	with open(args.output + 'predicted/' + args.ID + '_predicted.csv', "w") as fo:
 		writer = csv.writer(fo)

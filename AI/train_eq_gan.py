@@ -37,17 +37,25 @@ def main():
 	parser.add_argument('--mask', '-mask', default='ObservationPointsMap_honshu6464.csv',
 						help='Root directory of dataset')
 	args = parser.parse_args()
-
+	print("train_eq_gan")
+	print("output: " ,args.out)
+	print("dataset: ", args.dataset)
+	print("mask: ", args.mask)
 	print('GPU: {}'.format(args.gpu))
 	print('# Minibatch-size: {}'.format(args.batchsize))
 	print('# epoch: {}'.format(args.epoch))
 	print('')
-
+	
 	data_channels = 1
 	lr = 0.001
-	noise_div = 10
+	#noise_div = 10
 	mesh_size = (64, 64, 10)
 	depth_max = 800
+	print("mesh_size: ", mesh_size)
+	print("data_channels", data_channels)
+	print("depth_max", depth_max)
+	print("learning rate: ", lr)
+	print('')
 	# Set up a neural network to train
 	net = MYFCN4gan(in_channels=data_channels + 0, out_channels=1, mesh_size=mesh_size)
 	D = MyDiscriminator(in_channels = 0 + data_channels, mesh_size=mesh_size)
@@ -103,8 +111,7 @@ def main():
 				real_data = real_data.to(device)
 				epic_data = epic_data.to(device)
 				#noise = noise.to(device)
-			print(real_data.size())
-			print(epic_data.size())
+
 			real_data_epic_data = torch.cat((real_data, epic_data), dim = 2)
 			if args.gpu >= 0:
 				real_data_epic_data = real_data_epic_data.to(device)
