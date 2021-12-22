@@ -103,23 +103,24 @@ def main():
 				real_data = real_data.to(device)
 				epic_data = epic_data.to(device)
 				#noise = noise.to(device)
-				
-			real_data_epic_data = torch.cat((real_data, epic_data), dim = 1)
+			print(real_data.size())
+			print(epic_data.size())
+			real_data_epic_data = torch.cat((real_data, epic_data), dim = 2)
 			if args.gpu >= 0:
 				real_data_epic_data = real_data_epic_data.to(device)
 			real_outputs = D(real_data_epic_data)	#本物をDで評価　epicenter_data追加
 
 			real_label = torch.ones(real_data.shape[0], 1)	# 正解レベル all 1
 			#real_label = torch.rand(real_data.shape[0], 1) * 0.55 + 0.675 # 正解レベル 0.675 ~ 1.225
-
-			epic_data_noise = torch.cat((epic_data, noise), dim = 1)
+			"""
+			epic_data_noise = torch.cat((epic_data, noise), dim = 2)
 			if args.gpu >= 0:
 				epic_data_noise = epic_data_noise.to(device)
-
+			"""
 			#predicted_data = net(epic_data_noise)	#偽物生成　ノイズ追加
 			predicted_data = net(epic_data)
 
-			predicted_data_epic_data = torch.cat((predicted_data, epic_data), dim = 1)
+			predicted_data_epic_data = torch.cat((predicted_data, epic_data), dim = 2)
 			if args.gpu >= 0:
 				predicted_data_epic_data = predicted_data_epic_data.to(device)
 			predicted_data_outputs = D(predicted_data_epic_data)	#偽物をDで評価epicenter_data追加
@@ -143,15 +144,15 @@ def main():
 			#noise = (torch.rand(real_data.shape[0], 1, real_data.shape[2], real_data.shape[3]) - 0.5) / 0.5 / noise_div
 			#if args.gpu >= 0:
 				#noise = noise.to(device)
-
-			epic_data_noise = torch.cat((epic_data, noise), dim = 1)
+			"""
+			epic_data_noise = torch.cat((epic_data, noise), dim = 2)
 			if args.gpu >= 0:
 				epic_data_noise = epic_data_noise.to(device)
-
+			"""
 			#predicted_data = net(epic_data_noise)	#偽物生成　ノイズ追加
 			predicted_data = net(epic_data)
 			
-			predicted_data_epic_data = torch.cat((predicted_data, epic_data), dim = 1)
+			predicted_data_epic_data = torch.cat((predicted_data, epic_data), dim = 2)
 			if args.gpu >= 0:
 				predicted_data_epic_data = predicted_data_epic_data.to(device)
 

@@ -52,7 +52,7 @@ class MyDataSet(Dataset):
 			for X in range(len(lbl_data[0])):
 				labels[0][0][Y][X] = float(lbl_data[Y][X].item())
 
-		return img, lbl_data
+		return img, labels
 
 	def depth2Z(self, depth):
 		Z = int(self.mesh_size[2] * math.log(1 + depth, self.depth_max))

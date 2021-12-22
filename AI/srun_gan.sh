@@ -1,1 +1,1 @@
-srun -p p -t 50:00 --gres=gpu:1 --pty python3 test_eq_fcdnn.py -g 0 -d data1000_honshu6464_mag50/ -b 1 -m  result_fcdnn1/model_100 -i 0000 -o data1000_honshu6464_mag50/
+srun -p p -t 50:00 --gres=gpu:1 --pty python3 test_eq_gan.py -g 0 -d data1000_honshu6464_mag50/ -b 1 -m  result_gan1/model_1 -i 0000 -o data1000_honshu6464_mag50/

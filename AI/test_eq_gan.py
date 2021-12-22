@@ -9,7 +9,7 @@ from torchvision import datasets, transforms
 
 #from fcn8s import FCN8s
 #from fcn32s import FCN32s
-from dataset import MyDataSet4gan
+from dataset import MyDataSet
 from MyGanNet import MYFCN4gan
 
 import csv
@@ -37,7 +37,7 @@ def main():
 	print('# Minibatch-size: {}'.format(args.batchsize))
 	print('')
 
-	data_channels = 2
+	data_channels = 1
 	lr = 0.001
 	noise_div = 100
 	with_noise = 0
@@ -54,7 +54,7 @@ def main():
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5,), (0.5,))])
-	testset = MyDataSet4gan(channels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID, mesh_size=mesh_size)
+	testset = MyDataSet(channels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID, mesh_size=mesh_size)
 	testloader = torch.utils.data.DataLoader(testset, batch_size=args.batchsize,
 											 shuffle=False, num_workers=2)
 
@@ -68,12 +68,12 @@ def main():
 		for data in testloader:
 			# Get the inputs; data is a list of [inputs, labels]
 			epic_data, real_data = data
-			noise = (torch.rand(real_data.shape[0], 1, real_data.shape[2], real_data.shape[3]) - 0.5) / 0.5 / noise_div
-			epic_data_noise = torch.cat((epic_data, noise), dim = 1)
+			#noise = (torch.rand(real_data.shape[0], 1, real_data.shape[2], real_data.shape[3]) - 0.5) / 0.5 / noise_div
+			#epic_data_noise = torch.cat((epic_data, noise), dim = 1)
 			if args.gpu >= 0:
 				real_data = real_data.to(device)
 				epic_data = epic_data.to(device)
-				noise = noise.to(device)
+				#noise = noise.to(device)
 				epic_data_noise = epic_data_noise.to(device)
 
 			if with_noise == 1:
