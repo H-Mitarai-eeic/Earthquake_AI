@@ -38,7 +38,7 @@ def main():
     print('')
 
     # Set up a neural network to train
-    net = Linear(10)
+    net = Linear(6)
     # Load designated network weight
     if args.resume:
         net.load_state_dict(torch.load(args.resume))
@@ -50,7 +50,7 @@ def main():
         net = net.to(device)
 
     weights = torch.tensor(
-        [1.0, 133.0, 180.0, 416.0, 1250.0, 8600.0, 18758.0, 42000.0, 167380.0, 2175936.0])
+        [1.0, 1.5, 2.0, 3.0, 4.5, 10.0])
     if args.gpu >= 0:
         weights = weights.to(device)
     # Setup a loss and an optimizer

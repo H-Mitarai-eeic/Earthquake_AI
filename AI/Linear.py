@@ -40,9 +40,7 @@ class Linear(nn.Module):
         super(Linear, self).__init__()
         self.pool1 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.fc = nn.Linear(int(2*len_data*len_data/16), n_class*len_data*len_data)
-        self.score_fr = nn.Conv2d(8, n_class, 1)
-        self.upscore = nn.ConvTranspose2d(n_class, n_class, 4, stride=4, bias=False) 
-
+        self.n_class = n_class
         self._initialize_weights()
 
     def _initialize_weights(self):
@@ -64,5 +62,5 @@ class Linear(nn.Module):
         h = self.pool1(h)
         h = h.view(-1, int(2*len_data*len_data/16))
         h = self.fc(h)
-        h = h.view(batch_size, 10, len_data, len_data)
+        h = h.view(batch_size, self.n_class, len_data, len_data)
         return h

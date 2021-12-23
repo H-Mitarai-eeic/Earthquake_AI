@@ -27,6 +27,7 @@ class MyDataSet(Dataset):
 		x, y, depth, mag = txt.split(",")
 		x, y, depth, mag = int(x), int(y), float(depth), float(mag)
 		lbl_data = np.loadtxt(self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
+		lbl_data = np.where(lbl_data > 5, 5, lbl_data)
 		#print(lbl_data)
 		len_data = len(lbl_data)
 		img = torch.zeros(2, len(lbl_data), len(lbl_data))

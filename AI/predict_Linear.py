@@ -28,7 +28,7 @@ def main():
 
     print('')
     # Set up a neural network to test
-    net = Linear(10)
+    net = Linear(6)
     # Load designated network weight
     net.load_state_dict(torch.load(
         args.model, map_location=torch.device('cpu')))

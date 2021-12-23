@@ -30,7 +30,7 @@ def main():
     print('')
 
     # Set up a neural network to test
-    net = Linear(10)
+    net = Linear(6)
     # Load designated network weight
     net.load_state_dict(torch.load(args.model))
     # Set model to GPU
@@ -48,7 +48,7 @@ def main():
 
     # Test
     total = 0
-    data_matrix = [[0. for _ in range(3)] for _ in range(10)]  # TP, FN, FP
+    data_matrix = [[0. for _ in range(3)] for _ in range(6)]  # TP, FN, FP
     predict_array = []
     label_array = []
     with torch.no_grad():
@@ -79,9 +79,9 @@ def main():
                             data_matrix[predict][2] += 1
 
     # List of classes
-    classes = ("0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7")
+    classes = ("0", "1", "2", "3", "4", "5-+")
     # Show accuracy
-    for i in range(10):
+    for i in range(6):
         tp = data_matrix[i][0]
         fn = data_matrix[i][1]
         fp = data_matrix[i][2]
