@@ -84,7 +84,7 @@ def InstrumentalIntensity2SesimicIntensity(II):
 	elif II < 6.5:
 		return 8	#6+
 	else:
-		return 9
+		return 9	#7
 
 def depth2Z(depth, depth_max, mesh_size):
 	Z = int(mesh_size[2] * math.log(1 + depth, depth_max))

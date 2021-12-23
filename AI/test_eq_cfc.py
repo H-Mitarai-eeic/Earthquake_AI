@@ -7,8 +7,12 @@ import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
+from sklearn.metrics import matthews_corrcoef
+import numpy as np
+
 from dataset import MyDataSet
 from mycfc import MYFCN
+from myloss import MyLoss
 
 import csv
 import copy
@@ -25,7 +29,7 @@ def main():
 						help='Root directory of dataset')
 	parser.add_argument('--output', '-o', default='data100/',
 						help='Root directory of outputfile')					
-	parser.add_argument('--ID', '-i', default='40278',
+	parser.add_argument('--ID', '-i', default=None,
 						help='Erthquake ID for input/output files')
 	parser.add_argument('--mask', '-mask', default='ObservationPointsMap_honshu6464.csv',
 						help='Root directory of dataset')
@@ -43,7 +47,7 @@ def main():
 	# Set up a neural network to test
 	mesh_size = (64, 64, 10)
 	data_channels = 1
-	depth_max = 1000
+	depth_max = 800
 	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size)
 	# Load designated network weight
 	print("loading Model...")
@@ -56,9 +60,8 @@ def main():
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor()])
-	testset = MyDataSet(channels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID, mesh_size=mesh_size, depth_max=depth_max)
-	testloader = torch.utils.data.DataLoader(testset, batch_size=args.batchsize,
-											 shuffle=False, num_workers=2)
+	testset = MyDataSet(channels=data_channels, root=args.dataset, train=True, transform=transform, ID=args.ID, mesh_size=mesh_size, depth_max=depth_max)
+	testloader = torch.utils.data.DataLoader(testset, batch_size=args.batchsize, shuffle=False, num_workers=2)
 
 	# Test
 	print("Test")
@@ -67,6 +70,10 @@ def main():
 	class_correct = list(0. for i in range(10))
 	class_diff = list(0. for i in range(10))
 	class_total = list(0. for i in range(10))
+
+	targets_list = []
+	predict_list = []
+
 	with torch.no_grad():
 		# 多分1つしかテストしないようになっているはず
 		for data in testloader:
@@ -78,27 +85,24 @@ def main():
 
 			# Forward
 			outputs = net(images)
+			
 			# Predict the label
-			predicted = [[0 for i in range(len(labels[0][0]))] for j in range(len(labels[0]))]
+			predicted = [[[0 for i in range(len(labels[0][0]))] for j in range(len(labels[0]))] for k in range(len(labels))]
 			
 			for B in range(len(outputs)):
 				for Y in range(len(outputs[B])):
 					for X in range(len(outputs[B][Y])):
 						if mask[Y][X] > 0:
-							#predicted[Y][X] = round(outputs[B][Y][X].item())
-							predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[B][Y][X].item())
-							#predicted[Y][X] = outputs[B][Y][X].item()
-							if predicted[Y][X] > 9:
-								predicted[Y][X] = 9
-							if predicted[Y][X] < 0:
-								predicted[Y][X] = 0
+							predicted[B][Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[B][Y][X].item())
+							targets_list.append(InstrumentalIntensity2SesimicIntensity(labels[B][Y][X].item()))
+							predict_list.append(predicted[B][Y][X])
 			
 			for B in range(len(labels)):
 				for Y in range(len(labels[B])):
 					for X in range(len(labels[B][Y])):
 						if mask[Y][X] != 0:
 							label = labels[B][Y][X]
-							predic = predicted[Y][X]
+							predic = predicted[B][Y][X]
 							class_diff_index = int(abs(label - predic))
 							class_diff[class_diff_index] += 1
 							total += 1 
@@ -113,7 +117,10 @@ def main():
 	for i in range(10):
 		print('%5s 階級 : %2d %%' % (classes_diff_ver[i], 100 * class_diff[i] / total))
 
+	#matthews corrcoef
+	print("matthews corrcoef", matthews_corrcoef(np.array(targets_list), np.array(predict_list)))
 
+	"""
 	#csv出力
 	predicted_map = copy.deepcopy(predicted)
 
@@ -121,6 +128,7 @@ def main():
 	with open(args.output + 'predicted/' + args.ID + '_predicted.csv', "w") as fo:
 		writer = csv.writer(fo)
 		writer.writerows(predicted_map)
+	"""
 
 def InstrumentalIntensity2SesimicIntensity(II):
 	if II < 0.5:

@@ -19,8 +19,10 @@ class MyDataSet(Dataset):
 		data_dir = os.path.join(self.root, mode)
 		if mode == "train":
 			self.all_data = glob.glob(data_dir + "/*")
-		elif mode == "test":
+		elif mode == "test" and ID != None:
 			self.all_data = glob.glob(data_dir + "/" + ID + ".csv")
+		elif mode == "test" and ID == None:
+			self.all_data = glob.glob(data_dir + "/*")
 		#all_dataは一次元配列
 
 	def __len__(self):
