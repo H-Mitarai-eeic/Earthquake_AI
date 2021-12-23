@@ -78,8 +78,7 @@ def main():
                                             shuffle=True, num_workers=2)
     # Setup result holder
     x = []
-    ac_train = []
-    ac_val = []
+    loss_record = []
     # Train
     for ep in range(args.epoch):  # Loop over the dataset multiple times
 
@@ -148,8 +147,7 @@ def main():
 
         # Record result
         x.append(ep + 1)
-        ac_train.append(100 * correct_train / total_train)
-        ac_val.append(100 * correct_val / total_val)
+        loss_record.append(running_loss)
 
     print('Finished Training')
     path = args.out + "/model_final"
@@ -158,12 +156,9 @@ def main():
     # Draw graph
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
-    ax.plot(x, ac_train, label='Training')
-    ax.plot(x, ac_val, label='Validation')
-    ax.legend()
+    ax.plot(x, loss_record)
     ax.set_xlabel("Epoch")
-    ax.set_ylabel("Accuracy [%]")
-    ax.set_ylim(0, 100)
+    ax.set_ylabel("Loss")
 
     plt.savefig(args.out + '/accuracy_earthquaker.png')
     # plt.show()
