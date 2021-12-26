@@ -77,16 +77,17 @@ def main():
                                             shuffle=True, num_workers=2)
     # Setup result holder
     x = []
-    ac_train = []
-    ac_val = []
+    train_loss_record = []
+    val_loss_record = []
     # Train
     for ep in range(args.epoch):  # Loop over the dataset multiple times
 
         running_loss = 0.0
-        correct_train = 0
-        total_train = 0
-        correct_val = 0
-        total_val = 0
+        val_loss = 0.0
+        # correct_train = 0
+        # total_train = 0
+        # correct_val = 0
+        # total_val = 0
 
         for s, data in enumerate(trainloader, 0):
             # Get the inputs; data is a list of [inputs, labels]
@@ -102,15 +103,15 @@ def main():
             outputs = net(inputs)
 
             # Predict the label
-            _, predicted = torch.max(outputs, 1)
+            # _, predicted = torch.max(outputs, 1)
             # Check whether estimation is right
-            c = (predicted == labels).squeeze()  # この辺怪しい
+            # c = (predicted == labels).squeeze()  # この辺怪しい
 
-            for i in range(len(predicted)):
-                for j in range(len(predicted[i])):
-                    for k in range(len(predicted[i][j])):
-                        correct_train += c[i][j][k].item()
-                        total_train += 1
+            # for i in range(len(predicted)):
+            #     for j in range(len(predicted[i])):
+            #         for k in range(len(predicted[i][j])):
+            #             correct_train += c[i][j][k].item()
+            #             total_train += 1
             # Backward + Optimize
             loss = criterion(outputs, labels)
             loss.backward()
@@ -136,19 +137,22 @@ def main():
                     labels = labels.to(device)
                 outputs = net(images)
                 # Predict the label
-                _, predicted = torch.max(outputs, 1)
-                # Check whether estimation is right
-                c = (predicted == labels).squeeze()
-                for i in range(len(predicted)):
-                    for j in range(len(predicted[i])):
-                        for k in range(len(predicted[i][j])):
-                            correct_val += c[i][j][k].item()
-                            total_val += 1
+                # _, predicted = torch.max(outputs, 1)
+                # # Check whether estimation is right
+                # c = (predicted == labels).squeeze()
+                # for i in range(len(predicted)):
+                #     for j in range(len(predicted[i])):
+                #         for k in range(len(predicted[i][j])):
+                #             correct_val += c[i][j][k].item()
+                #             total_val += 1
+                loss = criterion(outputs, labels)
+                #Add loss
+                val_loss += loss.item()
 
         # Record result
         x.append(ep + 1)
-        ac_train.append(100 * correct_train / total_train)
-        ac_val.append(100 * correct_val / total_val)
+        train_loss_record.append(running_loss)
+        val_loss_record.append(val_loss)
 
     print('Finished Training')
     path = args.out + "/model_final"
@@ -157,15 +161,13 @@ def main():
     # Draw graph
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
-    ax.plot(x, ac_train, label='Training')
-    ax.plot(x, ac_val, label='Validation')
-    ax.legend()
+    ax.plot(x, train_loss_record, label="train")
+    ax.plot(x, val_loss_record, label="validation")
     ax.set_xlabel("Epoch")
-    ax.set_ylabel("Accuracy [%]")
-    ax.set_ylim(0, 100)
+    ax.set_ylabel("Loss")
+    ax.legend()
 
     plt.savefig(args.out + '/accuracy_earthquaker.png')
-    # plt.show()
 
 
 if __name__ == '__main__':
