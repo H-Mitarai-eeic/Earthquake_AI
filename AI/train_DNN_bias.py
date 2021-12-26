@@ -160,12 +160,24 @@ def main():
 
     # Draw graph
     fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-    ax.plot(x, train_loss_record, label="train")
-    ax.plot(x, val_loss_record, label="validation")
-    ax.set_xlabel("Epoch")
-    ax.set_ylabel("Loss")
-    ax.legend()
+    # ax = fig.add_subplot(1, 1, 1)
+    # ax.plot(x, train_loss_record, label="train")
+    # ax.plot(x, val_loss_record, label="validation")
+    # ax.set_xlabel("Epoch")
+    # ax.set_ylabel("Loss")
+    # ax.legend()
+    ax1 = fig.add_subplot(1, 1, 1)
+    ax1.plot(x, train_loss_record, label="train")
+    ax2 = ax1.twinx()
+    ax2.plot(x, val_loss_record, label="validation")
+
+    h1, l1 = ax1.get_legend_handles_labels()
+    h2, l2 = ax2.get_legend_handles_labels()
+    ax1.legend(h1+h2, l1+l2, loc='upper right')
+
+    ax1.set_xlabel("Epoch")
+    ax1.set_ylabel("Train Loss")
+    ax2.set_ylabel("Validation Loss")
 
     plt.savefig(args.out + '/accuracy_earthquaker.png')
 

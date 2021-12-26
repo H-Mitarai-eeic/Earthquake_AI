@@ -45,8 +45,8 @@ class DNN(nn.Module):
         super(DNN, self).__init__()
         # self.pool1 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.layer1 = nn.Linear(
-            2*len_data*len_data, 256)
-        self.layer2 = nn.Linear(256,
+            2*len_data*len_data, 4096)
+        self.layer2 = nn.Linear(4096,
                                 n_class*len_data*len_data)
         self.relu = nn.ReLU(inplace=True)
         self.pool = nn.MaxPool2d(2, 2)
