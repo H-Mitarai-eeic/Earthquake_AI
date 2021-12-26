@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from sklearn.metrics import matthews_corrcoef
+import numpy as np
 
 from dataset import MyDataSet
 from DNN import DNN
