@@ -49,7 +49,7 @@ def main():
         net = net.to(device)
 
     weights = torch.tensor(
-        [1.0, 133.0, 180.0, 416.0, 1250.0, 8600.0, 18758.0, 42000.0, 167380.0, 2175936.0])
+        [1.0, 1.15, 1.48, 1.9, 2.8, 4.0, 5.0, 6.0, 8.0, 9.0])
     if args.gpu >= 0:
         weights = weights.to(device)
     # Setup a loss and an optimizer

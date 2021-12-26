@@ -6,9 +6,11 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
+from sklearn.metrics import matthews_corrcoef
 
 from dataset import MyDataSet
 from DNN import DNN
+
 
 def main():
 	parser = argparse.ArgumentParser(description='Earthquaker')
@@ -44,40 +46,55 @@ def main():
 											 shuffle=False, num_workers=2)
 
 	# Test
-	correct = 0
 	total = 0
-	class_correct = list(0. for i in range(10))
-	class_total = list(0. for i in range(10))
-	with torch.no_grad():
-		for data in testloader:
-			# Get the inputs; data is a list of [inputs, labels]
-			images, labels = data
-			if args.gpu >= 0:
-				images = images.to(device)
-				labels = labels.to(device)
-			# Forward
-			outputs = net(images)
+	data_matrix = [[0. for _ in range(3)] for _ in range(10)]  # TP, FN, FP
+	predict_array = []
+    label_array = []
+    with torch.no_grad():
+        for data in testloader:
+            # Get the inputs; data is a list of [inputs, labels]
+            images, labels = data
+            if args.gpu >= 0:
+                images = images.to(device)
+                labels = labels.to(device)
+            # Forward
+            outputs = net(images)
+			
+            _, predicted = torch.max(outputs, 1)
+            # Check whether estimation is right
+            # c = (predicted == labels).squeeze()
+            for i in range(len(predicted)):
+                for j in range(len(predicted[i])):
+                    for k in range(len(predicted[i][j])):
+                        total += 1
+                        label = labels[i][j][k].item()
+                        predict = predicted[i][j][k].item()
+                        label_array.append(label)
+                        predict_array.append(predict)
+                        if label == predict:
+                            data_matrix[label][0] += 1
+                        else:
+                            data_matrix[label][1] += 1
+                            data_matrix[predict][2] += 1
 
-			_, predicted = torch.max(outputs, 1)
-			# Check whether estimation is right
-			c = (predicted == labels).squeeze()
-			for i in range(len(predicted)):
-				for j in range(len(predicted[i])):
-					for k in range(len(predicted[i][j])):
-						label = labels[i][j][k]
-						correct += c[i][j][k].item()
-						class_correct[label] += c[i][j][k].item()
-						total += 1
-						class_total[label] += 1
+    # List of classes
+    classes = ("0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7")
+    # Show accuracy
+    for i in range(10):
+        tp = data_matrix[i][0]
+        fn = data_matrix[i][1]
+        fp = data_matrix[i][2]
+        tn = total - tp - fn - fp
+        class_total = tp + fn
+        if class_total != 0:
+            print('Class : %5s, Recall : %.2f, Precision : %.2f, Accuracy : %.2f, total num of this class: %d' % (
+                classes[i], tp/(tp+fn), tp/(tp+fp), (tp+tn)/total, class_total))
 
-	# List of classes
-	classes = ("0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7")
-	# Show accuracy
-	for i in range(10):
-		if class_total[i] != 0:
-			print('Accuracy of %5s : %2d %% , total num of this class: %d' % (
-			classes[i], 100 * class_correct[i] / class_total[i], class_total[i]))
-	print('Accuracy : %.3f %%' % (100 * correct / total))
+    print(data_matrix)
+    # print(label_array)
+    # print(predict_array)
+    print("matthews corrcoef", matthews_corrcoef(np.array(label_array), np.array(predict_array)))
+
 
 
 if __name__ == '__main__':
