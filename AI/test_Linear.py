@@ -80,6 +80,7 @@ def main():
 
     # List of classes
     classes = ("0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7")
+    
     # Show accuracy
     for i in range(10):
         tp = data_matrix[i][0]
@@ -87,10 +88,10 @@ def main():
         fp = data_matrix[i][2]
         tn = total - tp - fn - fp
         class_total = tp + fn
-        if class_total != 0:
+        if class_total != 0 and tp + fn != 0 and tp + fp != 0:
             print('Class : %5s, Recall : %.2f, Precision : %.2f, Accuracy : %.2f, total num of this class: %d' % (
                 classes[i], tp/(tp+fn), tp/(tp+fp), (tp+tn)/total, class_total))
-
+                
     print(data_matrix)
     # print(label_array)
     # print(predict_array)
