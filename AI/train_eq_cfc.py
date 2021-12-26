@@ -13,6 +13,8 @@ from myloss import MyLoss
 from myloss import MyLoss3
 from mycfc import MYFCN
 
+from calc_error import Calc_Error
+
 
 import csv
 
@@ -105,8 +107,12 @@ def main():
 
 	# Setup result holder
 	x = []
-	ac_train = []
-	ac_val = []
+	loss_train_list = []
+	loss_val_list = []
+	E_err_train_list = []
+	E_err_val_list = []
+	var_err_train_list = []
+	var_err_val_list = []
 	# Train
 	for ep in range(args.epoch):  # Loop over the dataset multiple times
 
@@ -115,6 +121,11 @@ def main():
 		total_train = 0
 		loss_val = 0
 		total_val = 0
+
+		E_err_train = 0
+		E_err_val = 0
+		var_err_train = 0
+		var_err_val = 0
 
 		for s, data in enumerate(trainloader, 0):
 			# Get the inputs; data is a list of [inputs, labels]
@@ -150,18 +161,6 @@ def main():
 			inputs.requires_grad = True
 			outputs = net(inputs)
 
-			# Predict the label
-				#print("")
-				#print("outputs:", outputs.size())
-				#print("outputs:", outputs.size())
-				#print("targets:", targets.size())
-				#print("labels:", labels.size())
-				#print("mask_tensor:", mask_tensor.size())
-
-			"""
-				print("labels:",labels.size())
-				print("outputs:",outputs.size())
-			"""
 
 			# Backward + Optimize
 			loss = criterion(outputs=outputs, targets=targets, mask=mask_tensor, weight=weight, exponent=exponent)
@@ -174,6 +173,9 @@ def main():
 			print("trainloader_",s,"loss:",loss.item())
 			# record loss for graph
 			loss_train += loss.item()
+			E_err_train_tmp, var_err_train_tmp = Calc_Error(outputs, targets, mask_tensor)
+			E_err_train += E_err_train_tmp.item()
+			var_err_train += var_err_train_tmp.item()
 			total_train += 1
 
 		# Report loss of the epoch
@@ -213,14 +215,20 @@ def main():
 				print("validation loss: ", loss.item())
 				#record loss for drawing graph
 				loss_val += loss.item()
+				E_err_val_tmp, var_err_val_tmp = Calc_Error(outputs, targets, mask_tensor)
+				E_err_val += E_err_val_tmp.item()
+				var_err_val += var_err_val_tmp.item()
 				total_val += 1
 
 		# Record result
 			print('')
 			x.append(ep + 1)
-			ac_train.append(loss_train / total_train)
-			ac_val.append(loss_val / total_val)
-
+			loss_train_list.append(loss_train / total_train)
+			loss_val_list.append(loss_val / total_val)
+			E_err_train_list.append(E_err_train / total_train)
+			E_err_val_list.append(E_err_val / total_val)
+			var_err_train_list.append(var_err_train / total_train)
+			var_err_val_list.append(var_err_val / total_val)
 
 	print('Finished Training')
 	path = args.out + "/model_final"
@@ -229,15 +237,50 @@ def main():
 	# Draw graph
 	fig = plt.figure()
 	ax = fig.add_subplot(1, 1, 1)
-	ax.plot(x, ac_train, label='Training')
-	ax.plot(x, ac_val, label='Validation')
+	ax.plot(x, loss_train_list, label='Training')
+	ax.plot(x, loss_val_list, label='Validation')
 	ax.legend()
 	ax.set_xlabel("Epoch")
-	ax.set_ylabel("Accuracy [%]")
-	ax.set_ylim(0, max(ac_val))
+	ax.set_ylabel("Loss")
+	ax.set_ylim(0, max(loss_val_list + loss_train_list))
 
-	plt.savefig(args.out + '/accuracy_cifar.png')
-	#plt.show()
+	plt.savefig(args.out + '/LOSS_CFC.png')
+	
+	fig = plt.figure()
+	ax = fig.add_subplot(1, 1, 1)
+	ax.plot(x, E_err_train_list, label='Training')
+	ax.plot(x, E_err_val_list, label='Validation')
+	ax.legend()
+	ax.set_xlabel("Epoch")
+	ax.set_ylabel("E[error]")
+	ax.set_ylim(min(E_err_val_list + E_err_train_list), max(E_err_val_list + E_err_train_list))
+
+	plt.savefig(args.out + '/Mean_Error_CFC.png')
+
+	fig = plt.figure()
+	ax = fig.add_subplot(1, 1, 1)
+	ax.plot(x, var_err_train_list, label='Training')
+	ax.plot(x, var_err_val_list, label='Validation')
+	ax.legend()
+	ax.set_xlabel("Epoch")
+	ax.set_ylabel("Standard Deviation of Error")
+	ax.set_ylim(0, max(var_err_val_list + var_err_train_list))
+
+	plt.savefig(args.out + '/Variance_of_Error_CFC.png')
+
+	# csv保存
+	with open(args.out + "LOSS.csv", "w", newline='') as fo:
+		writer = csv.writer(fo)
+		writer.writerows([["Training loss"] + loss_train_list, ["Validation loss"] + loss_val_list])
+		fo.close()
+	with open(args.out + "Mean_error.csv", "w", newline='') as fo:
+		writer = csv.writer(fo)
+		writer.writerows([["Mean_error(Training)"] + E_err_train_list, ["Mean_error(validation)"] + E_err_val_list])
+		fo.close()
+	with open(args.out + "Variance_of_Error.csv", "w", newline='') as fo:
+		writer = csv.writer(fo)
+		writer.writerows([["var[err](training)"] + var_err_train_list, ["var[err](validation)"] + var_err_val_list])
+		fo.close()
 
 if __name__ == '__main__':
 	main()

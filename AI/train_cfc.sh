@@ -4,7 +4,7 @@
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
-python3 train_eq_cfc.py -g 0 -d data1000_honshu6464_mag50_InstrumentalIntensity/ -o result_cfc5/ -b 100 -e 100
+python3 train_eq_cfc.py -g 0 -d data500_honshu6464_mag50_InstrumentalIntensity/ -o result_cfc6/ -b 100 -e 100
 
     #644688 cancel
     #644689 cancel
@@ -17,5 +17,7 @@ python3 train_eq_cfc.py -g 0 -d data1000_honshu6464_mag50_InstrumentalIntensity/
 #644764
 #644765
 # 644811　→ 644812 data all 4乗誤差
-#644821 mylos3
-#645042 →　645043 mylos3 bias true
+#644821 mylos3 result_cfc4 　←　良い
+#645042 →　645043 mylos3 bias true　result_cfc5 　←　良くない
+
+#645250 mylos3 result_cfc6 data500

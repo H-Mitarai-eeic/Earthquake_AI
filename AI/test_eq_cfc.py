@@ -60,16 +60,16 @@ def main():
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor()])
-	testset = MyDataSet(channels=data_channels, root=args.dataset, train=True, transform=transform, ID=args.ID, mesh_size=mesh_size, depth_max=depth_max)
+	testset = MyDataSet(channels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID, mesh_size=mesh_size, depth_max=depth_max)
 	testloader = torch.utils.data.DataLoader(testset, batch_size=args.batchsize, shuffle=False, num_workers=2)
 
 	# Test
 	print("Test")
 	correct = 0
 	total = 0
-	class_correct = list(0. for i in range(10))
-	class_diff = list(0. for i in range(10))
-	class_total = list(0. for i in range(10))
+	#class_correct = list(0. for i in range(10))
+	class_diff = list(0. for i in range(19))
+	#class_total = list(0. for i in range(10))
 
 	targets_list = []
 	predict_list = []
@@ -92,30 +92,30 @@ def main():
 			for B in range(len(outputs)):
 				for Y in range(len(outputs[B])):
 					for X in range(len(outputs[B][Y])):
-						if mask[Y][X] > 0:
-							predicted[B][Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[B][Y][X].item())
-							targets_list.append(InstrumentalIntensity2SesimicIntensity(labels[B][Y][X].item()))
-							predict_list.append(predicted[B][Y][X])
+#						if mask[Y][X] > 0:
+						predicted[B][Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[B][Y][X].item())
+						targets_list.append(InstrumentalIntensity2SesimicIntensity(labels[B][Y][X].item()))
+						predict_list.append(predicted[B][Y][X])
 			
 			for B in range(len(labels)):
 				for Y in range(len(labels[B])):
 					for X in range(len(labels[B][Y])):
 						if mask[Y][X] != 0:
-							label = labels[B][Y][X]
+							label = InstrumentalIntensity2SesimicIntensity(labels[B][Y][X])
 							predic = predicted[B][Y][X]
-							class_diff_index = int(abs(label - predic))
+							class_diff_index = int(predic-label) + 9
 							class_diff[class_diff_index] += 1
 							total += 1 
 			
 
 	# List of classes
 	classes = ("0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7")
-	classes_diff_ver = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+	classes_diff_ver = ("-9", "-8","-7","-6","-5","-4","-3","-2","-1","0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
 	
 	# Show accuracy
 	print("予測震度と実際の震度のずれの分布")
-	for i in range(10):
-		print('%5s 階級 : %2d %%' % (classes_diff_ver[i], 100 * class_diff[i] / total))
+	for i in range(19):
+		print('%5s 階級 : %2d %% (total %d)' % (classes_diff_ver[i], 100 * class_diff[i] / total, class_diff[i]))
 
 	#matthews corrcoef
 	print("matthews corrcoef", matthews_corrcoef(np.array(targets_list), np.array(predict_list)))
