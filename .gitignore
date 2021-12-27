@@ -13,12 +13,16 @@
 /AI/result_bin
 /AI/result1*
 /AI/data100_*
+/AI/data500_*
 /AI/data1000_*
+/AI/data2000_*
 /AI/data_all
 /AI/result_all
 /AI/result_fcn*
 /AI/data_all_*
 /AI/result_*
+/AI/predicted_data_.csv
+/AI/predicted_data.csv
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
