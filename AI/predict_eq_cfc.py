@@ -2,7 +2,7 @@ import argparse
 import torch
 
 from dataset import MyDataSet
-from mycfc import MYFCN
+from mycfc2D import MYFCN
 
 import csv
 import copy
@@ -28,9 +28,9 @@ def main():
 	args = parser.parse_args()
 
 	# Set up a neural network to test
-	mesh_size = (64, 64, 10)
-	data_channels = 1
-	depth_max = 800
+	mesh_size = (64, 64)
+	data_channels = 2
+	depth_max = 600
 	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size)
 	# Load designated network weight
 	print("loading Model...")
@@ -41,11 +41,12 @@ def main():
 	# Get the inputs; data is a list of [inputs, labels]
 	x = int(args.x)
 	y = int(args.y)
-	z = depth2Z(float(args.depth), depth_max, mesh_size)
+	depth = float(args.depth)
 	mag = float(args.mag)
 
-	epicenter = torch.zeros(1, 1, mesh_size[2], mesh_size[1], mesh_size[0])
-	epicenter[0][0][z][y][x] = mag
+	epicenter = torch.zeros(1, data_channels, mesh_size[1], mesh_size[0])
+	epicenter[0][0][y][x] = mag / 9
+	epicenter[0][1][y][x] = depth / depth_max
 
 	# Forward
 	outputs = net(epicenter)
