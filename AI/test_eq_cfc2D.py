@@ -11,8 +11,8 @@ from sklearn.metrics import matthews_corrcoef
 import numpy as np
 
 from dataset import MyDataSet
-from mycfc import MYFCN
-from myloss import MyLoss
+from mycfc2D import MYFCN
+#from myloss import MyLoss
 
 import csv
 import copy
@@ -46,7 +46,7 @@ def main():
 
 	# Set up a neural network to test
 	mesh_size = (64, 64, 10)
-	data_channels = 1
+	data_channels = 2
 	depth_max = 800
 	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size)
 	# Load designated network weight
@@ -67,6 +67,8 @@ def main():
 	print("Test")
 	correct = 0
 	total = 0
+
+	counter = 1
 	#class_correct = list(0. for i in range(10))
 	class_diff = list(0. for i in range(19))
 	#class_total = list(0. for i in range(10))
@@ -77,6 +79,7 @@ def main():
 	with torch.no_grad():
 		# 多分1つしかテストしないようになっているはず
 		for data in testloader:
+			print("test #", counter)
 			# Get the inputs; data is a list of [inputs, labels]
 			images, labels = data
 			if args.gpu >= 0:
@@ -106,6 +109,7 @@ def main():
 							class_diff_index = int(predic-label) + 9
 							class_diff[class_diff_index] += 1
 							total += 1 
+			counter += 1
 			
 
 	# List of classes

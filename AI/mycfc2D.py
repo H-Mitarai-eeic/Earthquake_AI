@@ -8,7 +8,7 @@ class MYFCN(nn.Module):
         super(MYFCN, self).__init__()
         self.mesh_size = mesh_size
         self.in_channels = in_channels
-        self.conv0 = nn.Conv3d(in_channels, in_channels, kernel_size=(mesh_size[1]+1, mesh_size[0]+1), padding=(int(mesh_size[1]/2), int(mesh_size[0]/2)), bias=False)
+        self.conv0 = nn.Conv2d(in_channels, in_channels, kernel_size=(mesh_size[1]+1, mesh_size[0]+1), padding=(int(mesh_size[1]/2), int(mesh_size[0]/2)), bias=False)
 
         self.fc0 = nn.Linear(mesh_size[0] * mesh_size[1] * in_channels, 64*64, bias=False)
 

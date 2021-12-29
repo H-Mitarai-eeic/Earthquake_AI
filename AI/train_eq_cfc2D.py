@@ -11,7 +11,7 @@ from torchvision import datasets, transforms
 from dataset import MyDataSet
 from myloss import MyLoss
 from myloss import MyLoss3
-from mycfc import MYFCN
+from mycfc2D import MYFCN
 
 from calc_error import Calc_Error
 
@@ -48,7 +48,7 @@ def main():
 
 	# Set up a neural network to train
 	mesh_size = (64, 64)
-	data_channels = 1
+	data_channels = 2
 	depth_max = 600
 	lr = 0.1
 	#weight = (0.0, 0.0, 1.0)
