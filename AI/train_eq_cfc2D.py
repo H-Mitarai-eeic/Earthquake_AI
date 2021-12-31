@@ -52,9 +52,9 @@ def main():
 	depth_max = 600
 	lr = 0.1
 	#weight = (0.0, 0.0, 1.0)
-	weight = (0.51, 0.49)
+	weight = (0.8, 0.2)
 	#weight = (0.1,)*10
-	exponent = 3
+	exponent = 1
 	kernel_size = 2
 	stride = None
 	print("mesh_size: ", mesh_size)
