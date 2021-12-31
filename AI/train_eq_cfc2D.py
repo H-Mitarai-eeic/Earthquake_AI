@@ -54,7 +54,7 @@ def main():
 	#weight = (0.0, 0.0, 1.0)
 	weight = (0.51, 0.49)
 	#weight = (0.1,)*10
-	exponent = 1
+	exponent = 3
 	kernel_size = 2
 	stride = None
 	print("mesh_size: ", mesh_size)
