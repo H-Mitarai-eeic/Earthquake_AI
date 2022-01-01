@@ -37,6 +37,7 @@ def main():
 
 	print('GPU: {}'.format(args.gpu))
 	print('# Minibatch-size: {}'.format(args.batchsize))
+	print("model", args.model)
 	print('')
 
 	#open mask
