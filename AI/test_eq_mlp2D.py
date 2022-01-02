@@ -11,7 +11,7 @@ from sklearn.metrics import matthews_corrcoef
 import numpy as np
 
 from dataset import MyDataSet
-from mycfc2D import MYFCN
+from mymlp2D import MYFCN
 #from myloss import MyLoss
 
 import csv

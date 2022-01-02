@@ -7,12 +7,13 @@ import numpy as np
 import math 
 
 class MyDataSet(Dataset):
-	def __init__(self, channels=2, root=None, train=True, transform=None, ID=None, mesh_size=(64, 64), depth_max=1000):
+	def __init__(self, channels=2, root=None, train=True, transform=None, ID=None, mesh_size=(64, 64), depth_max=1000, expand=10):
 		self.root = root
 		self.transform = transform
 		self.channels = channels
 		self.mesh_size = mesh_size	#tuple x, y
 		self.depth_max = depth_max	#in km
+		self.expand = expand
 		mode = "train" if train else "test"
 		
 		#全てのデータのパスを入れる
@@ -37,6 +38,9 @@ class MyDataSet(Dataset):
 
 		img = torch.zeros(self.channels, self.mesh_size[1], self.mesh_size[0])
 
-		img[0][y][x] = mag / 9
-		img[1][y][x] = depth / self.depth_max
+		for Y in range(y - self.expand, y + self.expand + 1):
+			for X in range(x - self.expand, x + self.expand + 1):
+				if X >= 0 and X < self.mesh_size[0] and Y >= 0 and Y < self.mesh_size[1]:
+					img[0][Y][X] = mag / 9
+					img[1][Y][X] = depth / self.depth_max
 		return img, lbl_data

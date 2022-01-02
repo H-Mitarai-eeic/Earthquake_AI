@@ -11,7 +11,7 @@ from torchvision import datasets, transforms
 from dataset import MyDataSet
 from myloss import MyLoss
 from myloss import MyLoss3
-from mycfc2D import MYFCN
+from mymlp2D import MYFCN
 
 from calc_error import Calc_Error
 
@@ -37,7 +37,7 @@ def main():
 	parser.add_argument('--mask', '-mask', default='ObservationPointsMap_honshu6464.csv',
 						help='Root directory of dataset')
 	args = parser.parse_args()
-	print("train_eq_cfc2D")
+	print("train_eq_mlp2D")
 	print("output: " ,args.out)
 	print("dataset: ", args.dataset)
 	print("mask: ", args.mask)
@@ -50,6 +50,7 @@ def main():
 	mesh_size = (64, 64)
 	data_channels = 2
 	depth_max = 600
+	expand = 10
 	lr = 0.1
 	#weight = (0.0, 0.0, 1.0)
 	weight = (0.8, 0.2)
@@ -60,6 +61,7 @@ def main():
 	print("mesh_size: ", mesh_size)
 	print("data_channels", data_channels)
 	print("depth_max", depth_max)
+	print("expand", expand)
 	print("learning rate: ", lr)
 	print("weight: ", weight)
 	print("exponent: ", exponent)
@@ -76,7 +78,7 @@ def main():
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor()])
-	trainvalset = MyDataSet(channels=data_channels, root=args.dataset, train=True, transform=transform, mesh_size=mesh_size, depth_max=depth_max)
+	trainvalset = MyDataSet(channels=data_channels, root=args.dataset, train=True, transform=transform, mesh_size=mesh_size, depth_max=depth_max, expand=expand)
 
 	# Load designated network weight
 	if args.resume:
@@ -245,7 +247,7 @@ def main():
 	ax.set_ylabel("Loss")
 	ax.set_ylim(0, max(loss_val_list + loss_train_list))
 
-	plt.savefig(args.out + '/LOSS_CFC.png')
+	plt.savefig(args.out + '/LOSS_MLP.png')
 	
 	fig = plt.figure()
 	ax = fig.add_subplot(1, 1, 1)
@@ -256,7 +258,7 @@ def main():
 	ax.set_ylabel("E[error]")
 	ax.set_ylim(min(E_err_val_list + E_err_train_list), max(E_err_val_list + E_err_train_list))
 
-	plt.savefig(args.out + '/Mean_Error_CFC.png')
+	plt.savefig(args.out + '/Mean_Error_MLP.png')
 
 	fig = plt.figure()
 	ax = fig.add_subplot(1, 1, 1)
@@ -267,7 +269,7 @@ def main():
 	ax.set_ylabel("Standard Deviation of Error")
 	ax.set_ylim(0, max(var_err_val_list + var_err_train_list))
 
-	plt.savefig(args.out + '/Variance_of_Error_CFC.png')
+	plt.savefig(args.out + '/Variance_of_Error_MLP.png')
 
 	# csv保存
 	with open(args.out + "LOSS.csv", "w", newline='') as fo:
