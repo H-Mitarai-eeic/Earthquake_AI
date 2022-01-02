@@ -4,18 +4,10 @@
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
-python3 train_eq_mlp2D.py -g 0 -d data2000_honshu6464_InstrumentalIntensity/ -o result_mlp2D_1/ -b 100 -e 100
+python3 train_eq_mlp2D.py -g 0 -d data2000_honshu6464_InstrumentalIntensity/ -o result_mlp2D_5/ -b 100 -e 100
 
-#645545→645620 data2000 myloss3 
-#645621 data500
-#645623 data2000 exponent = 3
-#645624 data2000 exponent = 1 weight = (0.55, 0.45)
-#645625 data2000 exponent = 1 weight = (0.7, 0.3)
-#645626 data2000 exponent = 1 weight = (0.51, 0.49) ===== mask変更 =========
-
-#ネットワーク修正
-#646306 data2000 exponent = 1 weight = (0.51, 0.49) ===== mask変更 =========
-#646319 data2000 exponent = 3 weight = (0.51, 0.49) ===== mask変更 =========
-#646331 data2000 exponent = 1 weight = (0.8, 0.2) ===== mask変更 =========
-#646334 data2000 exponent = 2 weight = (1, 0) ===== mask変更 =========
-#646347 data2000 exponent = 3 weight = (0.8, 0.2) ===== mask変更 =========
+#649663 myloss3 exponent=2 weight=(1, 0) 21*21
+#649664 myloss3 exponent=1 weight=(0.51, 0.49) 21*21
+#649665 myloss3 exponent=3 weight=(0.51, 0.49) 21*21
+#649666 myloss3 exponent=1 weight=(0.8, 0.2) 21*21
+#649667 myloss3 exponent=3 weight=(0.8, 0.2) 21*21
