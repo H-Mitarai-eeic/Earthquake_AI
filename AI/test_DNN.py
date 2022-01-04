@@ -45,6 +45,8 @@ def main():
     testset = MyDataSet(root=args.dataset, train=False, transform=transform)
     testloader = torch.utils.data.DataLoader(testset, batch_size=args.batchsize, shuffle=False, num_workers=2)
 
+    mask_data = np.loadtxt("./mask.csv", delimiter=',', dtype=int)
+    mask_but_positive = 0
 	# Test
     total = 0
     data_matrix = [[0. for _ in range(3)] for _ in range(10)]  # TP, FN, FP
@@ -76,6 +78,8 @@ def main():
                         else:
                             data_matrix[label][1] += 1
                             data_matrix[predict][2] += 1
+                        if mask_data[j][k] == 0 and predict > 0:
+                            mask_but_positive += 1
 
     # List of classes
     classes = ("0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7")
@@ -94,6 +98,7 @@ def main():
     print(data_matrix)
     # print(label_array)
     # print(predict_array)
+    print("mask_but_positive: ", mask_but_positive)
     print("matthews corrcoef", matthews_corrcoef(np.array(label_array), np.array(predict_array)))
 
 
