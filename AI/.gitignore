@@ -2,3 +2,4 @@ data/
 result/
 *.out
 out/
+.txt
