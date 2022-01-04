@@ -46,6 +46,8 @@ def main():
     testloader = torch.utils.data.DataLoader(testset, batch_size=args.batchsize,
                                              shuffle=False, num_workers=2)
 
+    # lbl_data = np.loadtxt(, delimiter=',', dtype=int)
+
     # Test
     total = 0
     data_matrix = [[0. for _ in range(3)] for _ in range(10)]  # TP, FN, FP
