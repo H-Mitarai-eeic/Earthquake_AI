@@ -34,7 +34,7 @@ class MyDataSet(Dataset):
 			for j in range(y-10, y+11):
 				if 0 <= i < len_data and 0 <= j < len_data:
 					img[0][i][j] = depth / 1000
-					img[1][i][j] = mag / 10
+					img[1][i][j] = mag**3 / 1000
 		# img[0][x][y] = depth / 1000
 		# img[1][x][y] = mag / 10
 		return img, lbl_data
