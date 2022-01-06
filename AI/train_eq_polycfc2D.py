@@ -37,7 +37,7 @@ def main():
 	parser.add_argument('--mask', '-mask', default='ObservationPointsMap_honshu6464.csv',
 						help='Root directory of dataset')
 	args = parser.parse_args()
-	print("train_eq_cfc2D")
+	print("train_eq_polycfc2D")
 	print("output: " ,args.out)
 	print("dataset: ", args.dataset)
 	print("mask: ", args.mask)
@@ -48,7 +48,7 @@ def main():
 
 	# Set up a neural network to train
 	mesh_size = (64, 64)
-	data_channels = 2
+	data_channels = 12
 	depth_max = 600
 	lr = 0.1
 	#weight = (0.0, 0.0, 1.0)
