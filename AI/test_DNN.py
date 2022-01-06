@@ -95,7 +95,10 @@ def main():
             print('Class : %5s, Recall : %.2f, Precision : %.2f, Accuracy : %.2f, total num of this class: %d' % (
                 classes[i], tp/(tp+fn), tp/(tp+fp), (tp+tn)/total, class_total))
                 
-    print(data_matrix)
+    print("")
+    for i in range(len(data_matrix)):
+        print("class ", i, ": TP ", data_matrix[i][0], " FN ", data_matrix[i][1], " FP ", data_matrix[i][2])
+    print("")
     # print(label_array)
     # print(predict_array)
     print("mask_but_positive: ", mask_but_positive)
