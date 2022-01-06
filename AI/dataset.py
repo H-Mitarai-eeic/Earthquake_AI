@@ -4,6 +4,7 @@ import torch
 from torch.utils.data import Dataset
 import glob
 import numpy as np
+from math import exp
 
 input_width = 15  # 奇数にして
 
