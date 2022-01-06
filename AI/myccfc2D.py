@@ -25,11 +25,11 @@ class MYFCN(nn.Module):
         
         h = x
 
-        #h = self.conv0(h)
-        #h = self.conv1(h)
+        h = self.conv0(h)
+        h = self.conv1(h)
 
-        h = self.relu0(self.conv0(h))
-        h = self.relu1(self.conv1(h))
+        #h = self.relu0(self.conv0(h))
+        #h = self.relu1(self.conv1(h))
 
         h = h.view(-1, self.mesh_size[0] * self.mesh_size[1] * self.in_channels)
         h = self.fc0(h)
