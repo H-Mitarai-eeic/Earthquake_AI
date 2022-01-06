@@ -119,7 +119,7 @@ def main():
             optimizer.step()
             # Add loss
             running_loss += loss.item()
-            print("trainloader_", s, "loss:", loss.item())
+            # print("trainloader_", s, "loss:", loss.item())
 
         # Report loss of the epoch
         print('[epoch %d] loss: %.3f' % (ep + 1, running_loss))
