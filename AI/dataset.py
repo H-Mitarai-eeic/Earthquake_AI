@@ -5,7 +5,7 @@ from torch.utils.data import Dataset
 import glob
 import numpy as np
 
-input_width = 11  # 奇数にして
+input_width = 15  # 奇数にして
 
 
 class MyDataSet(Dataset):

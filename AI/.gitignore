@@ -3,5 +3,5 @@ result/
 *.out
 out/
 *.txt
+*.sh
 *.csv
-for_easy_graph.py
