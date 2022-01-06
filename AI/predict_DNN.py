@@ -4,6 +4,8 @@ import numpy as np
 from DNN import DNN
 import csv
 len_data = 64
+input_width = 15
+half = input_width//2
 # 予測プログラム
 
 
@@ -40,11 +42,11 @@ def main():
         net = net.to(device)
     # Load the input
     inputs = torch.zeros(1, 2, len_data, len_data)
-    for i in range(int(args.x)-10, int(args.x)+11):
-        for j in range(int(args.y)-10, int(args.y)+11):
+    for i in range(int(args.x)-half, int(args.x)+half + 1):
+        for j in range(int(args.y)-half, int(args.y)+half + 1):
             if 0 <= i < len_data and 0 <= j < len_data:
                 inputs[0][0][i][j] = float(args.depth) / 1000
-                inputs[0][1][i][j] = float(args.magnitude) / 10
+                inputs[0][1][i][j] = float(args.magnitude)**9 / 1000000000
 
     if args.gpu >= 0:
         inputs = inputs.to(device)

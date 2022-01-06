@@ -42,6 +42,7 @@ class DNN(nn.Module):
         )
 
     def __init__(self, n_class=21):
+<<<<<<< HEAD:AI/DNN.py
         super(DNN, self).__init__()
         # self.pool1 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
         self.layer1 = nn.Linear(
@@ -50,6 +51,12 @@ class DNN(nn.Module):
                                 n_class*len_data*len_data)
         self.relu = nn.ReLU(inplace=True)
         self.pool = nn.MaxPool2d(2, 2)
+=======
+        super(Linear, self).__init__()
+        # self.pool1 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
+        self.linear = nn.Linear(2*len_data*len_data, n_class*len_data*len_data)
+
+>>>>>>> Linear_bias_classification:AI/Linear.py
         self._initialize_weights()
 
     def _initialize_weights(self):
@@ -67,10 +74,18 @@ class DNN(nn.Module):
     def forward(self, x):
         h = x
         batch_size = len(x)
+<<<<<<< HEAD:AI/DNN.py
         # h = self.pool(h)
         # h = self.pool(h)
         h = h.view(-1, 2*len_data*len_data)
         h = self.relu(self.layer1(h))
         h = self.layer2(h)
+=======
+        # h = self.pool1(h)
+        # h = self.pool1(h)
+        # h = h.view(-1, int(2*len_data*len_data/16))
+        h = h.view(-1, 2*len_data*len_data)
+        h = self.linear(h)
+>>>>>>> Linear_bias_classification:AI/Linear.py
         h = h.view(batch_size, 10, len_data, len_data)
         return h

@@ -1,5 +1,7 @@
 data/
 result/
 *.out
+out/
 *.txt
+*.sh
 *.csv
