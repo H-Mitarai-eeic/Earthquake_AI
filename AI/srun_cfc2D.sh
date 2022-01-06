@@ -1,1 +1,1 @@
-srun -p p -t 50:00 --gres=gpu:1 --pty python3 test_eq_cfc2D.py -g 0 -b 100 -d data2000_honshu6464_InstrumentalIntensity/ -m result_cfc2D_12/model_100
+srun -p p -t 50:00 --gres=gpu:1 --pty python3 test_eq_cfc2D.py -g 0 -b 100 -d data2000_honshu6464_InstrumentalIntensity/ -m result_cfc2D_13/model_20
