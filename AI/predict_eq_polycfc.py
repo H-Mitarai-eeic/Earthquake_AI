@@ -60,9 +60,6 @@ def main():
 
 	#csv出力
 	with open('predicted_data.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerows(predicted)
-	with open('predicted_data_.csv', "w") as fo:
 		writer = csv.writer(fo)
 		writer.writerows(predicted)
 
