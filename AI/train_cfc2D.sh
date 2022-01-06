@@ -19,6 +19,7 @@ python3 train_eq_cfc2D.py -g 0 -d data2000_honshu6464_InstrumentalIntensity/ -o 
 #646331 data2000 exponent = 1 weight = (0.8, 0.2) ===== mask変更 =========
 #646334 data2000 exponent = 2 weight = (1, 0) ===== mask変更 =========  output:  result_cfc2D_10/
 """
+model_100
 予測震度と実際の震度のずれの分布
    -9 階級 :  0 % (total 0)
    -8 階級 :  0 % (total 0)
@@ -69,3 +70,27 @@ matthews corrcoef 0.3296802279580119
 """
 
 #651855 data2000 exponent = 2 weight = (1, 0) ===== mask変更 =========  reluあり   output:  result_cfc2D_13/
+"""
+model_20
+予測震度と実際の震度のずれの分布
+   -9 階級 :  0 % (total 0)
+   -8 階級 :  0 % (total 0)
+   -7 階級 :  0 % (total 0)
+   -6 階級 :  0 % (total 15)
+   -5 階級 :  0 % (total 36)
+   -4 階級 :  0 % (total 85)
+   -3 階級 :  0 % (total 307)
+   -2 階級 :  0 % (total 2125)
+   -1 階級 :  0 % (total 11319)
+    0 階級 : 25 % (total 314765)
+    1 階級 : 70 % (total 872271)
+    2 階級 :  3 % (total 38087)
+    3 階級 :  0 % (total 182)
+    4 階級 :  0 % (total 2)
+    5 階級 :  0 % (total 0)
+    6 階級 :  0 % (total 0)
+    7 階級 :  0 % (total 0)
+    8 階級 :  0 % (total 0)
+    9 階級 :  0 % (total 0)
+matthews corrcoef 0.18117669722431973
+"""
