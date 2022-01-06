@@ -4,7 +4,7 @@
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
-python3 train_eq_cfc2D.py -g 0 -d data2000_honshu6464_InstrumentalIntensity/ -o result_cfc2D_12/ -b 100 -e 100
+python3 train_eq_cfc2D.py -g 0 -d data2000_honshu6464_InstrumentalIntensity/ -o result_cfc2D_13/ -b 100 -e 100
 
 #645545→645620 data2000 myloss3 
 #645621 data500
@@ -67,3 +67,5 @@ matthews corrcoef 0.2577217060958623
     9 階級 :  0 % (total 1)
 matthews corrcoef 0.3296802279580119
 """
+
+#651855 data2000 exponent = 2 weight = (1, 0) ===== mask変更 =========  reluあり   output:  result_cfc2D_13/
