@@ -37,6 +37,6 @@ class MyDataSet(Dataset):
 
 		img = torch.zeros(self.channels, self.mesh_size[1], self.mesh_size[0])
 
-		img[0][y][x] = (mag / 9)**2
+		img[0][y][x] = (mag / 9)**1
 		img[1][y][x] = depth / self.depth_max
 		return img, lbl_data

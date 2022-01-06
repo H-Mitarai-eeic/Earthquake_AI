@@ -45,7 +45,7 @@ def main():
 	mag = float(args.mag)
 
 	epicenter = torch.zeros(1, data_channels, mesh_size[1], mesh_size[0])
-	epicenter[0][0][y][x] = mag / 9
+	epicenter[0][0][y][x] = (mag / 9)**1
 	epicenter[0][1][y][x] = depth / depth_max
 
 	# Forward
