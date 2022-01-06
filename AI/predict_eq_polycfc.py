@@ -20,7 +20,7 @@ def main():
 						help='Erthquake ID for input/output files')
 	parser.add_argument('--y', '-y', default=32,
 						help='Erthquake ID for input/output files')
-	parser.add_argument('--depth', '-d', default=10,
+	parser.add_argument('--depth', '-depth', default=10,
 						help='Erthquake ID for input/output files')
 	parser.add_argument('--mag', '-mag', default=9.0,
 						help='Erthquake ID for input/output files')
