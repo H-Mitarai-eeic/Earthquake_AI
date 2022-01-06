@@ -47,7 +47,7 @@ def main():
 
 	# Set up a neural network to test
 	mesh_size = (64, 64, 10)
-	data_channels = 2
+	data_channels = 12
 	depth_max = 800
 	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size)
 	# Load designated network weight

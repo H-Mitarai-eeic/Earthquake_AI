@@ -29,7 +29,7 @@ def main():
 
 	# Set up a neural network to test
 	mesh_size = (64, 64)
-	data_channels = 2
+	data_channels = 12
 	depth_max = 600
 	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size)
 	# Load designated network weight
@@ -45,8 +45,9 @@ def main():
 	mag = float(args.mag)
 
 	epicenter = torch.zeros(1, data_channels, mesh_size[1], mesh_size[0])
-	epicenter[0][0][y][x] = (mag / 9)**1
-	epicenter[0][1][y][x] = depth / depth_max
+	for i in range(data_channels - 1):
+		epicenter[0][i][y][x] = (mag / 9)**i
+	epicenter[0][data_channels - 1][y][x] = depth / depth_max
 
 	# Forward
 	outputs = net(epicenter)
