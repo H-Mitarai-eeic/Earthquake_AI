@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
 from sklearn.metrics import matthews_corrcoef
+from sklearn.metrics import r2_score
 import numpy as np
 
 from dataset import MyDataSet
@@ -27,7 +28,7 @@ def main():
 						help='Path to the model for test')
 	parser.add_argument('--dataset', '-d', default='data100/',
 						help='Root directory of dataset')
-	parser.add_argument('--output', '-o', default='data100/',
+	parser.add_argument('--out', '-o', default='data100/',
 						help='Root directory of outputfile')					
 	parser.add_argument('--ID', '-i', default=None,
 						help='Erthquake ID for input/output files')
@@ -48,16 +49,18 @@ def main():
 	# Set up a neural network to test
 	mesh_size = (64, 64, 10)
 	data_channels = 12
-	depth_max = 800
+	depth_max = 600
 	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size)
 	# Load designated network weight
 	print("loading Model...")
-	net.load_state_dict(torch.load(args.model))
 	# Set model to GPU
 	if args.gpu >= 0:
 		# Make a specified GPU current
 		device = 'cuda:' + str(args.gpu)
 		net = net.to(device)
+		net.load_state_dict(torch.load(args.model))
+	else:
+		net.load_state_dict(torch.load(args.model, map_location=torch.device('cpu')))
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor()])
@@ -76,6 +79,10 @@ def main():
 
 	targets_list = []
 	predict_list = []
+
+	residuals_list= []
+	targets_masked_InstrumentalIntensity_list = []
+	predict_masked_InstrumentalIntensity_list = []
 
 	with torch.no_grad():
 		# 多分1つしかテストしないようになっているはず
@@ -100,6 +107,10 @@ def main():
 						predicted[B][Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[B][Y][X].item())
 						targets_list.append(InstrumentalIntensity2SesimicIntensity(labels[B][Y][X].item()))
 						predict_list.append(predicted[B][Y][X])
+						if mask[Y][X] > 0:
+							targets_masked_InstrumentalIntensity_list.append(labels[B][Y][X].item())
+							predict_masked_InstrumentalIntensity_list.append(outputs[B][Y][X].item())
+							residuals_list.append(labels[B][Y][X].item() - outputs[B][Y][X].item())
 			
 			for B in range(len(labels)):
 				for Y in range(len(labels[B])):
@@ -123,8 +134,39 @@ def main():
 		print('%5s 階級 : %2d %% (total %d)' % (classes_diff_ver[i], 100 * class_diff[i] / total, class_diff[i]))
 
 	#matthews corrcoef
-	print("matthews corrcoef", matthews_corrcoef(np.array(targets_list), np.array(predict_list)))
+	print("matthews corrcoef(マスクなし)", matthews_corrcoef(np.array(targets_list), np.array(predict_list)))
+	#決定係数
+	print("決定係数", r2_score(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
+	#自由度調整済み決定係数
+	print("自由度調整済み決定係数", adj_r2_score(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list, data_channels))
+	#ピアソン相関係数
+	print("ピアソン相関係数", np.corrcoef(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list)[0, 1])
+	#RSS
+	print("RSS", RSS(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
+	#RSE
+	print("RSE", RSE(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list, data_channels))
+	
+	#residual plot
+	fig = plt.figure()
+	ax = fig.add_subplot(1, 1, 1)
+	ax.scatter(predict_masked_InstrumentalIntensity_list, residuals_list)
+	ax.set_xlabel("Predicted Instrumental Intensities")
+	ax.set_ylabel("Residuals")
+	ax.set_ylim(min(residuals_list), max(residuals_list))
+	ax.set_xlim(min(predict_masked_InstrumentalIntensity_list), max(predict_masked_InstrumentalIntensity_list))
 
+	plt.savefig(args.out + '/ResidualPlot_polyCFC.png')
+
+	#真値-予測値
+	fig = plt.figure()
+	ax = fig.add_subplot(1, 1, 1)
+	ax.scatter(predict_masked_InstrumentalIntensity_list, targets_masked_InstrumentalIntensity_list)
+	ax.set_xlabel("Predicted Values")
+	ax.set_ylabel("True Values")
+	ax.set_ylim(min(targets_masked_InstrumentalIntensity_list), max(targets_masked_InstrumentalIntensity_list))
+	ax.set_xlim(min(predict_masked_InstrumentalIntensity_list), max(predict_masked_InstrumentalIntensity_list))
+
+	plt.savefig(args.out + '/Target-PredictedPlot_polyCFC.png')
 	"""
 	#csv出力
 	predicted_map = copy.deepcopy(predicted)
@@ -156,6 +198,18 @@ def InstrumentalIntensity2SesimicIntensity(II):
 		return 8	#6+
 	else:
 		return 9
+def adj_r2_score(y_true, y_pred, p=2):
+    return 1-(1-r2_score(y_true, y_pred)) * (len(y_true)-1) / (len(y_true) - p - 1)
+def RSS(y_true, y_pred):
+	rss = 0
+	for i in range(len(y_true)):
+		rss += (y_true[i] - y_pred[i]) ** 2
+	return rss
+def RSE(y_true, y_pred, p=2):
+	rss = RSS(y_true, y_pred)
+	n = len(y_true)
+	rse = (rss / (n-p-1))** 0.5
+	return rse
 		
 if __name__ == '__main__':
 	main()
