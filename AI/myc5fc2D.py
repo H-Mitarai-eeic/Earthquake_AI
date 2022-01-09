@@ -87,21 +87,7 @@ class MYFCN(nn.Module):
             h = self.conv4(h)
             if self.dropout_flag == True:
                 h = self.dropout4(h) / (1 - self.ratio)
-            h = self.conv5(h)
-            if self.dropout_flag == True:
-                h = self.dropout5(h) / (1 - self.ratio)
-            h = self.conv6(h)
-            if self.dropout_flag == True:
-                h = self.dropout6(h) / (1 - self.ratio)
-            h = self.conv7(h)
-            if self.dropout_flag == True:
-                h = self.dropout7(h) / (1 - self.ratio)
-            h = self.conv8(h)
-            if self.dropout_flag == True:
-                h = self.dropout8(h) / (1 - self.ratio)
-            h = self.conv9(h)
-            if self.dropout_flag == True:
-                h = self.dropout9(h) / (1 - self.ratio)
+
 
 
         elif self.activation_flag == True:
@@ -120,21 +106,7 @@ class MYFCN(nn.Module):
             h = self.relu4(self.conv4(h))
             if self.dropout_flag == True:
                 h = self.dropout4(h) / (1 - self.ratio)
-            h = self.relu5(self.conv5(h))
-            if self.dropout_flag == True:
-                h = self.dropout5(h) / (1 - self.ratio)
-            h = self.relu6(self.conv6(h))
-            if self.dropout_flag == True:
-                h = self.dropout6(h) / (1 - self.ratio)
-            h = self.relu7(self.conv7(h))
-            if self.dropout_flag == True:
-                h = self.dropout7(h) / (1 - self.ratio)
-            h = self.relu8(self.conv8(h))
-            if self.dropout_flag == True:
-                h = self.dropout8(h) / (1 - self.ratio)
-            h = self.relu9(self.conv9(h))
-            if self.dropout_flag == True:
-                h = self.dropout9(h) / (1 - self.ratio)
+
         
         h = h.view(-1, self.mesh_size[0] * self.mesh_size[1] * self.in_channels)
         h = self.fc0(h)
