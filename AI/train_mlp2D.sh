@@ -28,7 +28,12 @@ python3 train_eq_mlp2D.py -g 0 -d data2000_honshu6464_InstrumentalIntensity/ -o 
     7 階級 :  0 % (total 0)
     8 階級 :  0 % (total 0)
     9 階級 :  0 % (total 0)
-matthews corrcoef 0.2510521150714836
+matthews corrcoef(マスクなし) 0.2510521150714836
+決定係数 -1.5927400338643412
+自由度調整済み決定係数 -1.5927442184331992
+ピアソン相関係数 0.5115963480149376
+RSS 518040.55406100914
+RSE 0.6465658377732413
 """
 #649664 myloss3 exponent=1 weight=(0.51, 0.49) 21*21
 #649665 myloss3 exponent=3 weight=(0.51, 0.49) 21*21
