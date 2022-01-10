@@ -12,7 +12,7 @@ from sklearn.metrics import r2_score
 import numpy as np
 
 from dataset import MyDataSet
-from myc2fc2D import MYFCN
+from myc1fc2D import MYFCN
 #from myloss import MyLoss
 
 import csv
@@ -157,7 +157,7 @@ def main():
 	ax.set_ylim(min(residuals_list), max(residuals_list))
 	ax.set_xlim(min(predict_masked_InstrumentalIntensity_list), max(predict_masked_InstrumentalIntensity_list))
 
-	plt.savefig(args.out + '/ResidualPlot_c2fc2D.png')
+	plt.savefig(args.out + '/ResidualPlot_c1fc2D.png')
 
 	#真値-予測値
 	fig = plt.figure()
@@ -168,7 +168,7 @@ def main():
 	ax.set_ylim(min(targets_masked_InstrumentalIntensity_list), max(targets_masked_InstrumentalIntensity_list))
 	ax.set_xlim(min(predict_masked_InstrumentalIntensity_list), max(predict_masked_InstrumentalIntensity_list))
 
-	plt.savefig(args.out + '/Target-PredictedPlot_c2fc2D.png')
+	plt.savefig(args.out + '/Target-PredictedPlot_c1fc2D.png')
 	"""
 	#csv出力
 	predicted_map = copy.deepcopy(predicted)
