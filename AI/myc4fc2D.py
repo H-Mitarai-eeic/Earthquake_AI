@@ -33,36 +33,6 @@ class MYFCN(nn.Module):
 
         self.dropout3 = nn.Dropout2d(p=ratio)
 
-        self.conv4 = nn.Conv2d(in_channels, in_channels, kernel_size=(mesh_size[1]*2 + 1, mesh_size[0]*2 + 1), padding=(int(mesh_size[1]), int(mesh_size[0])), bias=False)
-        self.relu4 = nn.ReLU(inplace=True)
-
-        self.dropout4 = nn.Dropout2d(p=ratio)
-
-        self.conv5 = nn.Conv2d(in_channels, in_channels, kernel_size=(mesh_size[1]*2 + 1, mesh_size[0]*2 + 1), padding=(int(mesh_size[1]), int(mesh_size[0])), bias=False)
-        self.relu5 = nn.ReLU(inplace=True)
-
-        self.dropout5 = nn.Dropout2d(p=ratio)
-
-        self.conv6 = nn.Conv2d(in_channels, in_channels, kernel_size=(mesh_size[1]*2 + 1, mesh_size[0]*2 + 1), padding=(int(mesh_size[1]), int(mesh_size[0])), bias=False)
-        self.relu6 = nn.ReLU(inplace=True)
-
-        self.dropout6 = nn.Dropout2d(p=ratio)
-
-        self.conv7 = nn.Conv2d(in_channels, in_channels, kernel_size=(mesh_size[1]*2 + 1, mesh_size[0]*2 + 1), padding=(int(mesh_size[1]), int(mesh_size[0])), bias=False)
-        self.relu7 = nn.ReLU(inplace=True)
-
-        self.dropout7 = nn.Dropout2d(p=ratio)
-
-        self.conv8 = nn.Conv2d(in_channels, in_channels, kernel_size=(mesh_size[1]*2 + 1, mesh_size[0]*2 + 1), padding=(int(mesh_size[1]), int(mesh_size[0])), bias=False)
-        self.relu8 = nn.ReLU(inplace=True)
-
-        self.dropout8 = nn.Dropout2d(p=ratio)
-        
-        self.conv9 = nn.Conv2d(in_channels, in_channels, kernel_size=(mesh_size[1]*2 + 1, mesh_size[0]*2 + 1), padding=(int(mesh_size[1]), int(mesh_size[0])), bias=False)
-        self.relu9 = nn.ReLU(inplace=True)
-
-        self.dropout9 = nn.Dropout2d(p=ratio)
-
         self.fc0 = nn.Linear(mesh_size[0] * mesh_size[1] * in_channels, 64*64, bias=False)
 
 
@@ -84,9 +54,6 @@ class MYFCN(nn.Module):
             h = self.conv3(h)
             if self.dropout_flag == True:
                 h = self.dropout3(h) / (1 - self.ratio)
-            h = self.conv4(h)
-            if self.dropout_flag == True:
-                h = self.dropout4(h) / (1 - self.ratio)
 
 
 
@@ -103,9 +70,6 @@ class MYFCN(nn.Module):
             h = self.relu3(self.conv3(h))
             if self.dropout_flag == True:
                 h = self.dropout3(h) / (1 - self.ratio)
-            h = self.relu4(self.conv4(h))
-            if self.dropout_flag == True:
-                h = self.dropout4(h) / (1 - self.ratio)
 
         
         h = h.view(-1, self.mesh_size[0] * self.mesh_size[1] * self.in_channels)

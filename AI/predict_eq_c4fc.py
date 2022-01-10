@@ -2,7 +2,7 @@ import argparse
 import torch
 
 from dataset import MyDataSet
-from myc5fc2D import MYFCN
+from myc4fc2D import MYFCN
 
 import csv
 import copy
@@ -12,7 +12,7 @@ def main():
 	parser = argparse.ArgumentParser(description='Pytorch example: CIFAR-10')
 	parser.add_argument('--batchsize', '-b', type=int, default=100,
 						help='Number of images in each mini-batch')
-	parser.add_argument('--model', '-m', default='result_c5fc2D_1/model_100',
+	parser.add_argument('--model', '-m', default='result_c4fc2D_1/model_100',
 						help='Path to the model for test')
 	parser.add_argument('--output', '-o', default='data100/',
 						help='Root directory of outputfile')					

@@ -50,7 +50,8 @@ def main():
 	mesh_size = (64, 64, 10)
 	data_channels = 2
 	depth_max = 800
-	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size)
+	activation_flag = False
+	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size, activation_flag=activation_flag)
 	# Load designated network weight
 	print("loading Model...")
 	# Set model to GPU
