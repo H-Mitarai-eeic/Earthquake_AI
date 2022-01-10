@@ -9,4 +9,4 @@ python3 train_eq_c1fc3_2D.py -g 0 -d data2000_honshu6464_InstrumentalIntensity/ 
 #652648 result_c1fc3_2D_1/ dropout=False activation_flag = False
 #652649 result_c1fc3_2D_2/ dropout=False activation_flag = True
 #652650 result_c1fc3_2D_3/ dropout=True activation_flag = False
-#652651 result_c1fc3_2D_4/ dropout=True activation_flag = True
+#652761 result_c1fc3_2D_4/ dropout=True activation_flag = True
