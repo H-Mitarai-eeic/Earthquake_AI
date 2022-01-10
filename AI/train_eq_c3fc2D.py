@@ -11,7 +11,7 @@ from torchvision import datasets, transforms
 from dataset import MyDataSet
 from myloss import MyLoss
 from myloss import MyLoss3
-from myc4fc2D import MYFCN
+from myc3fc2D import MYFCN
 
 from calc_error import Calc_Error
 
@@ -37,7 +37,7 @@ def main():
 	parser.add_argument('--mask', '-mask', default='ObservationPointsMap_honshu6464.csv',
 						help='Root directory of dataset')
 	args = parser.parse_args()
-	print("train_eq_c4fc2D")
+	print("train_eq_c3fc2D")
 	print("output: " ,args.out)
 	print("dataset: ", args.dataset)
 	print("mask: ", args.mask)
@@ -59,7 +59,7 @@ def main():
 	stride = None
 	dropout_flag = True
 	dropout_ratio = 0.5
-	activation_flag = True
+	activation_flag = True	
 	print("mesh_size: ", mesh_size)
 	print("data_channels", data_channels)
 	print("depth_max", depth_max)
@@ -250,7 +250,7 @@ def main():
 	ax.set_ylabel("Loss")
 	ax.set_ylim(0, max(loss_val_list + loss_train_list))
 
-	plt.savefig(args.out + '/LOSS_C4FC.png')
+	plt.savefig(args.out + '/LOSS_C3FC.png')
 	
 	fig = plt.figure()
 	ax = fig.add_subplot(1, 1, 1)
@@ -261,7 +261,7 @@ def main():
 	ax.set_ylabel("E[error]")
 	ax.set_ylim(min(E_err_val_list + E_err_train_list), max(E_err_val_list + E_err_train_list))
 
-	plt.savefig(args.out + '/Mean_Error_C4FC.png')
+	plt.savefig(args.out + '/Mean_Error_C3FC.png')
 
 	fig = plt.figure()
 	ax = fig.add_subplot(1, 1, 1)
