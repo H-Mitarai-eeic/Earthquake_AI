@@ -22,6 +22,11 @@ class MYFCN(nn.Module):
 
         self.dropout1 = nn.Dropout2d(p=ratio)
 
+        self.fc2 = nn.Linear(32*32, 32*32, bias=False)
+        self.relu2 = nn.ReLU(inplace=True)
+
+        self.dropout2 = nn.Dropout2d(p=ratio)
+
         self.fc_end = nn.Linear(32 * 32, 64*64, bias=False)
 
 
@@ -47,11 +52,17 @@ class MYFCN(nn.Module):
             h = self.fc1(h)
             if self.dropout_flag == True:
                 h = self.dropout1(h) / (1 - self.ratio)
+            h = self.fc2(h)
+            if self.dropout_flag == True:
+                h = self.dropout2(h) / (1 - self.ratio)
 
         elif self.activation_flag == True:
             h = self.relu1(self.fc1(h))
             if self.dropout_flag == True:
                 h = self.dropout1(h) / (1 - self.ratio)
+            h = self.relu2(self.fc2(h))
+            if self.dropout_flag == True:
+                h = self.dropout2(h) / (1 - self.ratio)
 
         h = self.fc_end(h)
 
