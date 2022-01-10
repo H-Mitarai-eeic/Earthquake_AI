@@ -36,6 +36,9 @@ def main():
 						help='Root directory of dataset')
 	parser.add_argument('--mask', '-mask', default='ObservationPointsMap_honshu6464.csv',
 						help='Root directory of dataset')
+	parser.add_argument('-expand', '-expand', default='ObservationPointsMap_honshu6464.csv',
+						help='Root directory of dataset')
+
 	args = parser.parse_args()
 	print("train_eq_mlp2D")
 	print("output: " ,args.out)
@@ -50,12 +53,12 @@ def main():
 	mesh_size = (64, 64)
 	data_channels = 2
 	depth_max = 600
-	expand = 10
+	expand = int(args.expand)
 	lr = 0.1
 	#weight = (0.0, 0.0, 1.0)
-	weight = (0.8, 0.2)
+	weight = (1, 0)
 	#weight = (0.1,)*10
-	exponent = 3
+	exponent = 2
 	kernel_size = 2
 	stride = None
 	print("mesh_size: ", mesh_size)
