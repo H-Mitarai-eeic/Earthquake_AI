@@ -11,7 +11,7 @@ from torchvision import datasets, transforms
 from dataset import MyDataSet
 from myloss import MyLoss
 from myloss import MyLoss3
-from myc1fc2_D import MYFCN
+from myc1fc2_2D import MYFCN
 
 from calc_error import Calc_Error
 
