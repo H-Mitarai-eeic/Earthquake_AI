@@ -167,7 +167,7 @@ def main():
 	ax.set_ylim(min(residuals_list), max(residuals_list))
 	ax.set_xlim(min(predict_masked_InstrumentalIntensity_list), max(predict_masked_InstrumentalIntensity_list))
 
-	plt.savefig(args.out + '/ResidualPlot_polyCFC.png')
+	plt.savefig(args.out + '/ResidualPlot_c1fc3.png')
 
 	#真値-予測値
 	fig = plt.figure()
@@ -178,7 +178,7 @@ def main():
 	ax.set_ylim(min(targets_masked_InstrumentalIntensity_list), max(targets_masked_InstrumentalIntensity_list))
 	ax.set_xlim(min(predict_masked_InstrumentalIntensity_list), max(predict_masked_InstrumentalIntensity_list))
 
-	plt.savefig(args.out + '/Target-PredictedPlot_mlp.png')
+	plt.savefig(args.out + '/Target-PredictedPlot_c1fc3.png')
 	"""
 	#csv出力
 	predicted_map = copy.deepcopy(predicted)
