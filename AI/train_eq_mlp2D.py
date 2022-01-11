@@ -36,7 +36,7 @@ def main():
 						help='Root directory of dataset')
 	parser.add_argument('--mask', '-mask', default='ObservationPointsMap_honshu6464.csv',
 						help='Root directory of dataset')
-	parser.add_argument('-expand', '-expand', default='ObservationPointsMap_honshu6464.csv',
+	parser.add_argument('-expand', '-expand', default=10,
 						help='Root directory of dataset')
 
 	args = parser.parse_args()

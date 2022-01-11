@@ -34,6 +34,8 @@ def main():
 						help='Erthquake ID for input/output files')
 	parser.add_argument('--mask', '-mask', default='ObservationPointsMap_honshu6464.csv',
 						help='Root directory of dataset')
+	parser.add_argument('-expand', '-expand', default=10,
+						help='expantion')
 	args = parser.parse_args()
 
 	print('GPU: {}'.format(args.gpu))
@@ -49,7 +51,13 @@ def main():
 	# Set up a neural network to test
 	mesh_size = (64, 64, 10)
 	data_channels = 2
-	depth_max = 800
+	depth_max = 600
+	expand = int(args.expand)
+	print("mesh_size: ", mesh_size)
+	print("data_channels", data_channels)
+	print("depth_max", depth_max)
+	print("expand", expand)
+	print("")
 	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size)
 	# Load designated network weight
 	print("loading Model...")
@@ -87,7 +95,7 @@ def main():
 	with torch.no_grad():
 		# 多分1つしかテストしないようになっているはず
 		for data in testloader:
-			print("test #", counter)
+			#print("test #", counter)
 			# Get the inputs; data is a list of [inputs, labels]
 			images, labels = data
 			if args.gpu >= 0:
@@ -135,6 +143,7 @@ def main():
 
 	#matthews corrcoef
 	print("matthews corrcoef(マスクなし)", matthews_corrcoef(np.array(targets_list), np.array(predict_list)))
+	print("matthews corrcoef(マスクあり)", matthews_corrcoef(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
 	#決定係数
 	print("決定係数", r2_score(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
 	#自由度調整済み決定係数
@@ -145,7 +154,10 @@ def main():
 	print("RSS", RSS(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
 	#RSE
 	print("RSE", RSE(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list, data_channels))
-	
+	#L1 LOSS
+	print("L1 LOSS", L1_LOSS(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
+	#MAE
+	print("MAE", MAE(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
 	#residual plot
 	fig = plt.figure()
 	ax = fig.add_subplot(1, 1, 1)
@@ -198,18 +210,32 @@ def InstrumentalIntensity2SesimicIntensity(II):
 		return 8	#6+
 	else:
 		return 9
+
 def adj_r2_score(y_true, y_pred, p=2):
     return 1-(1-r2_score(y_true, y_pred)) * (len(y_true)-1) / (len(y_true) - p - 1)
+
 def RSS(y_true, y_pred):
 	rss = 0
 	for i in range(len(y_true)):
 		rss += (y_true[i] - y_pred[i]) ** 2
 	return rss
+
 def RSE(y_true, y_pred, p=2):
 	rss = RSS(y_true, y_pred)
 	n = len(y_true)
 	rse = (rss / (n-p-1))** 0.5
 	return rse
-		
+
+def L1_LOSS(y_true, y_pred):
+	l1_loss = 0
+	for i in range(len(y_true)):
+		l1_loss += abs(y_true[i] - y_pred[i])
+	return l1_loss
+
+def MAE(y_true, y_pred):
+	l1_loss = L1_LOSS(y_true, y_pred)
+	N = len(y_true)
+	return l1_loss / N
+
 if __name__ == '__main__':
 	main()
