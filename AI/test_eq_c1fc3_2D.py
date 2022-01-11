@@ -47,7 +47,7 @@ def main():
 		mask = [[int(row2) for row2 in row] for row in reader]
 
 	# Set up a neural network to test
-	mesh_size = (64, 64, 10)
+	mesh_size = (64, 64)
 	data_channels = 2
 	depth_max = 600
 	activation_flag = False
@@ -81,6 +81,9 @@ def main():
 	targets_list = []
 	predict_list = []
 
+	targets_masked_list = []
+	predict_masked_list = []
+
 	residuals_list= []
 	targets_masked_InstrumentalIntensity_list = []
 	predict_masked_InstrumentalIntensity_list = []
@@ -88,7 +91,7 @@ def main():
 	with torch.no_grad():
 		# 多分1つしかテストしないようになっているはず
 		for data in testloader:
-			print("test #", counter)
+			#print("test #", counter)
 			# Get the inputs; data is a list of [inputs, labels]
 			images, labels = data
 			if args.gpu >= 0:
@@ -112,6 +115,10 @@ def main():
 							targets_masked_InstrumentalIntensity_list.append(labels[B][Y][X].item())
 							predict_masked_InstrumentalIntensity_list.append(outputs[B][Y][X].item())
 							residuals_list.append(labels[B][Y][X].item() - outputs[B][Y][X].item())
+
+							targets_masked_list.append(InstrumentalIntensity2SesimicIntensity(labels[B][Y][X].item()))
+							predict_masked_list.append(predicted[B][Y][X])
+
 			
 			for B in range(len(labels)):
 				for Y in range(len(labels[B])):
@@ -136,9 +143,9 @@ def main():
 
 	#matthews corrcoef
 	print("matthews corrcoef(マスクなし)", matthews_corrcoef(np.array(targets_list), np.array(predict_list)))
+	print("matthews corrcoef(マスクあり)", matthews_corrcoef(targets_masked_list, predict_masked_list))
 	#決定係数
 	print("決定係数", r2_score(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
-		#print("my決定係数", myR2(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
 	#自由度調整済み決定係数
 	print("自由度調整済み決定係数", adj_r2_score(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list, data_channels))
 	#ピアソン相関係数
@@ -147,7 +154,10 @@ def main():
 	print("RSS", RSS(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
 	#RSE
 	print("RSE", RSE(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list, data_channels))
-	
+	#L1 LOSS
+	print("L1 LOSS", L1_LOSS(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
+	#MAE
+	print("MAE", MAE(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
 	#residual plot
 	fig = plt.figure()
 	ax = fig.add_subplot(1, 1, 1)
@@ -157,7 +167,7 @@ def main():
 	ax.set_ylim(min(residuals_list), max(residuals_list))
 	ax.set_xlim(min(predict_masked_InstrumentalIntensity_list), max(predict_masked_InstrumentalIntensity_list))
 
-	plt.savefig(args.out + '/ResidualPlot_c1fc3_2D.png')
+	plt.savefig(args.out + '/ResidualPlot_polyCFC.png')
 
 	#真値-予測値
 	fig = plt.figure()
@@ -168,11 +178,10 @@ def main():
 	ax.set_ylim(min(targets_masked_InstrumentalIntensity_list), max(targets_masked_InstrumentalIntensity_list))
 	ax.set_xlim(min(predict_masked_InstrumentalIntensity_list), max(predict_masked_InstrumentalIntensity_list))
 
-	plt.savefig(args.out + '/Target-PredictedPlot_c1fc3_2D.png')
+	plt.savefig(args.out + '/Target-PredictedPlot_mlp.png')
 	"""
 	#csv出力
 	predicted_map = copy.deepcopy(predicted)
-
 	#print(predicted_map)
 	with open(args.output + 'predicted/' + args.ID + '_predicted.csv', "w") as fo:
 		writer = csv.writer(fo)
@@ -200,25 +209,32 @@ def InstrumentalIntensity2SesimicIntensity(II):
 		return 8	#6+
 	else:
 		return 9
+
 def adj_r2_score(y_true, y_pred, p=2):
     return 1-(1-r2_score(y_true, y_pred)) * (len(y_true)-1) / (len(y_true) - p - 1)
+
 def RSS(y_true, y_pred):
 	rss = 0
 	for i in range(len(y_true)):
 		rss += (y_true[i] - y_pred[i]) ** 2
 	return rss
+
 def RSE(y_true, y_pred, p=2):
 	rss = RSS(y_true, y_pred)
 	n = len(y_true)
 	rse = (rss / (n-p-1))** 0.5
 	return rse
-def myR2(y_true, y_pred):
-	rss = RSS(y_true, y_pred)
-	y_true_mean = sum(y_true)/len(y_true)
-	tss = 0
+
+def L1_LOSS(y_true, y_pred):
+	l1_loss = 0
 	for i in range(len(y_true)):
-		tss += (y_true[i] - y_true_mean) ** 2
-	return 1 - rss/tss
-		
+		l1_loss += abs(y_true[i] - y_pred[i])
+	return l1_loss
+
+def MAE(y_true, y_pred):
+	l1_loss = L1_LOSS(y_true, y_pred)
+	N = len(y_true)
+	return l1_loss / N
+
 if __name__ == '__main__':
 	main()
