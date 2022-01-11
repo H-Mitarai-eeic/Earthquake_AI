@@ -49,7 +49,7 @@ def main():
 		mask = [[int(row2) for row2 in row] for row in reader]
 
 	# Set up a neural network to test
-	mesh_size = (64, 64, 10)
+	mesh_size = (64, 64)
 	data_channels = 2
 	depth_max = 600
 	expand = int(args.expand)
@@ -88,6 +88,9 @@ def main():
 	targets_list = []
 	predict_list = []
 
+	targets_masked_list = []
+	predict_masked_list = []
+
 	residuals_list= []
 	targets_masked_InstrumentalIntensity_list = []
 	predict_masked_InstrumentalIntensity_list = []
@@ -119,6 +122,10 @@ def main():
 							targets_masked_InstrumentalIntensity_list.append(labels[B][Y][X].item())
 							predict_masked_InstrumentalIntensity_list.append(outputs[B][Y][X].item())
 							residuals_list.append(labels[B][Y][X].item() - outputs[B][Y][X].item())
+
+							targets_masked_list.append(InstrumentalIntensity2SesimicIntensity(labels[B][Y][X].item()))
+							predict_masked_list.append(predicted[B][Y][X])
+
 			
 			for B in range(len(labels)):
 				for Y in range(len(labels[B])):
@@ -143,7 +150,7 @@ def main():
 
 	#matthews corrcoef
 	print("matthews corrcoef(マスクなし)", matthews_corrcoef(np.array(targets_list), np.array(predict_list)))
-	print("matthews corrcoef(マスクあり)", matthews_corrcoef(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
+	print("matthews corrcoef(マスクあり)", matthews_corrcoef(targets_masked_list, predict_masked_list))
 	#決定係数
 	print("決定係数", r2_score(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list))
 	#自由度調整済み決定係数
