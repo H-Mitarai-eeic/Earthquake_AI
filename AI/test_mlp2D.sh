@@ -29,4 +29,4 @@ do
     python3 test_eq_mlp2D.py -g ${GPU} -b ${MINIBATCH} -d ${DATA} -m ${MODELROOT}${MODEL} -o ${MODELROOT} -expand ${EXPAND}
 done
 
-#652803 expand 0 ~ 31のテスト
+#652838 expand 0 ~ 31のテスト

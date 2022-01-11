@@ -72,7 +72,7 @@ def main():
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor()])
-	testset = MyDataSet(channels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID, mesh_size=mesh_size, depth_max=depth_max)
+	testset = MyDataSet(channels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID, mesh_size=mesh_size, depth_max=depth_max, expand=expand)
 	testloader = torch.utils.data.DataLoader(testset, batch_size=args.batchsize, shuffle=False, num_workers=2)
 
 	# Test

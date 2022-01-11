@@ -4,10 +4,19 @@
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
-python3 train_eq_mlp2D.py -g 0 -d data2000_honshu6464_InstrumentalIntensity/ -o result_mlp2D_37/ -b 100 -e 100 -expand 31
+GPU=0
+
+MINIBATCH=100
+EPOCH=100
+
+EXPAND=${1}
+DATA="data_for_hokkaido_regression/"
+OUT="result_mlp2D_""`expr 6 + ${EXPAND}`"
+
+python3 train_eq_mlp2D.py -g ${GPU} -d ${DATA} -o ${OUT} -b ${MINIBATCH} -e ${EPOCH} -expand ${EXPAND}
 
 #649663 myloss3 exponent=2 weight=(1, 0) 21*21  output:  result_mlp2D_1/
-"""
+<< COMMENTOUT
 予測震度と実際の震度のずれの分布
    -9 階級 :  0 % (total 0)
    -8 階級 :  0 % (total 0)
@@ -34,7 +43,8 @@ matthews corrcoef(マスクなし) 0.2510521150714836
 ピアソン相関係数 0.5115963480149376
 RSS 518040.55406100914
 RSE 0.6465658377732413
-"""
+COMMENTOUT
+
 #649664 myloss3 exponent=1 weight=(0.51, 0.49) 21*21 output:  result_mlp2D_2/
 #649665 myloss3 exponent=3 weight=(0.51, 0.49) 21*21 output:  result_mlp2D_3/
 #649666 myloss3 exponent=1 weight=(0.8, 0.2) 21*21 output:  result_mlp2D_4/
