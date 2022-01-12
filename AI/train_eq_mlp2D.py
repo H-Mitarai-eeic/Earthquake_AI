@@ -275,15 +275,15 @@ def main():
 	plt.savefig(args.out + '/Variance_of_Error_MLP.png')
 
 	# csv保存
-	with open(args.out + "LOSS.csv", "w", newline='') as fo:
+	with open(args.out + "/LOSS.csv", "w", newline='') as fo:
 		writer = csv.writer(fo)
 		writer.writerows([["Training loss"] + loss_train_list, ["Validation loss"] + loss_val_list])
 		fo.close()
-	with open(args.out + "Mean_error.csv", "w", newline='') as fo:
+	with open(args.out + "/Mean_error.csv", "w", newline='') as fo:
 		writer = csv.writer(fo)
 		writer.writerows([["Mean_error(Training)"] + E_err_train_list, ["Mean_error(validation)"] + E_err_val_list])
 		fo.close()
-	with open(args.out + "Variance_of_Error.csv", "w", newline='') as fo:
+	with open(args.out + "/Variance_of_Error.csv", "w", newline='') as fo:
 		writer = csv.writer(fo)
 		writer.writerows([["var[err](training)"] + var_err_train_list, ["var[err](validation)"] + var_err_val_list])
 		fo.close()
