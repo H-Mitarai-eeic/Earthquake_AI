@@ -4,16 +4,17 @@ import torch.nn as nn
 
 
 class MYFCN(nn.Module):
-    def __init__(self, in_channels=2, mesh_size=(64, 64), ratio=0.5, dropout_flag=False, activation_flag=False):
+    def __init__(self, in_channels=2, mesh_size=(64, 64), ratio=0.5, dropout_flag=False, activation_flag=False, kernel_size=129):
         super(MYFCN, self).__init__()
         self.mesh_size = mesh_size
         self.in_channels = in_channels
         self.ratio = ratio
         self.dropout_flag = dropout_flag
         self.activation_flag = activation_flag
+        self.kernel_size=kernel_size
         #self.conv0 = nn.Conv2d(in_channels, in_channels, kernel_size=(mesh_size[1]+1, mesh_size[0]+1), padding=(int(mesh_size[1]/2), int(mesh_size[0]/2)), bias=False)
 
-        self.conv0 = nn.Conv2d(in_channels, in_channels, kernel_size=(mesh_size[1]*2 + 1, mesh_size[0]*2 + 1), padding=(int(mesh_size[1]), int(mesh_size[0])), bias=False)
+        self.conv0 = nn.Conv2d(in_channels, in_channels, kernel_size=kernel_size, padding=int((kernel_size - 1)/2), bias=False)
         self.relu0 = nn.ReLU(inplace=True)
 
         self.dropout0 = nn.Dropout2d(p=ratio)

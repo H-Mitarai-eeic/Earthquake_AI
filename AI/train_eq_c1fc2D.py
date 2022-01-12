@@ -36,6 +36,8 @@ def main():
 						help='Root directory of dataset')
 	parser.add_argument('--mask', '-mask', default='ObservationPointsMap_honshu6464.csv',
 						help='Root directory of dataset')
+	parser.add_argument('--kernel_size', '-kernel_size', default=129,
+						help='Root directory of dataset')
 	args = parser.parse_args()
 	print("train_eq_c1fc2D")
 	print("output: " ,args.out)
@@ -55,11 +57,11 @@ def main():
 	weight = (1, 0)
 	#weight = (0.1,)*10
 	exponent = 2
-	kernel_size = 2
+	kernel_size = int(args.kernel_size)
 	stride = None
-	dropout_flag = True
+	dropout_flag = False
 	dropout_ratio = 0.5
-	activation_flag = True	
+	activation_flag = False
 	print("mesh_size: ", mesh_size)
 	print("data_channels", data_channels)
 	print("depth_max", depth_max)
@@ -71,7 +73,7 @@ def main():
 	print("dropout:", dropout_flag, dropout_ratio)
 	print("activation function flag:", activation_flag)
 	print('')
-	net = MYFCN(mesh_size=mesh_size, in_channels=data_channels, ratio=dropout_ratio, dropout_flag=dropout_flag, activation_flag=activation_flag)
+	net = MYFCN(mesh_size=mesh_size, in_channels=data_channels, ratio=dropout_ratio, dropout_flag=dropout_flag, activation_flag=activation_flag, kernel_size=kernel_size)
 
 	# Setup a loss and an optimizer
 	#criterion = MyLoss(kernel_size=kernel_size, stride=stride)
@@ -275,15 +277,15 @@ def main():
 	plt.savefig(args.out + '/Variance_of_Error_CFC.png')
 
 	# csv保存
-	with open(args.out + "LOSS.csv", "w", newline='') as fo:
+	with open(args.out + "/LOSS.csv", "w", newline='') as fo:
 		writer = csv.writer(fo)
 		writer.writerows([["Training loss"] + loss_train_list, ["Validation loss"] + loss_val_list])
 		fo.close()
-	with open(args.out + "Mean_error.csv", "w", newline='') as fo:
+	with open(args.out + "/Mean_error.csv", "w", newline='') as fo:
 		writer = csv.writer(fo)
 		writer.writerows([["Mean_error(Training)"] + E_err_train_list, ["Mean_error(validation)"] + E_err_val_list])
 		fo.close()
-	with open(args.out + "Variance_of_Error.csv", "w", newline='') as fo:
+	with open(args.out + "/Variance_of_Error.csv", "w", newline='') as fo:
 		writer = csv.writer(fo)
 		writer.writerows([["var[err](training)"] + var_err_train_list, ["var[err](validation)"] + var_err_val_list])
 		fo.close()

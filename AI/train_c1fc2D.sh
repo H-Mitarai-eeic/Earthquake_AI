@@ -4,7 +4,17 @@
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
-python3 train_eq_c1fc2D.py -g 0 -d data2000_honshu6464_InstrumentalIntensity/ -o result_c1fc2D_4/ -b 100 -e 100
+GPU=0
+
+MINIBATCH=100
+EPOCH=100
+
+KERNEL_SIZE=${1}
+DATA="data_for_hokkaido_regression/"
+OUT="result_c1fc2D_karnel_""${KERNEL_SIZE}""/"
+
+mkdir ${OUT}
+python3 train_eq_c1fc2D.py -g ${GPU} -d ${DATA} -o ${OUT} -b ${MINIBATCH} -e ${EPOCH} -kernel_size ${KERNEL_SIZE}
 
 #652628 result_c1fc2D_1/ dropout=False activation_flag = False
 #652629 result_c1fc2D_2/ dropout=False activation_flag = True
