@@ -1,8 +1,8 @@
 #!/bin/sh
 
-#HEAD="./result_c1fc2D_karnel_"
-HEAD="./result_mlp2D_"
-for i in `seq 6 9`
+HEAD="./result_c1fc2D_karnel_"
+#HEAD="./result_mlp2D_"
+for i in `seq 51 89`
 do
     LOSSFILE="${HEAD}""${i}""LOSS.csv"
     MEANFILE="${HEAD}""${i}""Mean_error.csv"
