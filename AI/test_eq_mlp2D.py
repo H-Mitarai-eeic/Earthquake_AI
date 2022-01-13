@@ -163,7 +163,7 @@ def main():
 	l1_loss = L1_LOSS(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list)
 	mae = MAE(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list)
 	
-	print(mcc_with_mask, mcc_without_mask, r2, adj_r2, pcc, me, rss, mse, rmse, rse, l1_loss, mae, seq=',')
+	print(expand, mcc_with_mask, mcc_without_mask, r2, adj_r2, pcc, me, rss, mse, rmse, rse, l1_loss, mae, sep=',')
 	"""
 		#matthews corrcoef
 		print("matthews corrcoef(マスクなし)", mcc_with_mask)

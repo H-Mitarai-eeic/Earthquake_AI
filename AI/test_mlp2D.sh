@@ -9,7 +9,7 @@ MINIBATCH=100
 DATA="data_for_hokkaido_regression/"
 
 EXPAND_MIN=0
-EXPAND_MAX=1
+EXPAND_MAX=23
 
 MODELROOT_START_NUM=6
 
@@ -34,3 +34,4 @@ do
 done
 
 #652838 expand 0 ~ 31のテスト
+#654316 expand 0 ~ 23
