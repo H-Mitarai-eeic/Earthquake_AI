@@ -24,6 +24,8 @@ def main():
 						help='Erthquake ID for input/output files')
 	parser.add_argument('--mag', '-mag', default=9.0,
 						help='Erthquake ID for input/output files')
+	parser.add_argument('--kernel_size', '-kernel_size', default=129,
+						help='Root directory of dataset')
 
 	args = parser.parse_args()
 
@@ -31,7 +33,8 @@ def main():
 	mesh_size = (64, 64)
 	data_channels = 2
 	depth_max = 600
-	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size)
+	kernel_size = int(args.kernel_size)
+	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size, kernel_size=kernel_size)
 	# Load designated network weight
 	print("loading Model...")
 	net.load_state_dict(torch.load(args.model, map_location=torch.device('cpu')))

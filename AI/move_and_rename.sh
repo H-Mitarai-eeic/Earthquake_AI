@@ -2,7 +2,7 @@
 
 HEAD="./result_c1fc2D_karnel_"
 #HEAD="./result_mlp2D_"
-for i in `seq 51 89`
+for i in `seq 71 97`
 do
     LOSSFILE="${HEAD}""${i}""LOSS.csv"
     MEANFILE="${HEAD}""${i}""Mean_error.csv"
