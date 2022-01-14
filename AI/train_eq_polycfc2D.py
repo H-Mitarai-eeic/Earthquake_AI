@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
 from dataset import MyDataSet
-from myloss import MyLoss
+#from myloss import MyLoss
 from myloss import MyLoss3
 from mycfc2D import MYFCN
 
@@ -36,6 +36,13 @@ def main():
 						help='Root directory of dataset')
 	parser.add_argument('--mask', '-mask', default='ObservationPointsMap_honshu6464.csv',
 						help='Root directory of dataset')
+	parser.add_argument('--mag_degree', '-mag_d', default=1,
+						help='Root directory of dataset')
+	parser.add_argument('--depth_degree', '-depth_d', default=1,
+						help='Root directory of dataset')
+	parser.add_argument('--cross_degree', '-cross_d', default=0,
+						help='Root directory of dataset')
+
 	args = parser.parse_args()
 	print("train_eq_polycfc2D")
 	print("output: " ,args.out)
@@ -48,23 +55,29 @@ def main():
 
 	# Set up a neural network to train
 	mesh_size = (64, 64)
-	data_channels = 12
+	mag_degree = int(args.mag_degree)
+	depth_degree = int(args.depth_degree)
+	cross_degree = int(args.cross_degree)
+	data_channels = mag_degree + depth_degree + (cross_degree // 2) + 1
 	depth_max = 600
 	lr = 0.1
 	#weight = (0.0, 0.0, 1.0)
 	weight = (1, 0)
 	#weight = (0.1,)*10
 	exponent = 2
-	kernel_size = 2
-	stride = None
+	#kernel_size = 2
+	#stride = None
 	print("mesh_size: ", mesh_size)
+	print("mag_degree: ", mag_degree)
+	print("depth_degree: ", depth_degree)
+	print("cross_degree: ", cross_degree)
 	print("data_channels", data_channels)
 	print("depth_max", depth_max)
 	print("learning rate: ", lr)
 	print("weight: ", weight)
-	print("exponent: ", exponent)
-	print("kernel_size: ", kernel_size)
-	print("stride: ", stride)
+	#print("exponent: ", exponent)
+	#print("kernel_size: ", kernel_size)
+	#print("stride: ", stride)
 	print('')
 	net = MYFCN(mesh_size=mesh_size, in_channels=data_channels)
 
@@ -76,7 +89,7 @@ def main():
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor()])
-	trainvalset = MyDataSet(channels=data_channels, root=args.dataset, train=True, transform=transform, mesh_size=mesh_size, depth_max=depth_max)
+	trainvalset = MyDataSet(channels=data_channels, root=args.dataset, train=True, transform=transform, mesh_size=mesh_size, depth_max=depth_max, mag_degree=mag_degree, depth_degree=depth_degree, cross_degree=cross_degree)
 
 	# Load designated network weight
 	if args.resume:
@@ -245,7 +258,7 @@ def main():
 	ax.set_ylabel("Loss")
 	ax.set_ylim(0, max(loss_val_list + loss_train_list))
 
-	plt.savefig(args.out + '/LOSS_CFC.png')
+	plt.savefig(args.out + '/LOSS_polyCFC.png')
 	
 	fig = plt.figure()
 	ax = fig.add_subplot(1, 1, 1)
@@ -256,7 +269,7 @@ def main():
 	ax.set_ylabel("E[error]")
 	ax.set_ylim(min(E_err_val_list + E_err_train_list), max(E_err_val_list + E_err_train_list))
 
-	plt.savefig(args.out + '/Mean_Error_CFC.png')
+	plt.savefig(args.out + '/Mean_Error_polyCFC.png')
 
 	fig = plt.figure()
 	ax = fig.add_subplot(1, 1, 1)
@@ -267,18 +280,18 @@ def main():
 	ax.set_ylabel("Standard Deviation of Error")
 	ax.set_ylim(0, max(var_err_val_list + var_err_train_list))
 
-	plt.savefig(args.out + '/Variance_of_Error_CFC.png')
+	plt.savefig(args.out + '/Variance_of_Error_polyCFC.png')
 
 	# csv保存
-	with open(args.out + "LOSS.csv", "w", newline='') as fo:
+	with open(args.out + "/LOSS.csv", "w", newline='') as fo:
 		writer = csv.writer(fo)
 		writer.writerows([["Training loss"] + loss_train_list, ["Validation loss"] + loss_val_list])
 		fo.close()
-	with open(args.out + "Mean_error.csv", "w", newline='') as fo:
+	with open(args.out + "/Mean_error.csv", "w", newline='') as fo:
 		writer = csv.writer(fo)
 		writer.writerows([["Mean_error(Training)"] + E_err_train_list, ["Mean_error(validation)"] + E_err_val_list])
 		fo.close()
-	with open(args.out + "Variance_of_Error.csv", "w", newline='') as fo:
+	with open(args.out + "/Variance_of_Error.csv", "w", newline='') as fo:
 		writer = csv.writer(fo)
 		writer.writerows([["var[err](training)"] + var_err_train_list, ["var[err](validation)"] + var_err_val_list])
 		fo.close()
