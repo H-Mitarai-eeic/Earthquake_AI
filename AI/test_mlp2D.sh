@@ -9,9 +9,9 @@ MINIBATCH=100
 DATA="data_for_hokkaido_regression/"
 
 EXPAND_MIN=0
-EXPAND_MAX=23
+EXPAND_MAX=31
 
-MODELROOT_START_NUM=6
+#MODELROOT_START_NUM=6
 
 for i in `seq ${EXPAND_MIN} ${EXPAND_MAX}`
 do

@@ -91,9 +91,16 @@ def main():
 	targets_masked_list = []
 	predict_masked_list = []
 
-	residuals_list= []
+	targets_t_masked_list = []
+	predict_t_masked_list = []
+
+	residuals_masked_list= []
 	targets_masked_InstrumentalIntensity_list = []
 	predict_masked_InstrumentalIntensity_list = []
+
+	residuals_t_masked_list= []
+	targets_t_masked_InstrumentalIntensity_list = []
+	predict_t_masked_InstrumentalIntensity_list = []
 
 	with torch.no_grad():
 		# 多分1つしかテストしないようになっているはず
@@ -114,18 +121,23 @@ def main():
 			for B in range(len(outputs)):
 				for Y in range(len(outputs[B])):
 					for X in range(len(outputs[B][Y])):
-#						if mask[Y][X] > 0:
 						predicted[B][Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[B][Y][X].item())
 						targets_list.append(InstrumentalIntensity2SesimicIntensity(labels[B][Y][X].item()))
 						predict_list.append(predicted[B][Y][X])
 						if mask[Y][X] > 0:
 							targets_masked_InstrumentalIntensity_list.append(labels[B][Y][X].item())
 							predict_masked_InstrumentalIntensity_list.append(outputs[B][Y][X].item())
-							residuals_list.append(labels[B][Y][X].item() - outputs[B][Y][X].item())
+							residuals_masked_list.append(labels[B][Y][X].item() - outputs[B][Y][X].item())
 
 							targets_masked_list.append(InstrumentalIntensity2SesimicIntensity(labels[B][Y][X].item()))
 							predict_masked_list.append(predicted[B][Y][X])
+						if labels[B][Y][X].item() > 0.1:
+							targets_t_masked_InstrumentalIntensity_list.append(labels[B][Y][X].item())
+							predict_t_masked_InstrumentalIntensity_list.append(outputs[B][Y][X].item())
+							residuals_t_masked_list.append(labels[B][Y][X].item() - outputs[B][Y][X].item())
 
+							targets_t_masked_list.append(InstrumentalIntensity2SesimicIntensity(labels[B][Y][X].item()))
+							predict_t_masked_list.append(predicted[B][Y][X])
 			
 			for B in range(len(labels)):
 				for Y in range(len(labels[B])):
@@ -145,13 +157,15 @@ def main():
 	
 	# Show accuracy
 	"""
-	print("予測震度と実際の震度のずれの分布")
-	for i in range(19):
-		print('%5s 階級 : %2d %% (total %d)' % (classes_diff_ver[i], 100 * class_diff[i] / total, class_diff[i]))
+		print("予測震度と実際の震度のずれの分布")
+		for i in range(19):
+			print('%5s 階級 : %2d %% (total %d)' % (classes_diff_ver[i], 100 * class_diff[i] / total, class_diff[i]))
 	"""
 	#統計量
-	mcc_with_mask = matthews_corrcoef(np.array(targets_list), np.array(predict_list))
-	mcc_without_mask = matthews_corrcoef(targets_masked_list, predict_masked_list)
+	mcc_without_mask = matthews_corrcoef(np.array(targets_list), np.array(predict_list))
+	mcc_with_mask = matthews_corrcoef(targets_masked_list, predict_masked_list)
+	mcc_with_t_mask = matthews_corrcoef(targets_t_masked_list, predict_t_masked_list)
+
 	r2 = r2_score(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list)
 	adj_r2 = adj_r2_score(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list, data_channels)
 	pcc = np.corrcoef(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list)[0, 1]
@@ -162,12 +176,23 @@ def main():
 	rse = RSE(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list, data_channels)
 	l1_loss = L1_LOSS(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list)
 	mae = MAE(targets_masked_InstrumentalIntensity_list, predict_masked_InstrumentalIntensity_list)
+
+	r2_t = r2_score(targets_t_masked_InstrumentalIntensity_list, predict_t_masked_InstrumentalIntensity_list)
+	adj_r2_t = adj_r2_score(targets_t_masked_InstrumentalIntensity_list, predict_t_masked_InstrumentalIntensity_list, data_channels)
+	pcc_t = np.corrcoef(targets_t_masked_InstrumentalIntensity_list, predict_t_masked_InstrumentalIntensity_list)[0, 1]
+	me_t = ME(targets_t_masked_InstrumentalIntensity_list, predict_t_masked_InstrumentalIntensity_list)
+	rss_t = RSS(targets_t_masked_InstrumentalIntensity_list, predict_t_masked_InstrumentalIntensity_list)
+	mse_t = MSE(targets_t_masked_InstrumentalIntensity_list, predict_t_masked_InstrumentalIntensity_list)
+	rmse_t = RMSE(targets_t_masked_InstrumentalIntensity_list, predict_t_masked_InstrumentalIntensity_list)
+	rse_t = RSE(targets_t_masked_InstrumentalIntensity_list, predict_t_masked_InstrumentalIntensity_list, data_channels)
+	l1_loss_t = L1_LOSS(targets_t_masked_InstrumentalIntensity_list, predict_t_masked_InstrumentalIntensity_list)
+	mae_t = MAE(targets_t_masked_InstrumentalIntensity_list, predict_t_masked_InstrumentalIntensity_list)
 	
-	print(expand, mcc_with_mask, mcc_without_mask, r2, adj_r2, pcc, me, rss, mse, rmse, rse, l1_loss, mae, sep=',')
+	print(expand, mcc_without_mask, mcc_with_mask, mcc_with_t_mask, r2, adj_r2, pcc, me, rss, mse, rmse, rse, l1_loss, mae, r2_t, adj_r2_t, pcc_t, me_t, rss_t, mse_t, rmse_t, rse_t, l1_loss_t, mae_t, sep=',')
 	"""
 		#matthews corrcoef
-		print("matthews corrcoef(マスクなし)", mcc_with_mask)
-		print("matthews corrcoef(マスクあり)", mcc_without_mask)
+		print("matthews corrcoef(マスクなし)", mcc_without_mask)
+		print("matthews corrcoef(マスクあり)", mcc_with_mask)
 		#決定係数
 		print("決定係数", r2)
 		#自由度調整済み決定係数
@@ -193,10 +218,10 @@ def main():
 	#residual plot
 	fig = plt.figure()
 	ax = fig.add_subplot(1, 1, 1)
-	ax.scatter(predict_masked_InstrumentalIntensity_list, residuals_list)
+	ax.scatter(predict_masked_InstrumentalIntensity_list, residuals_masked_list)
 	ax.set_xlabel("Predicted Instrumental Intensities")
 	ax.set_ylabel("Residuals")
-	ax.set_ylim(min(residuals_list), max(residuals_list))
+	ax.set_ylim(min(residuals_masked_list), max(residuals_masked_list))
 	ax.set_xlim(min(predict_masked_InstrumentalIntensity_list), max(predict_masked_InstrumentalIntensity_list))
 
 	plt.savefig(args.out + '/ResidualPlot_mlp2D.png')
@@ -219,23 +244,38 @@ def main():
 	with open(args.out + '/Obs_II_with_mask.csv', "w") as fo:
 		writer = csv.writer(fo, lineterminator=',')
 		writer.writerow(targets_masked_InstrumentalIntensity_list)
+	with open(args.out + '/Pre_II_with_t_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_t_masked_InstrumentalIntensity_list)
+	with open(args.out + '/Obs_II_with_t_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(targets_t_masked_InstrumentalIntensity_list)
 	
-	with open(args.out + '/Pre_Class_with_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(predict_list)
-	with open(args.out + '/Obs_Class_with_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(targets_list)
 	with open(args.out + '/Pre_Class_without_mask.csv', "w") as fo:
 		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(predict_masked_list)
+		writer.writerow(predict_list)
 	with open(args.out + '/Obs_Class_without_mask.csv', "w") as fo:
 		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(targets_list)
+	with open(args.out + '/Pre_Class_with_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_masked_list)
+	with open(args.out + '/Obs_Class_with_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
 		writer.writerow(targets_masked_list)
+	with open(args.out + '/Pre_Class_with_t_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_t_masked_list)
+	with open(args.out + '/Obs_Class_with_t_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(targets_t_masked_list)
 
 	with open(args.out + '/Residual_with_mask.csv', "w") as fo:
 		writer = csv.writer(fo, lineterminator=',')
 		writer.writerow(predict_masked_InstrumentalIntensity_list)
+	with open(args.out + '/Residual_with_t_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_t_masked_InstrumentalIntensity_list)
 	
 
 def InstrumentalIntensity2SesimicIntensity(II):
