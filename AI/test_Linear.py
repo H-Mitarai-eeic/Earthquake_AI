@@ -10,7 +10,7 @@ from torchvision import datasets, transforms
 from sklearn.metrics import matthews_corrcoef
 
 from dataset import MyDataSet
-from Linear import Linear
+from Linear_kernel import Linear
 
 
 def main():

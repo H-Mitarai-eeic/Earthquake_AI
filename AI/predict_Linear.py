@@ -1,7 +1,7 @@
 import argparse
 import torch
 import numpy as np
-from Linear import Linear
+from Linear_kernel import Linear
 import csv
 len_data = 64
 input_width = 15

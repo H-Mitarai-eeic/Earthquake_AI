@@ -10,7 +10,7 @@ from torchvision import datasets, transforms
 import sys
 
 # from network import CifarCNN
-from Linear import Linear
+from Linear_kernel import Linear
 from dataset import MyDataSet
 
 

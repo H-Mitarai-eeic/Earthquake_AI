@@ -6,7 +6,7 @@ import glob
 import numpy as np
 from math import exp
 
-input_width = 15  # 奇数にして
+input_width = 1  # 奇数にして
 
 
 class MyDataSet(Dataset):
@@ -38,7 +38,7 @@ class MyDataSet(Dataset):
             for j in range(y - half, y + half + 1):
                 if 0 <= i < len_data and 0 <= j < len_data:
                     img[0][i][j] = depth / 1000
-                    img[1][i][j] = mag**9 / 1000000000
+                    img[1][i][j] = mag/10
         # img[0][x][y] = depth / 1000
         # img[1][x][y] = mag / 10
         return img, lbl_data
