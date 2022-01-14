@@ -16,7 +16,7 @@ EXPAND_MAX=31
 for i in `seq ${EXPAND_MIN} ${EXPAND_MAX}`
 do
     #MODELROOT="result_mlp2D_"`expr ${i} + ${MODELROOT_START_NUM}`
-    MODELROOT="result_mlp2D_expand_""${i}""/"
+    MODELROOT="result_mlp2D_mapmask_expand_""${i}""/"
     MODEL="/model_100"
 
     OUTROOT=${MODELROOT}
