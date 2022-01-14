@@ -9,7 +9,7 @@ EXPAND_MAX=31
 for i in `seq ${EXPAND_MIN} ${EXPAND_MAX}`
 do
     EXPAND=${i}
-    PARTATION="================== ""${EXPAND}"" =========================="
+    PARTATION="================== ${EXPAND}, map_mask =========================="
     echo "${PARTATION}"
 
     sbatch train_mlp2D.sh ${EXPAND}
@@ -148,4 +148,71 @@ COMENTOUT
     Submitted batch job 654121
     ================== 31 ==========================
     Submitted batch job 654122
+COMENTOUT
+
+<< COMENTOUT
+    ================== 0, map_mask ==========================
+    Submitted batch job 654684
+    ================== 1, map_mask ==========================
+    Submitted batch job 654685
+    ================== 2, map_mask ==========================
+    Submitted batch job 654686
+    ================== 3, map_mask ==========================
+    Submitted batch job 654687
+    ================== 4, map_mask ==========================
+    Submitted batch job 654688
+    ================== 5, map_mask ==========================
+    Submitted batch job 654689
+    ================== 6, map_mask ==========================
+    Submitted batch job 654690
+    ================== 7, map_mask ==========================
+    Submitted batch job 654691
+    ================== 8, map_mask ==========================
+    Submitted batch job 654692
+    ================== 9, map_mask ==========================
+    Submitted batch job 654693
+    ================== 10, map_mask ==========================
+    Submitted batch job 654694
+    ================== 11, map_mask ==========================
+    Submitted batch job 654695
+    ================== 12, map_mask ==========================
+    Submitted batch job 654696
+    ================== 13, map_mask ==========================
+    Submitted batch job 654697
+    ================== 14, map_mask ==========================
+    Submitted batch job 654698
+    ================== 15, map_mask ==========================
+    Submitted batch job 654699
+    ================== 16, map_mask ==========================
+    Submitted batch job 654700
+    ================== 17, map_mask ==========================
+    Submitted batch job 654701
+    ================== 18, map_mask ==========================
+    Submitted batch job 654702
+    ================== 19, map_mask ==========================
+    Submitted batch job 654703
+    ================== 20, map_mask ==========================
+    Submitted batch job 654704
+    ================== 21, map_mask ==========================
+    Submitted batch job 654705
+    ================== 22, map_mask ==========================
+    Submitted batch job 654706
+    ================== 23, map_mask ==========================
+    Submitted batch job 654707
+    ================== 24, map_mask ==========================
+    Submitted batch job 654708
+    ================== 25, map_mask ==========================
+    Submitted batch job 654709
+    ================== 26, map_mask ==========================
+    Submitted batch job 654710
+    ================== 27, map_mask ==========================
+    Submitted batch job 654711
+    ================== 28, map_mask ==========================
+    Submitted batch job 654712
+    ================== 29, map_mask ==========================
+    Submitted batch job 654713
+    ================== 30, map_mask ==========================
+    Submitted batch job 654714
+    ================== 31, map_mask ==========================
+    Submitted batch job 654715
 COMENTOUT

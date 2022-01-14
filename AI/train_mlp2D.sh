@@ -11,7 +11,7 @@ EPOCH=100
 
 EXPAND=${1}
 DATA="data_for_hokkaido_regression/"
-OUT="result_mlp2D_expand_""${EXPAND}""/"
+OUT="result_mlp2D_mapmask_expand_${EXPAND}/"
 
 mkdir ${OUT}
 
