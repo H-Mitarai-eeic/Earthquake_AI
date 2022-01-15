@@ -11,7 +11,7 @@ DATA="data_for_hokkaido_regression/"
 DEGREE_MIN=0
 DEGREE_MAX=20
 
-KERNEL_SIZE=129
+KERNEL_SIZE=125
 
 for i in `seq ${DEGREE_MIN} ${DEGREE_MAX}`
 do
@@ -38,7 +38,8 @@ do
 done
 
 << COMENTOUT
-654746 mag_d 0 ~ 20 model_50 テストのテスト
+654746 mag_d 0 ~ 20 model_50 テストのテスト ←途中終了
+654801 mag_d 0 ~ 20 model_100 kernelサイズミスで 129
 
 
 COMENTOUT
