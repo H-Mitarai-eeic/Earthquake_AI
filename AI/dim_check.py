@@ -1,4 +1,5 @@
 import os
+from turtle import width
 from PIL import Image
 import torch
 from torch.utils.data import Dataset
@@ -22,16 +23,16 @@ len_data = 64
 width_check_list = []
 
 class Linear(nn.Module):
-
-    def __init__(self, n_class=10):
+    def __init__(self, n_class=10, dim=2):
         super(Linear, self).__init__()
         # self.pool1 = nn.MaxPool2d(2, stride=2, ceil_mode=True)
-        self.linear = nn.Linear(2*len_data*len_data, n_class*len_data*len_data)
+        self.linear = nn.Linear(dim*len_data*len_data, n_class*len_data*len_data)
+        self.dim = dim
 
     def forward(self, x):
         h = x
         batch_size = len(x)
-        h = h.view(-1, 2*len_data*len_data)
+        h = h.view(-1, self.dim*len_data*len_data)
         h = self.linear(h)
         h = h.view(batch_size, 10, len_data, len_data)
         return h
@@ -39,12 +40,12 @@ class Linear(nn.Module):
 
 
 class MyDataSet(Dataset):
-    def __init__(self, root=None, train=True, transform=None, beki = 9, input_width = 21):
+    def __init__(self, root=None, train=True, transform=None, input_width = 15, dim=2):
         self.root = root
         self.transform = transform
         mode = "train" if train else "test"
-        self.beki = beki
         self.input_width = input_width
+        self.dim = dim
         data_dir = os.path.join(self.root, mode)
         self.all_data = glob.glob(data_dir + "/*")
 
@@ -60,18 +61,19 @@ class MyDataSet(Dataset):
             self.all_data[idx], delimiter=',', dtype=int, skiprows=1)
         # print(lbl_data)
         len_data = len(lbl_data)
-        img = torch.zeros(2, len(lbl_data), len(lbl_data))
+        img = torch.zeros(self.dim, len(lbl_data), len(lbl_data))
         half = self.input_width//2
         for i in range(x - half, x + half + 1):
             for j in range(y - half, y + half + 1):
                 if 0 <= i < len_data and 0 <= j < len_data:
                     img[0][i][j] = depth / 1000
-                    img[1][i][j] = mag**self.beki / 10**self.beki
+                    for k in range(self.dim - 1):
+                        img[k + 1][i][j] = mag**(k+1) / 10**(k+1)
         return img, lbl_data
 
-def train(beki, input_width):
+def train(input_width, dim):
     gpu = 0
-    batchsize = 20
+    batchsize = 5
     epoch = 20
     dataset = "../data"
     freq = -1
@@ -83,7 +85,7 @@ def train(beki, input_width):
     print('')
 
     # Set up a neural network to train
-    net = Linear(10)
+    net = Linear(n_class=10, dim=dim)
 
     # Set model to GPU
     if gpu >= 0:
@@ -106,7 +108,7 @@ def train(beki, input_width):
 
     transform = transforms.Compose([transforms.ToTensor()])
 
-    trainvalset = MyDataSet(root=dataset, train=True, transform=transform, beki=beki, input_width=input_width)
+    trainvalset = MyDataSet(root=dataset, train=True, transform=transform, input_width=input_width, dim=dim)
     # Split train/val
     n_samples = len(trainvalset)
     print("n_samples:", n_samples)
@@ -177,9 +179,9 @@ def train(beki, input_width):
     path = out + "/model_final"
     torch.save(net.state_dict(), path)
 
-def test(beki, input_width):
+def test(input_width, dim):
     gpu = 0
-    batchsize = 10
+    batchsize = 5
     dataset = "../data"
     model = "./result/model_final"
 
@@ -188,7 +190,7 @@ def test(beki, input_width):
     print('')
 
     # Set up a neural network to test
-    net = Linear(10)
+    net = Linear(n_class=10, dim=dim)
     # Load designated network weight
     net.load_state_dict(torch.load(model))
     # Set model to GPU
@@ -200,7 +202,7 @@ def test(beki, input_width):
 
     # Load the data
     transform = transforms.Compose([transforms.ToTensor()])
-    testset = MyDataSet(root=dataset, train=False, transform=transform, beki=beki, input_width=input_width)
+    testset = MyDataSet(root=dataset, train=False, transform=transform, input_width=input_width, dim=dim)
     testloader = torch.utils.data.DataLoader(testset, batch_size=batchsize,
                                              shuffle=False, num_workers=2)
 
@@ -266,12 +268,13 @@ def test(beki, input_width):
 
 
 def main():
-    for i in range(1, 40, 2):
+    for i in range(2, 21):
         print("")
-        print("beki: ", "9", ", input width: ", i)
+        print("input width: 15, dim: ", i)
         print("")
-        train(9, i)
-        test(9, i)
+        train(15, i)
+        test(15, i)
+        print("check_list ", width_check_list)
     print("")
     print(width_check_list)
 

@@ -210,6 +210,7 @@ def test(beki, input_width):
     # Test
     total = 0
     data_matrix = [[0. for _ in range(3)] for _ in range(10)]  # TP, FN, FP
+    matrix = [[0 for _ in range(10)]for _ in range(10)]
     predict_array = []
     label_array = []
     with torch.no_grad():
@@ -232,6 +233,7 @@ def test(beki, input_width):
                         predict = predicted[i][j][k].item()
                         label_array.append(label)
                         predict_array.append(predict)
+                        matrix[label][predict] += 1
                         if label == predict:
                             data_matrix[label][0] += 1
                         else:
@@ -241,7 +243,7 @@ def test(beki, input_width):
                             mask_but_positive += 1
 
     # List of classes
-    classes = ("0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7")
+    # classes = ("0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7")
     
     # Show accuracy
     # for i in range(10):
@@ -259,6 +261,7 @@ def test(beki, input_width):
     print("")
     # print(label_array)
     # print(predict_array)
+    print(matrix)
     print("mask_but_positive: ", mask_but_positive)
     mcc = matthews_corrcoef(np.array(label_array), np.array(predict_array))
     print("matthews corrcoef", mcc)
@@ -268,10 +271,10 @@ def test(beki, input_width):
 def main():
     for i in range(7, 8):
         print("")
-        print("beki: ", i, ", input width: 21")
+        print("beki: ", i, ", input width: 15")
         print("")
-        train(i, 21)
-        test(i, 21)
+        train(i, 15)
+        test(i, 15)
     print("")
     print(power_check_list)
 
