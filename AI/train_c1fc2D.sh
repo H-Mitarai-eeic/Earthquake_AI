@@ -11,7 +11,8 @@ EPOCH=100
 
 KERNEL_SIZE=${1}
 DATA="data_for_hokkaido_regression/"
-OUT="result_c1fc2D_karnel_""${KERNEL_SIZE}""/"
+#OUT="result_c1fc2D_karnel_""${KERNEL_SIZE}""/"
+OUT="result_c1fc2D_mapmask_karnel_${KERNEL_SIZE}/"
 
 mkdir ${OUT}
 python3 train_eq_c1fc2D.py -g ${GPU} -d ${DATA} -o ${OUT} -b ${MINIBATCH} -e ${EPOCH} -kernel_size ${KERNEL_SIZE}
