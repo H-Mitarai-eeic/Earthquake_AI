@@ -1,5 +1,7 @@
 data/
 result/
+result2/
+result3/
 *.out
 out/
 *.txt
