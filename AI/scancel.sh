@@ -1,7 +1,7 @@
 #!/bin/sh
 
-FS=654601
-FE=654020
+FS=654805
+FE=654825
 
 for i in `seq ${FS} ${FE}`
 do

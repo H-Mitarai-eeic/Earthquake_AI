@@ -36,6 +36,8 @@ def main():
 						help='Root directory of dataset')
 	parser.add_argument('--mask', '-mask', default='ObservationPointsMap_honshu6464.csv',
 						help='Root directory of dataset')
+	parser.add_argument('--kernel_size', '-kernel_size', default=125,
+						help='Root directory of dataset')
 	parser.add_argument('--mag_degree', '-mag_d', default=1,
 						help='Root directory of dataset')
 	parser.add_argument('--depth_degree', '-depth_d', default=1,
@@ -65,7 +67,7 @@ def main():
 	weight = (1, 0)
 	#weight = (0.1,)*10
 	exponent = 2
-	#kernel_size = 2
+	kernel_size = int(args.kernel_size)
 	#stride = None
 	print("mesh_size: ", mesh_size)
 	print("mag_degree: ", mag_degree)
@@ -75,11 +77,11 @@ def main():
 	print("depth_max", depth_max)
 	print("learning rate: ", lr)
 	print("weight: ", weight)
-	#print("exponent: ", exponent)
-	#print("kernel_size: ", kernel_size)
+	print("exponent: ", exponent)
+	print("kernel_size: ", kernel_size)
 	#print("stride: ", stride)
 	print('')
-	net = MYFCN(mesh_size=mesh_size, in_channels=data_channels)
+	net = MYFCN(mesh_size=mesh_size, in_channels=data_channels, kernel_size=kernel_size)
 
 	# Setup a loss and an optimizer
 	#criterion = MyLoss(kernel_size=kernel_size, stride=stride)

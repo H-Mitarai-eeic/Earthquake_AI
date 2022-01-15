@@ -8,30 +8,37 @@ GPU=0
 MINIBATCH=100
 DATA="data_for_hokkaido_regression/"
 
-EXPAND_MIN=0
-EXPAND_MAX=31
+DEGREE_MIN=0
+DEGREE_MAX=20
 
-#MODELROOT_START_NUM=6
+KERNEL_SIZE=129
 
-for i in `seq ${EXPAND_MIN} ${EXPAND_MAX}`
+for i in `seq ${DEGREE_MIN} ${DEGREE_MAX}`
 do
-    #MODELROOT="result_mlp2D_"`expr ${i} + ${MODELROOT_START_NUM}`
-    MODELROOT="result_mlp2D_mapmask_expand_""${i}""/"
+    MAG_D=${i}
+    DEPTH_D=1
+    CROSS_D=0
+
+    #MODELROOT="result_polycfc2D_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}_kernel${KERNEL_SIZE}/"
+    MODELROOT="result_polycfc2D_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}/"
     MODEL="/model_100"
 
     OUTROOT=${MODELROOT}
 
-    EXPAND=${i}
-
-    PARTATION="================== ""${EXPAND}"" =========================="
+    PARTATION="======== mag_d = ${MAG_D} depth_d = ${DEPTH_D} cross_d = ${CROSS_D} kernel = ${KERNEL_SIZE}=========="
 
     echo "${PARTATION}"
-    echo "${MODELROOT}""${MODEL}"
-    echo "${DATA}"
-    echo "EXPAND = ""${EXPAND}"
+    echo "MODEL: ${MODELROOT}${MODEL}"
+    echo "DATA: ${DATA}"
+    echo "MAG_DEGREE = ${MAG_D}"
+    echo "DEPTH_DEGREE = ${DEPTH_D}"
+    echo "CROSS_DEGREE = ${CROSS_D}"
 
-    python3 test_eq_mlp2D.py -g ${GPU} -b ${MINIBATCH} -d ${DATA} -m ${MODELROOT}${MODEL} -o ${OUTROOT} -expand ${EXPAND} >> Stat_data_for_hokkaido.csv
+    python3 test_eq_polycfc2D.py -g ${GPU} -b ${MINIBATCH} -d ${DATA} -m ${MODELROOT}${MODEL} -o ${OUTROOT} -kernel_size ${KERNEL_SIZE} -mag_d ${MAG_D} -depth_d ${DEPTH_D} -cross_d ${CROSS_D} >> Stat_data_for_hokkaido_mag_d_kernelsize${KERNEL_SIZE}.csv
 done
 
-#652838 expand 0 ~ 31のテスト
-#654316 expand 0 ~ 23
+<< COMENTOUT
+654746 mag_d 0 ~ 20 model_50 テストのテスト
+
+
+COMENTOUT

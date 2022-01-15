@@ -9,15 +9,17 @@ GPU=0
 MINIBATCH=100
 EPOCH=100
 
+KERNEL_SIZE=125
+
 MAG_D=${1}
 DEPTH_D=${2}
 CROSS_D=${3}
 DATA="data_for_hokkaido_regression/"
-OUT="result_polycfc2D_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}/"
+OUT="result_polycfc2D_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}_kernel${KERNEL_SIZE}/"
 
 mkdir ${OUT}
 
-python3 train_eq_polycfc2D.py -g ${GPU} -d ${DATA} -o ${OUT} -b ${MINIBATCH} -e ${EPOCH} -mag_d ${MAG_D} -depth_d ${DEPTH_D} -cross_d ${CROSS_D}
+python3 train_eq_polycfc2D.py -g ${GPU} -d ${DATA} -o ${OUT} -b ${MINIBATCH} -e ${EPOCH} -kernel_size ${KERNEL_SIZE} -mag_d ${MAG_D} -depth_d ${DEPTH_D} -cross_d ${CROSS_D}
 
 << COMENTOUT
     #651975 data2000 exponent = 2 weight = (1, 0) ===== mask変更 =========  output:  result_polycfc2D_1/
