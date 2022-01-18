@@ -18,14 +18,15 @@ app.get('', (req, res) => {
   console.log(x, y, depth, mag)
   const childProcess = require('child_process');
   // childProcess.execSync('python3 python/predict_eq_myfcn2.py -m python/model_13 -x ' + x + ' -y ' + y + ' -depth ' + depth + ' -mag ' + mag, (error, stdout, stderr) => {
-  childProcess.execSync('python3 python/predict_Linear.py -m python/model_final -x ' + x + ' -y ' + y + ' -depth ' + depth + ' -mag ' + mag, (error, stdout, stderr) => {
-    if (error) return console.error('ERROR', error);
-  });
+  // childProcess.execSync('python3 python/predict_Linear.py -m python/model_final -x ' + x + ' -y ' + y + ' -depth ' + depth + ' -mag ' + mag, (error, stdout, stderr) => {
+  //   if (error) return console.error('ERROR', error);
+  // });
 
   const fs = require("fs");
   let header = x + "+" + y + "+" + depth + "+" + mag + ",";
   // header for check
-  fs.readFile("python/predicted_data.csv", "utf-8", (err, data) => {
+  fs.readFile("22678.csv", "utf-8", (err, data) => {
+    // fs.readFile("python/predicted_data.csv", "utf-8", (err, data) => {
     res.end(header + data);
   });
 });
