@@ -35,3 +35,4 @@ done
 
 #652838 expand 0 ~ 31のテスト
 #654316 expand 0 ~ 23
+#655039 expand 0 ~ 31のテスト mapmask
