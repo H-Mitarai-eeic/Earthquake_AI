@@ -3,16 +3,16 @@
 MINIBATCH=100
 EPOCH=100
 
-DEGREE_MIN=5
+DEGREE_MIN=1
 DEGREE_STEP=1
 DEGREE_MAX=20
 
 for i in `seq ${DEGREE_MIN} ${DEGREE_STEP} ${DEGREE_MAX}`
 do
-    MAG_D=17
+    MAG_D=${i}
     DEPTH_D=${i}
     CROSS_D=0
-    PARTATION="======= mag_d = ${MAG_D} depth_d = ${DEPTH_D} cross_d = ${CROSS_D} =========="
+    PARTATION="======= mag_d = ${MAG_D} depth_d = ${DEPTH_D} cross_d = ${CROSS_D} mapmask=========="
     echo "${PARTATION}"
 
     sbatch train_polycfc2D.sh ${MAG_D} ${DEPTH_D} ${CROSS_D}
@@ -221,4 +221,49 @@ COMENTOUT
     Submitted batch job 655259
     ======= mag_d = 17 depth_d = 20 cross_d = 0 ==========
     Submitted batch job 655260
+COMENTOUT
+
+<< COMENTOUT
+    kernel_size 125
+    一緒に増やす
+    ======= mag_d = 1 depth_d = 1 cross_d = 0 mapmask==========
+    Submitted batch job 655470
+    ======= mag_d = 2 depth_d = 2 cross_d = 0 mapmask==========
+    Submitted batch job 655471
+    ======= mag_d = 3 depth_d = 3 cross_d = 0 mapmask==========
+    Submitted batch job 655472
+    ======= mag_d = 4 depth_d = 4 cross_d = 0 mapmask==========
+    Submitted batch job 655473
+    ======= mag_d = 5 depth_d = 5 cross_d = 0 mapmask==========
+    Submitted batch job 655474
+    ======= mag_d = 6 depth_d = 6 cross_d = 0 mapmask==========
+    Submitted batch job 655475
+    ======= mag_d = 7 depth_d = 7 cross_d = 0 mapmask==========
+    Submitted batch job 655476
+    ======= mag_d = 8 depth_d = 8 cross_d = 0 mapmask==========
+    Submitted batch job 655477
+    ======= mag_d = 9 depth_d = 9 cross_d = 0 mapmask==========
+    Submitted batch job 655478
+    ======= mag_d = 10 depth_d = 10 cross_d = 0 mapmask==========
+    Submitted batch job 655479
+    ======= mag_d = 11 depth_d = 11 cross_d = 0 mapmask==========
+    Submitted batch job 655480
+    ======= mag_d = 12 depth_d = 12 cross_d = 0 mapmask==========
+    Submitted batch job 655481
+    ======= mag_d = 13 depth_d = 13 cross_d = 0 mapmask==========
+    Submitted batch job 655482
+    ======= mag_d = 14 depth_d = 14 cross_d = 0 mapmask==========
+    Submitted batch job 655483
+    ======= mag_d = 15 depth_d = 15 cross_d = 0 mapmask==========
+    Submitted batch job 655484
+    ======= mag_d = 16 depth_d = 16 cross_d = 0 mapmask==========
+    Submitted batch job 655485
+    ======= mag_d = 17 depth_d = 17 cross_d = 0 mapmask==========
+    Submitted batch job 655486
+    ======= mag_d = 18 depth_d = 18 cross_d = 0 mapmask==========
+    Submitted batch job 655487
+    ======= mag_d = 19 depth_d = 19 cross_d = 0 mapmask==========
+    Submitted batch job 655488
+    ======= mag_d = 20 depth_d = 20 cross_d = 0 mapmask==========
+    Submitted batch job 655489
 COMENTOUT

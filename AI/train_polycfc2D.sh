@@ -9,13 +9,13 @@ GPU=0
 MINIBATCH=100
 EPOCH=100
 
-KERNEL_SIZE=125
+KERNEL_SIZE=15
 
 MAG_D=${1}
 DEPTH_D=${2}
 CROSS_D=${3}
 DATA="data_for_hokkaido_regression/"
-OUT="result_polycfc2D_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}_kernel${KERNEL_SIZE}/"
+OUT="result_polycfc2D_mapmask_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}_kernel${KERNEL_SIZE}/"
 
 mkdir ${OUT}
 

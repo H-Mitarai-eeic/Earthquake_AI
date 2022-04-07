@@ -160,8 +160,8 @@ def main():
 			for B in range(len(labels)):
 				for Y in range(len(labels[B])):
 					for X in range(len(labels[B][Y])):
-						#if mask[Y][X] != 0:
-						if labels[B][Y][X] > 0:
+						if mask[Y][X] != 0:
+						#if labels[B][Y][X] > 0:
 							mask_tensor[B][Y][X] = 1 
 		
 			if args.gpu >= 0:
@@ -216,8 +216,8 @@ def main():
 				for B in range(len(labels)):
 					for Y in range(len(labels[B])):
 						for X in range(len(labels[B][Y])):
-							#if mask[Y][X] != 0:
-							if labels[B][Y][X] > 0:
+							if mask[Y][X] != 0:
+							#if labels[B][Y][X] > 0:
 								mask_tensor[B][Y][X] = 1 
 
 				if args.gpu >= 0:
