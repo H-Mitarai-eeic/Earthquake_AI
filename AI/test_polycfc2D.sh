@@ -16,7 +16,7 @@ KERNEL_SIZE=15
 
 for i in `seq ${DEGREE_MIN} ${DEGREE_STEP} ${DEGREE_MAX}`
 do
-    MAG_D=${i}
+    MAG_D=17
     DEPTH_D=${i}
     CROSS_D=0
 
@@ -35,7 +35,7 @@ do
     echo "DEPTH_DEGREE = ${DEPTH_D}"
     echo "CROSS_DEGREE = ${CROSS_D}"
 
-    python3 test_eq_polycfc2D.py -g ${GPU} -b ${MINIBATCH} -d ${DATA} -m ${MODELROOT}${MODEL} -o ${OUTROOT} -kernel_size ${KERNEL_SIZE} -mag_d ${MAG_D} -depth_d ${DEPTH_D} -cross_d ${CROSS_D} >> Stat_data_for_hokkaido_mapmask_mag_dn_depth_dn_cross_d0_kernelsize${KERNEL_SIZE}.csv
+    python3 test_eq_polycfc2D.py -g ${GPU} -b ${MINIBATCH} -d ${DATA} -m ${MODELROOT}${MODEL} -o ${OUTROOT} -kernel_size ${KERNEL_SIZE} -mag_d ${MAG_D} -depth_d ${DEPTH_D} -cross_d ${CROSS_D} >> Stat_data_for_hokkaido_mag_d17_depth_dn_cross_d0_kernelsize${KERNEL_SIZE}.csv
 done
 
 << COMENTOUT
@@ -48,4 +48,5 @@ done
 655225 mag_d=14 depth_d=14 cross_d = 2~20 model_100 kenelsize=125のテスト
 
 655756 mag_d=1~20 depth_d=1~20 cross_d = 0 model_100 kenelsize=15のテスト mapmask
+655315 mag_d=17 depth_d=1~20 cross_d = 0 model_100 kenelsize=125のテスト
 COMENTOUT
