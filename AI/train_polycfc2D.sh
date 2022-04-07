@@ -14,8 +14,10 @@ KERNEL_SIZE=125
 MAG_D=${1}
 DEPTH_D=${2}
 CROSS_D=${3}
-DATA="data_for_hokkaido_regression/"
-OUT="result_polycfc2D_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}_kernel${KERNEL_SIZE}/"
+#DATA="data_for_hokkaido_regression/"
+#OUT="result_polycfc2D_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}_kernel${KERNEL_SIZE}/"
+DATA="data2000_honshu6464_InstrumentalIntensity/"
+OUT="result_polycfc2D_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}_kernel${KERNEL_SIZE}_data2000/"
 
 mkdir ${OUT}
 

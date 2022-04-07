@@ -24,14 +24,25 @@ def main():
 						help='Erthquake ID for input/output files')
 	parser.add_argument('--mag', '-mag', default=9.0,
 						help='Erthquake ID for input/output files')
-
+	parser.add_argument('--kernel_size', '-kernel_size', default=125,
+						help='Root directory of dataset')
+	parser.add_argument('--mag_degree', '-mag_d', default=14,
+						help='Root directory of dataset')
+	parser.add_argument('--depth_degree', '-depth_d', default=14,
+						help='Root directory of dataset')
+	parser.add_argument('--cross_degree', '-cross_d', default=0,
+						help='Root directory of dataset')
 	args = parser.parse_args()
 
 	# Set up a neural network to test
 	mesh_size = (64, 64)
-	data_channels = 12
+	mag_degree = int(args.mag_degree)
+	depth_degree = int(args.depth_degree)
+	cross_degree = int(args.cross_degree)
+	data_channels = mag_degree + depth_degree + (cross_degree // 2) + 1
 	depth_max = 600
-	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size)
+	kernel_size = int(args.kernel_size)
+	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size, kernel_size=kernel_size)
 	# Load designated network weight
 	print("loading Model...")
 	net.load_state_dict(torch.load(args.model, map_location=torch.device('cpu')))
@@ -45,9 +56,20 @@ def main():
 	mag = float(args.mag)
 
 	epicenter = torch.zeros(1, data_channels, mesh_size[1], mesh_size[0])
-	for i in range(data_channels - 1):
-		epicenter[0][i][y][x] = (mag / 9)**i
-	epicenter[0][data_channels - 1][y][x] = depth / depth_max
+
+	i = 0
+	epicenter[0][i][y][x] = 1
+	i += 1
+
+	for j in range(1, mag_degree + 1):
+		epicenter[0][i][y][x] = (mag / 9)**j
+		i += 1
+	for j in range(1, depth_degree + 1):
+		epicenter[0][i][y][x] = (depth / depth_max)**j
+		i += 1
+	for j in range(1, cross_degree // 2 + 1):
+		epicenter[0][i][y][x] = ((mag / 9) * (depth / depth_max)) ** (2*j)
+		i += 1
 
 	# Forward
 	outputs = net(epicenter)

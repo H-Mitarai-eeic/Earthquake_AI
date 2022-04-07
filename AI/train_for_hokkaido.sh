@@ -3,13 +3,13 @@
 MINIBATCH=100
 EPOCH=100
 
-DEGREE_MIN=5
+DEGREE_MIN=14
 DEGREE_STEP=1
-DEGREE_MAX=20
+DEGREE_MAX=14
 
 for i in `seq ${DEGREE_MIN} ${DEGREE_STEP} ${DEGREE_MAX}`
 do
-    MAG_D=17
+    MAG_D=14
     DEPTH_D=${i}
     CROSS_D=0
     PARTATION="======= mag_d = ${MAG_D} depth_d = ${DEPTH_D} cross_d = ${CROSS_D} =========="
@@ -221,4 +221,9 @@ COMENTOUT
     Submitted batch job 655259
     ======= mag_d = 17 depth_d = 20 cross_d = 0 ==========
     Submitted batch job 655260
+COMENTOUT
+<<COMENTOUT
+    kernelsize 125, t-mask で data2000_honshu6464_InstrumentalIntensity
+    ======= mag_d = 14 depth_d = 14 cross_d = 0 ==========
+    Submitted batch job 660745
 COMENTOUT
