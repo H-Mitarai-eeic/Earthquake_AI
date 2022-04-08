@@ -81,10 +81,10 @@ def main():
 			predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[0][Y][X].item())
 
 	#csv出力
-	with open('predicted_data.csv', "w") as fo:
+	with open('predict_resdults/predicted_data.csv', "w") as fo:
 		writer = csv.writer(fo, lineterminator=',')
 		writer.writerows(predicted)
-	with open('predicted_data_.csv', "w") as fo:
+	with open('predict_results/predicted_data_.csv', "w") as fo:
 		writer = csv.writer(fo)
 		writer.writerows(predicted)
 

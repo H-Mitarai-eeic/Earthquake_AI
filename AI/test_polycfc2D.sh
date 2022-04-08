@@ -6,13 +6,13 @@ export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
 GPU=0
 MINIBATCH=100
-DATA="data_for_hokkaido_regression/"
+DATA="data/data_for_hokkaido_regression/"
 
 DEGREE_MIN=1
 DEGREE_STEP=1
 DEGREE_MAX=20
 
-KERNEL_SIZE=15
+KERNEL_SIZE=15 #125
 
 for i in `seq ${DEGREE_MIN} ${DEGREE_STEP} ${DEGREE_MAX}`
 do
@@ -20,7 +20,8 @@ do
     DEPTH_D=${i}
     CROSS_D=0
 
-    MODELROOT="result_polycfc2D_mapmask_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}_kernel${KERNEL_SIZE}/"
+    #MODELROOT="results/result_polycfc2D_mapmask_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}_kernel${KERNEL_SIZE}/"
+    MODELROOT="results/result_polycfc2D_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}_kernel${KERNEL_SIZE}/"
     #MODELROOT="result_polycfc2D_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}/"
     MODEL="/model_100"
 
