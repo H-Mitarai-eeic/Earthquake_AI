@@ -99,7 +99,7 @@ def train(input_width, dim):
         net = net.to(device)
 
     weights = torch.tensor(
-        [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
+        [1.0, 1.0])
     if gpu >= 0:
         weights = weights.to(device)
     # Setup a loss and an optimizer
@@ -187,7 +187,7 @@ def test(input_width, dim):
     gpu = 0
     batchsize = 5
     dataset = "../data"
-    model = "./result/model_final"
+    model = "./result3/model_final"
 
     print('GPU: {}'.format(gpu))
     print('# Minibatch-size: {}'.format(batchsize))
