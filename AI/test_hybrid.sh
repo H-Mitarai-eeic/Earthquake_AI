@@ -21,32 +21,36 @@ MAG_D=14
 DEPTH_D=14
 CROSS_D=0
 
-MERGE_OFFSET=1
+#MERGE_OFFSET=1
 
 #MODELROOT="results/result_polycfc2D_mapmask_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}_kernel${KERNEL_SIZE}/"
 MODELROOT="results/model4osaka/"
 #MODELROOT="result_polycfc2D_mag_d${MAG_D}_depth_d${DEPTH_D}_cross_d${CROSS_D}/"
 MODEL_REG="/model_final_reg"
-MODEL_CLS="/model_final_cls"
+MODEL_CLS="/model_final_cls_binary"
 
-#OUTROOT=${MODELROOT}
-OUTROOT="test_results/osaka_merge_offset${MERGE_OFFSET}/"
-mkdir ${OUTROOT}
+for MERGE_OFFSET in `seq 0.1 0.1 1.0`
+do 
+    #OUTROOT=${MODELROOT}
+    OUTROOT="test_results/osaka_binary_merge_offset${MERGE_OFFSET}/"
+    mkdir ${OUTROOT}
 
-PARTATION="======== mag_d = ${MAG_D} depth_d = ${DEPTH_D} cross_d = ${CROSS_D} kernel = ${KERNEL_SIZE}=========="
+    PARTATION="======== mag_d = ${MAG_D} depth_d = ${DEPTH_D} cross_d = ${CROSS_D} kernel = ${KERNEL_SIZE} merge_offset = ${MERGE_OFFSET}=========="
 
-echo "${PARTATION}"
-echo "MODEL: ${MODELROOT}${MODEL_REG} ${MODELROOT}${MODEL_CLS}"
-echo "DATA: ${DATA}"
-echo "MAG_DEGREE = ${MAG_D}"
-echo "DEPTH_DEGREE = ${DEPTH_D}"
-echo "CROSS_DEGREE = ${CROSS_D}"
-echo "MERGE_OFFSET = ${MERGE_OFFSET}"
+    echo "${PARTATION}"
+    echo "MODEL: ${MODELROOT}${MODEL_REG} ${MODELROOT}${MODEL_CLS}"
+    echo "DATA: ${DATA}"
+    echo "MAG_DEGREE = ${MAG_D}"
+    echo "DEPTH_DEGREE = ${DEPTH_D}"
+    echo "CROSS_DEGREE = ${CROSS_D}"
+    echo "MERGE_OFFSET = ${MERGE_OFFSET}"
 
-python3 test_hybrid.py -g ${GPU} -b ${MINIBATCH} -d ${DATA} -mr ${MODELROOT}${MODEL_REG} -mc ${MODELROOT}${MODEL_CLS} -o ${OUTROOT} -kernel_size ${KERNEL_SIZE} -mag_d ${MAG_D} -depth_d ${DEPTH_D} -cross_d ${CROSS_D} -mo ${MERGE_OFFSET} >> ${OUTROOT}/Stat_data_for_osaka_mo${MERGE_OFFSET}.csv
+    python3 test_hybrid.py -g ${GPU} -b ${MINIBATCH} -d ${DATA} -mr ${MODELROOT}${MODEL_REG} -mc ${MODELROOT}${MODEL_CLS} -o ${OUTROOT} -kernel_size ${KERNEL_SIZE} -mag_d ${MAG_D} -depth_d ${DEPTH_D} -cross_d ${CROSS_D} -mo ${MERGE_OFFSET} >> ${OUTROOT}/Stat_data_for_osaka_mo${MERGE_OFFSET}.csv
 
-echo "done"
-cat test_hybrid.sh >> ${OUTROOT}setting.txt
+    echo "done"
+    cat test_hybrid.sh > ${OUTROOT}setting.txt
+
+done
 
 << COMENTOUT
 

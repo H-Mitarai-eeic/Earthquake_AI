@@ -7,7 +7,7 @@ import numpy as np
 import math 
 
 class MyDataSet(Dataset):
-	def __init__(self, channels=2, root=None, train=True, transform=None, ID=None, mesh_size=(64, 64), depth_max_reg=600, depth_max_cls=1000, mag_degree=1, depth_degree=1, cross_degree=0):
+	def __init__(self, channels=2, root=None, train=True, transform=None, ID=None, mesh_size=(64, 64), depth_max_reg=600, depth_max_cls=1000, mag_degree=1, depth_degree=1, cross_degree=0, dim_cls=2):
 		self.root = root
 		self.transform = transform
 		self.channels = channels
@@ -19,6 +19,7 @@ class MyDataSet(Dataset):
 		self.cross_degree = cross_degree
 
 		self.input_width = 21
+		self.dim = dim_cls
 
 		mode = "train" if train else "test"
 		
@@ -61,11 +62,15 @@ class MyDataSet(Dataset):
 
 		#for classification
 		len_data = len(lbl_data)
-		img_cls = torch.zeros(2, self.mesh_size[1], self.mesh_size[0])
+		#img_cls = torch.zeros(2, self.mesh_size[1], self.mesh_size[0])
+		img_cls = torch.zeros(self.dim, self.mesh_size[1], self.mesh_size[0])
 		half = self.input_width // 2
 		for i in range(x - half, x + half + 1):
 			for j in range(y - half, y + half + 1):
 				if 0 <= i < len_data and 0 <= j < len_data:
 					img_cls[0][i][j] = depth / self.depth_max_cls
-					img_cls[1][i][j] = (mag / 10) ** 9
+					#img_cls[1][i][j] = (mag / 10) ** 9
+					for k in range(self.dim - 1):
+						img_cls[k + 1][i][j] = (mag / 10) ** (k+1)
+
 		return img_reg, img_cls, lbl_data
