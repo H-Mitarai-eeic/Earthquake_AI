@@ -2,6 +2,7 @@ data/
 result/
 result2/
 result3/
+result4_buffer/
 *.out
 out/
 *.txt

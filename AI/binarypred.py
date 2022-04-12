@@ -81,7 +81,7 @@ def train(input_width, dim):
     epoch = 20
     dataset = "../data"
     freq = -1
-    out = "./result3"
+    out = "./result4_buffer"
 
     print('GPU: {}'.format(gpu))
     print('# Minibatch-size: {}'.format(batchsize))
@@ -187,7 +187,7 @@ def test(input_width, dim):
     gpu = 0
     batchsize = 5
     dataset = "../data"
-    model = "./result3/model_final"
+    model = "./result4_buffer/model_final"
 
     print('GPU: {}'.format(gpu))
     print('# Minibatch-size: {}'.format(batchsize))
@@ -268,12 +268,17 @@ def test(input_width, dim):
 
 
 def main():
-    print("")
-    print("input width: 15, dim: 9")
-    print("")
-    train(15, 9)
-    test(15, 9)
-    print("")
+    for i in range(5):
+        for j in range(5):
+            w = 11 + 2*i
+            d = 7 + 2*j
+            print("")
+            # print("input width: 15, dim: 9")
+            print("input width: ", w, "dim: ", d)
+            print("")
+            train(w, d)
+            test(w, d)
+            print("")
 
 if __name__ == "__main__":
     main()
