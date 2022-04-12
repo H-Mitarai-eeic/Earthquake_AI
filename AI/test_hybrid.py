@@ -12,23 +12,27 @@ from sklearn.metrics import r2_score
 import numpy as np
 
 from dataset import MyDataSet
+
 from mycfc2D import MYFCN
+from Linear import Linear
 #from myloss import MyLoss
 
 import csv
 import copy
 
 def main():
-	parser = argparse.ArgumentParser(description='Pytorch example: CIFAR-10')
+	parser = argparse.ArgumentParser(description='Pytorch example: Earthquaker')
 	parser.add_argument('--batchsize', '-b', type=int, default=100,
 						help='Number of images in each mini-batch')
 	parser.add_argument('--gpu', '-g', type=int, default=-1,
 						help='GPU ID (negative value indicates CPU)')
-	parser.add_argument('--model', '-m', default='result/model_final',
+	parser.add_argument('--model_reg', '-mr', default='results/model4osaka/model_final_reg',
 						help='Path to the model for test')
-	parser.add_argument('--dataset', '-d', default='data100/',
+	parser.add_argument('--model_cls', '-mc', default='results/model4osaka/model_final_cls',
+						help='Path to the model for test')
+	parser.add_argument('--dataset', '-d', default='data_for_hokkaido_regression/',
 						help='Root directory of dataset')
-	parser.add_argument('--out', '-o', default='data100/',
+	parser.add_argument('--out', '-o', default='results/model4osaka/',
 						help='Root directory of outputfile')					
 	parser.add_argument('--ID', '-i', default=None,
 						help='Erthquake ID for input/output files')
@@ -41,6 +45,8 @@ def main():
 	parser.add_argument('--depth_degree', '-depth_d', default=1,
 						help='Root directory of dataset')
 	parser.add_argument('--cross_degree', '-cross_d', default=0,
+						help='Root directory of dataset')
+	parser.add_argument('--merge_offset', '-mo', type=float, default=-1,
 						help='Root directory of dataset')
 	args = parser.parse_args()
 
@@ -59,26 +65,34 @@ def main():
 	mag_degree = int(args.mag_degree)
 	depth_degree = int(args.depth_degree)
 	cross_degree = int(args.cross_degree)
+	merge_offset = float(args.merge_offset)
+
 	data_channels = mag_degree + depth_degree + (cross_degree // 2) + 1
-	depth_max = 600
+	depth_max_reg = 600
+	depth_max_cls = 1000
 	kernel_size = int(args.kernel_size)
-	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size, kernel_size=kernel_size)
+	net_reg = MYFCN(in_channels=data_channels, mesh_size=mesh_size, kernel_size=kernel_size)
+	net_cls = Linear(10)
 	# Load designated network weight
 	#print("loading Model...")
 	# Set model to GPU
 	if args.gpu >= 0:
 		# Make a specified GPU current
 		device = 'cuda:' + str(args.gpu)
-		net = net.to(device)
-		net.load_state_dict(torch.load(args.model))
+		net_reg = net_reg.to(device)
+		net_reg.load_state_dict(torch.load(args.model_reg))
+		net_cls = net_cls.to(device)
+		net_cls.load_state_dict(torch.load(args.model_cls))
 	else:
-		net.load_state_dict(torch.load(args.model, map_location=torch.device('cpu')))
+		net_reg.load_state_dict(torch.load(args.model_reg, map_location=torch.device('cpu')))
+		net_cls.load_state_dict(torch.load(args.model_cls, map_location=torch.device('cpu')))
 
 	# Load the CIFAR-10
 	transform = transforms.Compose([transforms.ToTensor()])
-	testset = MyDataSet(channels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID, mesh_size=mesh_size, depth_max=depth_max, mag_degree=mag_degree, depth_degree=depth_degree, cross_degree=cross_degree)
+	testset = MyDataSet(channels=data_channels, root=args.dataset, train=False, transform=transform, ID=args.ID, mesh_size=mesh_size, depth_max_reg=depth_max_reg, depth_max_cls=depth_max_cls, mag_degree=mag_degree, depth_degree=depth_degree, cross_degree=cross_degree)
 	testloader = torch.utils.data.DataLoader(testset, batch_size=args.batchsize, shuffle=False, num_workers=2)
-
+	
+	
 	# Test
 	#print("Test")
 	correct = 0
@@ -107,48 +121,63 @@ def main():
 	predict_t_masked_InstrumentalIntensity_list = []
 
 	with torch.no_grad():
-		# 多分1つしかテストしないようになっているはず
 		for data in testloader:
 			#print("test #", counter)
 			# Get the inputs; data is a list of [inputs, labels]
-			images, labels = data
+			images4reg, images4cls, labels = data
 			if args.gpu >= 0:
-				images = images.to(device)
+				images4reg = images4reg.to(device)
+				images4cls = images4cls.to(device)
 				labels = labels.to(device)
+				
 
 			# Forward
-			outputs = net(images)
+			outputs_reg = net_reg(images4reg)
+			outputs_cls_likelihood = net_cls(images4cls)
+			_, outputs_cls = torch.max(outputs_cls_likelihood, 1)
 			
 			# Predict the label
-			predicted = [[[0 for i in range(len(labels[0][0]))] for j in range(len(labels[0]))] for k in range(len(labels))]
+			predicted_SI = [[[0 for i in range(len(labels[0][0]))] for j in range(len(labels[0]))] for k in range(len(labels))]
+			predicted_II = [[[0 for i in range(len(labels[0][0]))] for j in range(len(labels[0]))] for k in range(len(labels))]
 			
-			for B in range(len(outputs)):
-				for Y in range(len(outputs[B])):
-					for X in range(len(outputs[B][Y])):
-						predicted[B][Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[B][Y][X].item())
+			for B in range(len(outputs_reg)):
+				for Y in range(len(outputs_reg[B])):
+					for X in range(len(outputs_reg[B][Y])):
+						if outputs_cls[B][Y][X] == 0:
+							if merge_offset < 0:
+								predicted_SI[B][Y][X] = 0
+								predicted_II[B][Y][X] = 0
+							else:
+								predicted_SI[B][Y][X] = InstrumentalIntensity2SesimicIntensity(outputs_reg[B][Y][X].item() - merge_offset)
+								predicted_II[B][Y][X] = outputs_reg[B][Y][X].item() - merge_offset
+						else:
+							predicted_SI[B][Y][X] = InstrumentalIntensity2SesimicIntensity(outputs_reg[B][Y][X].item())
+							predicted_II[B][Y][X] = outputs_reg[B][Y][X].item()
+						
 						targets_list.append(InstrumentalIntensity2SesimicIntensity(labels[B][Y][X].item()))
-						predict_list.append(predicted[B][Y][X])
+						predict_list.append(predicted_SI[B][Y][X])
+						
 						if mask[Y][X] > 0:
 							targets_masked_InstrumentalIntensity_list.append(labels[B][Y][X].item())
-							predict_masked_InstrumentalIntensity_list.append(outputs[B][Y][X].item())
-							residuals_masked_list.append(labels[B][Y][X].item() - outputs[B][Y][X].item())
+							predict_masked_InstrumentalIntensity_list.append(predicted_II[B][Y][X])
+							residuals_masked_list.append(labels[B][Y][X].item() - predicted_II[B][Y][X])
 
 							targets_masked_list.append(InstrumentalIntensity2SesimicIntensity(labels[B][Y][X].item()))
-							predict_masked_list.append(predicted[B][Y][X])
+							predict_masked_list.append(predicted_SI[B][Y][X])
 						if labels[B][Y][X].item() > 0.1:
 							targets_t_masked_InstrumentalIntensity_list.append(labels[B][Y][X].item())
-							predict_t_masked_InstrumentalIntensity_list.append(outputs[B][Y][X].item())
-							residuals_t_masked_list.append(labels[B][Y][X].item() - outputs[B][Y][X].item())
+							predict_t_masked_InstrumentalIntensity_list.append(predicted_II[B][Y][X])
+							residuals_t_masked_list.append(labels[B][Y][X].item() - predicted_II[B][Y][X])
 
 							targets_t_masked_list.append(InstrumentalIntensity2SesimicIntensity(labels[B][Y][X].item()))
-							predict_t_masked_list.append(predicted[B][Y][X])
+							predict_t_masked_list.append(predicted_SI[B][Y][X])
 			
 			for B in range(len(labels)):
 				for Y in range(len(labels[B])):
 					for X in range(len(labels[B][Y])):
 						if mask[Y][X] != 0:
 							label = InstrumentalIntensity2SesimicIntensity(labels[B][Y][X])
-							predic = predicted[B][Y][X]
+							predic = predicted_II[B][Y][X]
 							class_diff_index = int(predic-label) + 9
 							class_diff[class_diff_index] += 1
 							total += 1 
@@ -193,31 +222,32 @@ def main():
 	mae_t = MAE(targets_t_masked_InstrumentalIntensity_list, predict_t_masked_InstrumentalIntensity_list)
 	
 	print(mag_degree, depth_degree, cross_degree, mcc_without_mask, mcc_with_mask, mcc_with_t_mask, r2, adj_r2, pcc, me, rss, mse, rmse, rse, l1_loss, mae, r2_t, adj_r2_t, pcc_t, me_t, rss_t, mse_t, rmse_t, rse_t, l1_loss_t, mae_t, sep=',')
-	"""
-		#matthews corrcoef
-		print("matthews corrcoef(マスクなし)", mcc_without_mask)
-		print("matthews corrcoef(マスクあり)", mcc_with_mask)
-		#決定係数
-		print("決定係数", r2)
-		#自由度調整済み決定係数
-		print("自由度調整済み決定係数", adj_r2)
-		#ピアソン相関係数
-		print("ピアソン相関係数", pcc)
-		#ME (残差の平均)
-		print("ME", me)
-		#RSS(残差平方和)
-		print("RSS", rss)
-		#MSE(平均二乗誤差)
-		print("MSE", mse)
-		#RMSE(#平均二乗偏差)
-		print("RMSE", rmse)
-		#RSE（相対に乗誤差）
-		print("RSE", rse)
-		#L1 LOSS
-		print("L1 LOSS", l1_loss)
-		#MAE（平均絶対誤差）
-		print("MAE", mae)
-	"""
+
+	#matthews corrcoef
+	print("matthews corrcoef(マスクなし)", mcc_without_mask)
+	print("matthews corrcoef(マスクあり)", mcc_with_mask)
+	#決定係数
+	print("決定係数", r2)
+	print("決定係数(t_mask)", r2_t)
+	#自由度調整済み決定係数
+	print("自由度調整済み決定係数", adj_r2)
+	#ピアソン相関係数
+	print("ピアソン相関係数", pcc)
+	#ME (残差の平均)
+	print("ME", me)
+	#RSS(残差平方和)
+	print("RSS", rss)
+	#MSE(平均二乗誤差)
+	print("MSE", mse)
+	#RMSE(#平均二乗偏差)
+	print("RMSE", rmse)
+	#RSE（相対に乗誤差）
+	print("RSE", rse)
+	#L1 LOSS
+	print("L1 LOSS", l1_loss)
+	#MAE（平均絶対誤差）
+	print("MAE", mae)
+
 	
 	#residual plot
 	fig = plt.figure()
