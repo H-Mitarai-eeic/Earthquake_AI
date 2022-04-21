@@ -24,6 +24,7 @@
 /AI/result_*
 /AI/predicted_data_.csv
 /AI/predicted_data.csv
+/AI/search_offset_results
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

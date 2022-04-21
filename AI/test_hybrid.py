@@ -144,7 +144,7 @@ def main():
 			for B in range(len(outputs_reg)):
 				for Y in range(len(outputs_reg[B])):
 					for X in range(len(outputs_reg[B][Y])):
-						if outputs_cls[B][Y][X] == 0:
+						if outputs_cls[B][Y][X].item() == 0:
 							if merge_offset < 0:
 								predicted_SI[B][Y][X] = 0
 								predicted_II[B][Y][X] = 0
