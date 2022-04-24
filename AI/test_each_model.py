@@ -121,12 +121,18 @@ def main():
 
 	targets_map_mask_cls_list = [] #II means 計測震度
 	predict_map_mask_cls_list = []
+	predict_map_mask_zero_likelihood_list = []
+	predict_map_mask_one_likelihood_list = []
 
 	targets_t_mask_cls_list = []
 	predict_t_mask_cls_list = []
+	predict_t_mask_zero_likelihood_list = []
+	predict_t_mask_one_likelihood_list = []
 
 	targets_no_mask_cls_list = []
 	predict_no_mask_cls_list = []
+	predict_no_mask_zero_likelihood_list = []
+	predict_no_mask_one_likelihood_list = []
 
 	with torch.no_grad():
 		for data in testloader:
@@ -166,7 +172,9 @@ def main():
 
 						targets_no_mask_cls_list.append(cls_label[B][Y][X])
 						predict_no_mask_cls_list.append(outputs_cls[B][Y][X].item())
-						
+						predict_no_mask_zero_likelihood_list.append(outputs_cls_likelihood[B][0][Y][X].item())
+						predict_no_mask_one_likelihood_list.append(outputs_cls_likelihood[B][1][Y][X].item())
+
 						if mask[Y][X] > 0:
 							targets_map_mask_II_list.append(labels[B][Y][X].item())
 							predict_map_mask_II_list.append(predicted_II[B][Y][X])
@@ -176,6 +184,8 @@ def main():
 
 							targets_map_mask_cls_list.append(cls_label[B][Y][X])
 							predict_map_mask_cls_list.append(outputs_cls[B][Y][X].item())
+							predict_map_mask_zero_likelihood_list.append(outputs_cls_likelihood[B][0][Y][X].item())
+							predict_map_mask_one_likelihood_list.append(outputs_cls_likelihood[B][1][Y][X].item())
 
 						if labels[B][Y][X].item() > 0.1:
 							targets_t_mask_II_list.append(labels[B][Y][X].item())
@@ -186,66 +196,87 @@ def main():
 
 							targets_t_mask_cls_list.append(cls_label[B][Y][X])
 							predict_t_mask_cls_list.append(outputs_cls[B][Y][X].item())
+							predict_t_mask_zero_likelihood_list.append(outputs_cls_likelihood[B][0][Y][X].item())
+							predict_t_mask_one_likelihood_list.append(outputs_cls_likelihood[B][1][Y][X].item())
 			
 			counter += 1
 			
 
-	with open(args.out + '/Pre_II_map_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(predict_map_mask_II_list)
-	with open(args.out + '/Obs_II_map_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(targets_map_mask_II_list)
-	with open(args.out + '/Pre_II_t_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(predict_t_mask_II_list)
-	with open(args.out + '/Obs_II_t_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(targets_t_mask_II_list)
-	with open(args.out + '/Pre_II_no_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(predict_no_mask_II_list)
-	with open(args.out + '/Obs_II_no_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(targets_no_mask_II_list)		
+	# with open(args.out + '/Pre_II_map_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(predict_map_mask_II_list)
+	# with open(args.out + '/Obs_II_map_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(targets_map_mask_II_list)
+	# with open(args.out + '/Pre_II_t_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(predict_t_mask_II_list)
+	# with open(args.out + '/Obs_II_t_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(targets_t_mask_II_list)
+	# with open(args.out + '/Pre_II_no_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(predict_no_mask_II_list)
+	# with open(args.out + '/Obs_II_no_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(targets_no_mask_II_list)		
 	
-	with open(args.out + '/Pre_SI_map_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(predict_map_mask_SI_list)
-	with open(args.out + '/Obs_SI_map_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(targets_map_mask_SI_list)
-	with open(args.out + '/Pre_SI_t_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(predict_t_mask_SI_list)
-	with open(args.out + '/Obs_SI_t_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(targets_t_mask_SI_list)
-	with open(args.out + '/Pre_SI_no_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(predict_no_mask_SI_list)
-	with open(args.out + '/Obs_SI_no_mask.csv', "w") as fo:
-		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(targets_no_mask_SI_list)	
+	# with open(args.out + '/Pre_SI_map_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(predict_map_mask_SI_list)
+	# with open(args.out + '/Obs_SI_map_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(targets_map_mask_SI_list)
+	# with open(args.out + '/Pre_SI_t_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(predict_t_mask_SI_list)
+	# with open(args.out + '/Obs_SI_t_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(targets_t_mask_SI_list)
+	# with open(args.out + '/Pre_SI_no_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(predict_no_mask_SI_list)
+	# with open(args.out + '/Obs_SI_no_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(targets_no_mask_SI_list)	
 
-	with open(args.out + '/Pre_cls_map_mask.csv', "w") as fo:
+	# with open(args.out + '/Pre_cls_map_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(predict_map_mask_cls_list)
+	# with open(args.out + '/Obs_cls_map_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(targets_map_mask_cls_list)
+	# with open(args.out + '/Pre_cls_t_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(predict_t_mask_cls_list)
+	# with open(args.out + '/Obs_cls_t_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(targets_t_mask_cls_list)
+	# with open(args.out + '/Pre_cls_no_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(predict_no_mask_cls_list)
+	# with open(args.out + '/Obs_cls_no_mask.csv', "w") as fo:
+	# 	writer = csv.writer(fo, lineterminator=',')
+	# 	writer.writerow(targets_no_mask_cls_list)
+
+	with open(args.out + '/Pre_zero_likelihood_no_mask.csv', "w") as fo:
 		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(predict_map_mask_cls_list)
-	with open(args.out + '/Obs_cls_map_mask.csv', "w") as fo:
+		writer.writerow(predict_no_mask_zero_likelihood_list)
+	with open(args.out + '/Pre_zero_likelihood_map_mask.csv', "w") as fo:
 		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(targets_map_mask_cls_list)
-	with open(args.out + '/Pre_cls_t_mask.csv', "w") as fo:
+		writer.writerow(predict_map_mask_zero_likelihood_list)
+	with open(args.out + '/Pre_zero_likelihood_t_mask.csv', "w") as fo:
 		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(predict_t_mask_cls_list)
-	with open(args.out + '/Obs_cls_t_mask.csv', "w") as fo:
+		writer.writerow(predict_t_mask_zero_likelihood_list)
+	with open(args.out + '/Pre_one_likelihood_no_mask.csv', "w") as fo:
 		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(targets_t_mask_cls_list)
-	with open(args.out + '/Pre_cls_no_mask.csv', "w") as fo:
+		writer.writerow(predict_no_mask_one_likelihood_list)
+	with open(args.out + '/Pre_one_likelihood_map_mask.csv', "w") as fo:
 		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(predict_no_mask_cls_list)
-	with open(args.out + '/Obs_cls_no_mask.csv', "w") as fo:
+		writer.writerow(predict_map_mask_one_likelihood_list)
+	with open(args.out + '/Pre_one_likelihood_t_mask.csv', "w") as fo:
 		writer = csv.writer(fo, lineterminator=',')
-		writer.writerow(targets_no_mask_cls_list)
+		writer.writerow(predict_t_mask_one_likelihood_list)
 
 	print("finished")	
 

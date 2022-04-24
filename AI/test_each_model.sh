@@ -21,10 +21,10 @@ MODEL_REG="/model_final_reg"
 MODEL_CLS="/model_final_cls_binary"
 
 #OUTROOT=${MODELROOT}
-OUTROOT="results/model4osaka/train_data"
+OUTROOT="results/model4osaka/test_data/"
 mkdir ${OUTROOT}
 
-TRAIN=1
+TRAIN=0
 
 echo "MODEL: ${MODELROOT}${MODEL_REG} ${MODELROOT}${MODEL_CLS}"
 echo "DATA: ${DATA}"
@@ -36,7 +36,7 @@ echo "TRAIN = ${TRAIN}"
 python3 test_each_model.py -g ${GPU} -b ${MINIBATCH} -d ${DATA} -mr ${MODELROOT}${MODEL_REG} -mc ${MODELROOT}${MODEL_CLS} -o ${OUTROOT} -kernel_size ${KERNEL_SIZE} -mag_d ${MAG_D} -depth_d ${DEPTH_D} -cross_d ${CROSS_D} -u ${TRAIN}
 
 echo "done"
-cat test_hybrid.sh > ${OUTROOT}setting.txt
+cat test_hybrid.sh > ${OUTROOT}setting_for_likelihood.txt
 
 
 << COMENTOUT
