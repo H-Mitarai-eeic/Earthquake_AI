@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Earthquaker</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <script src="./d3.js" charset="utf-8"></script>
+    <script src="./topojson.js" charset="utf-8"></script>
+    <script src="https://d3js.org/topojson.v1.min.js"></script>
+  </head>
+  <style type="text/css">
+    div.block1 {
+      float: left;
+      width: 40%;
+    }
+    div.block2 {
+      float: right;
+      width: 60%;
+    }
+  </style>
+  <body>
+    <!-- <div class="block1"> -->
+    <h1>Earthquaker</h1>
+    <br />
+    <h2>マグニチュード <span id="currentMag"></span></h2>
+    <input type="range" min="5" max="10" step="0.1" value="7.5" id="inputMag" />
+    <div id="h4-container">
+      <div id="h4-subcontainer">
+        <h4>0<span></span></h4>
+      </div>
+    </div>
+
+    <h2>震源の深さ <span id="currentDepth"></span>km</h2>
+    <input type="range" min="0" max="700" step="1" value="50" id="inputDepth" />
+    <div id="h4-container">
+      <div id="h4-subcontainer">
+        <h4 id="h4Depth"><span></span></h4>
+      </div>
+    </div>
+
+    <h2>
+      <div id="currentXY"><p>(経度,緯度)=(0,0)</p></div>
+    </h2>
+    <button
+      class="css-button-fully-rounded--red"
+      id="buttonRun"
+      onclick="createFig()"
+    >
+      <span> RUN </span>
+    </button>
+    <div>
+      <script type="text/javascript">
+        var width = 512;
+        var height = 576;
+
+        var svg = d3
+          .select("body")
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .attr("id", "test_canvas");
+
+        showMap();
+        function showMap() {
+          // title.html(titleName);
+          d3.json("./japan.topojson").then(function (data) {
+            var japan = topojson.feature(data, data.objects.japan);
+
+            projection = d3
+              .geoMercator()
+              .center([137, 38])
+              .translate([width / 2, height / 2])
+              .scale(1500);
+
+            path = d3.geoPath().projection(projection);
+
+            svg
+              .selectAll("path")
+              .data(japan.features)
+              .enter()
+              .append("path")
+              .attr("d", path)
+              .attr("fill", function (d) {
+                return "white";
+              })
+              .attr("stroke", "#333333")
+              .attr("stroke-width", 0.5);
+            // .attr("class", "test_canvas")
+            // hover action
+            // show Name and Population
+            // .on("mouseover", function (event, d) {
+            //   tooltip
+            //     .style("visibility", "visible")
+            //     .html(d.properties.nam_ja + "<br>" + getData(mode, d) + unit);
+            //   console.log(event, d);
+            // })
+
+            // .on("mouseout", function (d) {
+            //   tooltip.style("visibility", "hidden");
+            // });
+          });
+        }
+      </script>
+    </div>
+    <br />
+    <br />
+
+    <div id="presets">
+      <button
+        class="css-button-fully-rounded--red"
+        id="buttonKanto"
+        onclick="setKanto()"
+      >
+        <span> 関東大震災 </span>
+      </button>
+      <button
+        class="css-button-fully-rounded--red"
+        id="buttonHigashinihon"
+        onclick="setHigashinihon()"
+      >
+        <span> 東日本大震災 </span>
+      </button>
+      <button
+        class="css-button-fully-rounded--red"
+        id="buttonNankai"
+        onclick="setNankai()"
+      >
+        <span> 南海トラフ </span>
+      </button>
+    </div>
+    <!-- </div> -->
+    <br />
+
+    <button
+      onclick="downloadPNG();"
+      class="css-button-fully-rounded--red"
+      id="saveFig"
+    >
+      結果を保存する
+    </button>
+
+    <div>
+      <div id="fadeLayer"></div>
+    </div>
+    <div class="sk-chase" id="loadingIcon">
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+    </div>
+  </body>
+
+  <script
+    type="text/javascript"
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+  ></script>
+
+  <script>
+    $(function () {
+      var rangePercent = $('[id="inputDepth"]').val() / 7;
+      $('[id="inputDepth"]').on("change input", function () {
+        rangePercent = $('[id="inputDepth"]').val() / 7;
+        $("h4").html($('[id="inputDepth"]').val() + "<span></span>");
+        $('[id="inputDepth"], h4>span').css(
+          "filter",
+          "hue-rotate(-" + rangePercent / 2 + "deg)"
+        );
+        // $('h4').css({'transform': 'translateX(calc(-50% - 20px)) scale(' + (1+(rangePercent/100)) + ')', 'left': rangePercent+'%'});
+        $("h4").css({
+          transform:
+            "translateX(-50%) scale(" + (1.5 + rangePercent / 120) + ")",
+          left: (rangePercent / 100) * 310 + 88 + "px",
+        });
+      });
+    });
+    const rate = 5 / 100;
+    $(function () {
+      var rangePercent = ($('[id="inputMag"]').val() - 5) / rate;
+      $('[id="inputMag"]').on("change input", function (event) {
+        rangePercent = ($('[id="inputMag"]').val() - 5) / rate;
+        $("h4").html($('[id="inputMag"]').val() + "<span></span>");
+        $('[id="inputMag"], h4>span').css(
+          "filter",
+          "hue-rotate(-" + rangePercent / 2 + "deg)"
+        );
+        // $('h4').css({'transform': 'translateX(calc(-50% - 20px)) scale(' + (1+(rangePercent/100)) + ')', 'left': rangePercent+'%'});
+        $("h4").css({
+          transform: "translateX(-50%) scale(" + (1 + rangePercent / 120) + ")",
+          left: (rangePercent / 100) * 310 + 88 + "px",
+          // left: 200 + "px",
+          // left: event.pageX,
+        });
+      });
+    });
+  </script>
+  <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+  <script type="text/javascript" src="../js/main.js"></script>
+</html>
