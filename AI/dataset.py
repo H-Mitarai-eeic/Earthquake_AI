@@ -69,8 +69,8 @@ class MyDataSet(Dataset):
 			for j in range(y - half, y + half + 1):
 				if 0 <= i < len_data and 0 <= j < len_data:
 					img_cls[0][i][j] = depth / self.depth_max_cls
-					#img_cls[1][i][j] = (mag / 10) ** 9
-					for k in range(self.dim - 1):
-						img_cls[k + 1][i][j] = (mag / 10) ** (k+1)
+					img_cls[1][i][j] = (mag / 10) ** 9
+					#for k in range(self.dim - 1):
+					#	img_cls[k + 1][i][j] = (mag / 10) ** (k+1)
 
 		return img_reg, img_cls, lbl_data
