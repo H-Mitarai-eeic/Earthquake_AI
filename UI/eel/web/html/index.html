@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Earthquaker</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <h1>Earthquaker</h1>
+    <br />
+    <h2>マグニチュード <span id="currentMag"></span></h2>
+    <input type="range" min="5" max="10" step="0.1" value="7.5" id="inputMag" />
+    <div id="h4-container">
+      <div id="h4-subcontainer">
+        <h4>0<span></span></h4>
+      </div>
+    </div>
+
+    <h2>震源の深さ <span id="currentDepth"></span>km</h2>
+    <input
+      type="range"
+      min="0"
+      max="1000"
+      step="1"
+      value="50"
+      id="inputDepth"
+    />
+    <div id="h4-container">
+      <div id="h4-subcontainer">
+        <h4 id="h4Depth"><span></span></h4>
+      </div>
+    </div>
+
+    <h2>
+      <div id="currentXY"><p>(経度,緯度)=(0,0)</p></div>
+    </h2>
+    <button
+      class="css-button-fully-rounded--red"
+      id="buttonRun"
+      onclick="createFig()"
+    >
+      <span> RUN </span>
+    </button>
+    <br />
+    <br />
+    <div>
+      <canvas
+        id="test_canvas"
+        width="512"
+        height="512"
+        style="border: 1px solid"
+      ></canvas>
+    </div>
+    <br />
+    <br />
+    <button
+      class="css-button-fully-rounded--red"
+      id="buttonKanto"
+      onclick="setKanto()"
+    >
+      <span> 関東大震災 </span>
+    </button>
+    <button
+      class="css-button-fully-rounded--red"
+      id="buttonHigashinihon"
+      onclick="setHigashinihon()"
+    >
+      <span> 東日本大震災 </span>
+    </button>
+    <button
+      class="css-button-fully-rounded--red"
+      id="buttonNankai"
+      onclick="setNankai()"
+    >
+      <span> 南海トラフ </span>
+    </button>
+    <br />
+    <br />
+    <button
+      onclick="saveCanvas('preview');"
+      class="css-button-fully-rounded--red"
+      id="saveFig"
+    >
+      結果を保存する
+    </button>
+    <br />
+    <br />
+  </body>
+  <script
+    type="text/javascript"
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+  ></script>
+  <script>
+    $(function () {
+      var rangePercent = $('[id="inputDepth"]').val() / 10;
+      $('[id="inputDepth"]').on("change input", function () {
+        rangePercent = $('[id="inputDepth"]').val() / 10;
+        $("h4").html(rangePercent * 10 + "<span></span>");
+        $('[id="inputDepth"], h4>span').css(
+          "filter",
+          "hue-rotate(-" + rangePercent / 2 + "deg)"
+        );
+        // $('h4').css({'transform': 'translateX(calc(-50% - 20px)) scale(' + (1+(rangePercent/100)) + ')', 'left': rangePercent+'%'});
+        $("h4").css({
+          transform:
+            "translateX(-50%) scale(" + (1.5 + rangePercent / 120) + ")",
+          left: rangePercent + 17 + "%",
+        });
+      });
+    });
+    const rate = 5 / 100;
+    $(function () {
+      var rangePercent = ($('[id="inputMag"]').val() - 5) / rate;
+      $('[id="inputMag"]').on("change input", function () {
+        rangePercent = ($('[id="inputMag"]').val() - 5) / rate;
+        $("h4").html($('[id="inputMag"]').val() + "<span></span>");
+        $('[id="inputMag"], h4>span').css(
+          "filter",
+          "hue-rotate(-" + rangePercent / 2 + "deg)"
+        );
+        // $('h4').css({'transform': 'translateX(calc(-50% - 20px)) scale(' + (1+(rangePercent/100)) + ')', 'left': rangePercent+'%'});
+        $("h4").css({
+          transform: "translateX(-50%) scale(" + (1 + rangePercent / 120) + ")",
+          left: rangePercent + 17 + "%",
+        });
+      });
+    });
+  </script>
+
+  <script type="text/javascript" src="/eel.js"></script>
+  <script type="text/javascript" src="../js/main.js"></script>
+  <!-- <script type="text/javascript" src="../js/design.js"></script> -->
+  <!-- <script type="text/javascript" src="output.js"></script> -->
+</html>

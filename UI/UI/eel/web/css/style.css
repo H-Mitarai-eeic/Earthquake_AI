@@ -1,0 +1,272 @@
+@import url("https://fonts.googleapis.com/css?family=Ubuntu+Mono");
+
+html {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* font-family: "Work Sans", sans-serif; */
+  font-family: "Ubuntu Mono", monospace;
+  color: rgb(149, 247, 245);
+  /* color: rgb(160, 245, 95); */
+  text-align: center;
+  zoom: 1;
+  background-color: rgb(1, 19, 36);
+}
+
+html h1,
+html h2,
+html h3,
+html h4,
+html h5,
+html h6 {
+  margin: 0;
+}
+
+html h1 {
+  color: rgb(160, 245, 95);
+  /* color: #333; */
+  font-weight: 500;
+  font-size: 400%;
+}
+
+html h2 {
+  font-size: 150%;
+}
+
+html h3 {
+  color: #aaa;
+  font-weight: 500;
+  font-size: 20%;
+}
+
+html h4 {
+  color: #999;
+  font-weight: 500;
+}
+
+html h4:after {
+  content: "";
+  padding-left: 1px;
+}
+
+#h4Depth:after {
+  content: "km";
+  font-size: 60%;
+}
+
+html input[type="range"] {
+  outline: 0;
+  border: 0;
+  border-radius: 500px;
+  width: 400px;
+  max-width: 100%;
+  margin: 10px 0 16px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  html input[type="range"] {
+    overflow: hidden;
+    height: 40px;
+    -webkit-appearance: none;
+    background-color: #ddd;
+  }
+  html input[type="range"]::-webkit-slider-runnable-track {
+    height: 40px;
+    -webkit-appearance: none;
+    color: #444;
+    transition: box-shadow 0.2s ease-in-out;
+  }
+  html input[type="range"]::-webkit-slider-thumb {
+    width: 40px;
+    -webkit-appearance: none;
+    height: 40px;
+    cursor: ew-resize;
+    background: #fff;
+    box-shadow: -340px 0 0 320px rgb(255, 5, 145),
+      inset 0 0 0 40px rgb(255, 5, 145);
+    border-radius: 50%;
+    transition: box-shadow 0.2s ease-in-out;
+    position: relative;
+  }
+  html input[type="range"]:active::-webkit-slider-thumb {
+    background: #fff;
+    box-shadow: -340px 0 0 320px rgb(255, 5, 145),
+      inset 0 0 0 3px rgb(255, 5, 145);
+  }
+}
+
+html input[type="range"]::-moz-range-progress {
+  background-color: #43e5f7;
+}
+
+html input[type="range"]::-moz-range-track {
+  background-color: #9a905d;
+}
+
+html input[type="range"]::-ms-fill-lower {
+  background-color: #43e5f7;
+}
+
+html input[type="range"]::-ms-fill-upper {
+  background-color: #9a905d;
+}
+
+#h4-container {
+  width: 400px;
+  max-width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+#h4-container #h4-subcontainer {
+  width: 100%;
+  position: relative;
+}
+
+#h4-container #h4-subcontainer h4 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  color: #fff !important;
+  font-size: 12px;
+  transform-origin: center -10px;
+  transform: translateX(-50%);
+  transition: margin-top 0.15s ease-in-out, opacity 0.15s ease-in-out;
+}
+
+#h4-container #h4-subcontainer h4 span {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgb(255, 5, 145);
+  border-radius: 0 50% 50% 50%;
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+input:not(:active) + #h4-container h4 {
+  opacity: 0;
+  margin-top: -50px;
+  pointer-events: none;
+}
+
+/*  */
+
+.css-button-fully-rounded--red {
+  min-width: 150px;
+  height: 60px;
+  color: #fff;
+  padding: 5px 10px;
+  /* font-weight: bold; */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 20px;
+  border: 2px solid rgb(0, 202, 199);
+  background: rgb(0, 202, 199);
+  font-size: 20px;
+}
+.css-button-fully-rounded--red:hover {
+  background: #fff;
+  color: rgb(0, 202, 199);
+}
+#buttonRun {
+  min-width: 250px;
+  height: 100px;
+  color: #fff;
+  padding: 5px 10px;
+  /* font-weight: bold; */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 20px;
+  border: 2px solid rgb(0, 202, 199);
+  background: rgb(0, 202, 199);
+  font-size: 35px;
+}
+#buttonRun:hover {
+  background: #fff;
+  color: rgb(0, 202, 199);
+}
+
+#saveFig {
+  min-width: 150px;
+  height: 60px;
+  color: rgb(1, 19, 36);
+  padding: 5px 10px;
+  /* font-weight: bold; */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border-radius: 20px;
+  border: 2px solid rgb(160, 245, 95);
+  background: rgb(160, 245, 95);
+  font-size: 18px;
+}
+#saveFig:hover {
+  background: rgb(1, 19, 36);
+  color: rgb(160, 245, 95);
+}
+
+/* 凡例 */
+/*リスト本体の設定*/
+li {
+  list-style-type: none;
+  margin: 2px;
+  padding: 0.5em 0.5em 0.5em 0.5em;
+  /* background: white; */
+  border-color: white;
+  border-style: none none dotted none;
+  width: 300px;
+}
+
+/*リストの各要素に前要素として■を付ける*/
+li:before {
+  content: "";
+  display: inline-block;
+  height: 15px;
+  width: 15px;
+  margin-right: 5px;
+}
+
+/*リストの各要素の前要素のデザインを設定*/
+li.series1:before {
+  background: rgba(245, 177, 46, 0.8);
+  border-radius: 10;
+}
+li.series2:before {
+  background: rgba(25, 0, 179, 0.8);
+  border-radius: 10;
+}
+li.series3:before {
+  background: rgba(173, 21, 0, 0.8);
+  border-radius: 10;
+}
+
+li.series4:before {
+  background: #9696d5;
+  border-radius: 2;
+}
+li.series5:before {
+  background: #da2550;
+  border-radius: 2;
+}
+li.series6:before {
+  background: #341f47;
+  border-radius: 2;
+}

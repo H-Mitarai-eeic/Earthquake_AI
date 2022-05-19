@@ -34,6 +34,7 @@ def main():
 	# Set model to GPU
 	if args.gpu >= 0:
 		# Make a specified GPU current
+		print("GPU using")
 		device = 'cuda:' + str(args.gpu)
 		net = net.to(device)
 
@@ -74,8 +75,9 @@ def main():
 	classes = ("0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7")
 	# Show accuracy
 	for i in range(10):
-		print('Accuracy of %5s : %2d %%' % (
-			classes[i], 100 * class_correct[i] / class_total[i]))
+		if class_total[i] != 0:
+			print('Accuracy of %5s : %2d %% , total num of this class: %d' % (
+			classes[i], 100 * class_correct[i] / class_total[i], class_total[i]))
 	print('Accuracy : %.3f %%' % (100 * correct / total))
 
 
