@@ -2,3 +2,6 @@ data/
 *.sh
 result/
 *.out
+/predict_results/
+/results/
+/test_results/

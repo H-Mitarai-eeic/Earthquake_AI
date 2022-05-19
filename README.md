@@ -9,6 +9,8 @@ https://www.data.jma.go.jp/svd/eqev/data/bulletin/shindo.html
 
 ## 顕著な地震データ
     1. 東北地方太平洋沖地震 : EarthQuake ID = 40278
+    2. オホーツク海南部深発地震 : EarthQuake ID = 26168(testdata)
+    3. 新潟県中越地震 : EarthQuake ID = 22678(testdata)
 ## 詳細
 https://github.com/H-Mitarai-eeic/Earthquake_Data
     
