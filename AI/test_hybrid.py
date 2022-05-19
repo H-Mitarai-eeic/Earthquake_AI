@@ -70,7 +70,7 @@ def main():
 	data_channels = mag_degree + depth_degree + (cross_degree // 2) + 1
 	depth_max_reg = 600
 	depth_max_cls = 1000
-	dim_cls = 9
+	dim_cls = 2
 	kernel_size = int(args.kernel_size)
 	net_reg = MYFCN(in_channels=data_channels, mesh_size=mesh_size, kernel_size=kernel_size)
 	net_cls = Linear(n_class=2, dim=dim_cls)

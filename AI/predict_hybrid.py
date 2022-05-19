@@ -12,7 +12,9 @@ def main():
 	parser = argparse.ArgumentParser(description='Pytorch example: CIFAR-10')
 	parser.add_argument('--batchsize', '-b', type=int, default=100,
 						help='Number of images in each mini-batch')
-	parser.add_argument('--model', '-m', default='result_cfc4/model_100',
+	parser.add_argument('--model_reg', '-mr', default='results/model4osaka/',
+						help='Path to the model for test')
+	parser.add_argument('--model_cls', '-mc', default='result_cfc4/model_100',
 						help='Path to the model for test')
 	parser.add_argument('--output', '-o', default='data100/',
 						help='Root directory of outputfile')					
@@ -40,12 +42,18 @@ def main():
 	depth_degree = int(args.depth_degree)
 	cross_degree = int(args.cross_degree)
 	data_channels = mag_degree + depth_degree + (cross_degree // 2) + 1
-	depth_max = 600
+
+	data_channels = mag_degree + depth_degree + (cross_degree // 2) + 1
+	depth_max_reg = 600
+	depth_max_cls = 1000
+	dim_cls = 2
 	kernel_size = int(args.kernel_size)
 	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size, kernel_size=kernel_size)
+	net_cls = Linear(n_class=2, dim=dim_cls)
 	# Load designated network weight
 	print("loading Model...")
-	net.load_state_dict(torch.load(args.model, map_location=torch.device('cpu')))
+	net.load_state_dict(torch.load(args.model_reg, map_location=torch.device('cpu')))
+	net_cls.load_state_dict(torch.load(args.model_cls, map_location=torch.device('cpu')))
 
 	# Test
 	print("test")
