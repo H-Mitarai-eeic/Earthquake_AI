@@ -18,7 +18,7 @@ app.get('', (req, res) => {
   console.log(x, y, depth, mag)
   const childProcess = require('child_process');
   // childProcess.execSync('python3 python/predict_eq_myfcn2.py -m python/model_13 -x ' + x + ' -y ' + y + ' -depth ' + depth + ' -mag ' + mag, (error, stdout, stderr) => {
-  childProcess.execSync('python3 python/predict_Linear.py ' + x + ' -y ' + y + ' -depth ' + depth + ' -mag ' + mag, (error, stdout, stderr) => {
+  childProcess.execSync('python3 python/Hybrid.py -x ' + x + ' -y ' + y + ' -depth ' + depth + ' -mag ' + mag, (error, stdout, stderr) => {
     if (error) return console.error('ERROR', error);
   });
 
