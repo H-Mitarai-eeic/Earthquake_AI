@@ -21,7 +21,7 @@ def main():
 						help='Number of images in each mini-batch')
 	parser.add_argument('--model_kaiki', '-mk', default='python/model_final_reg',
 						help='Path to the model for test')
-	parser.add_argument('--model_Linear', '-ml', default='python/model_final_cls',
+	parser.add_argument('--model_Linear', '-ml', default='python/model_final_cls_10class',
 						help='Path to the model for test')
 	parser.add_argument('--output', '-o', default='data100/',
 						help='Root directory of outputfile')					
@@ -53,7 +53,7 @@ def main():
 	dim_cls = 2
 	kernel_size = int(args.kernel_size)
 	net = MYFCN(in_channels=data_channels, mesh_size=mesh_size, kernel_size=kernel_size)
-	net_Linear = Linear(n_class = 2, dim = dim_cls)
+	net_Linear = Linear(n_class = 10, dim = dim_cls)
 	#net_Linear = Linear(10)
 	# Load designated network weight
 	net.load_state_dict(torch.load(args.model_kaiki, map_location=torch.device('cpu')))
@@ -102,7 +102,7 @@ def main():
 		for X in range(mesh_size[0]):
 			if predicted_Linear[0][Y][X].item() == 0:
 				#predicted[Y][X] = 0
-				predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[0][Y][X].item() - 0.36)
+				predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[0][Y][X].item() - 0.59)
 
 			else:
 				predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[0][Y][X].item())
