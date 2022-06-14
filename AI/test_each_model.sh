@@ -8,29 +8,31 @@ GPU=0
 MINIBATCH=100
 DATA="data/data_for_hokkaido_regression/"
 
-KERNEL_SIZE=15 #125 15
+KERNEL_SIZE=125 #125 15
 
 
-# MAG_D=14
-# DEPTH_D=14
-# CROSS_D=0
-MAG_D=13
-DEPTH_D=13
+MAG_D=14
+DEPTH_D=14
 CROSS_D=0
+#MAG_D=13
+#DEPTH_D=13
+#CROSS_D=0
 
 
 MODELROOT="results/model4osaka/"
-#MODEL_REG="/model_final_reg"
-MODEL_REG="/mapmask-model_final_reg"
+MODEL_REG="/model_final_reg"
+#MODEL_REG="/mapmask-model_final_reg"
 #MODEL_CLS="/model_final_cls_binary"
-MODEL_CLS="/model_final_5_7_cls"
+MODEL_CLS="/model_final_cls_10class"
+#MODEL_CLS="/model_final_5_7_cls"
 
 #OUTROOT=${MODELROOT}
-OUTROOT="results/model4osaka/mapmask-model_test_data/"
+#OUTROOT="results/model4osaka/test_data_10class/"
+OUTROOT="results/model4osaka/train_data_10class/"
 #OUTROOT="results/model4osaka/mapmask-model_train_data/"
 mkdir ${OUTROOT}
 
-TRAIN=0
+TRAIN=1
 
 echo "MODEL: ${MODELROOT}${MODEL_REG} ${MODELROOT}${MODEL_CLS}"
 echo "DATA: ${DATA}"

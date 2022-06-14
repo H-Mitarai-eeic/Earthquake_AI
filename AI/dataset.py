@@ -18,7 +18,7 @@ class MyDataSet(Dataset):
 		self.depth_degree = depth_degree
 		self.cross_degree = cross_degree
 
-		self.input_width = 21
+		self.input_width = 15
 		self.dim = dim_cls
 
 		mode = "train" if train else "test"

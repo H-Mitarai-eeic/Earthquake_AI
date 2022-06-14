@@ -66,7 +66,7 @@ def main():
 	dim_cls = 2
 	kernel_size = int(args.kernel_size)
 	net_reg = MYFCN(in_channels=data_channels, mesh_size=mesh_size, kernel_size=kernel_size)
-	net_cls = Linear(n_class=2, dim=dim_cls)
+	net_cls = Linear(n_class=10, dim=dim_cls)
 
 	if args.use_traindata == 0:
 		train = False
@@ -221,62 +221,62 @@ def main():
 		writer = csv.writer(fo, lineterminator=',')
 		writer.writerow(targets_no_mask_II_list)		
 	
-	# with open(args.out + '/Pre_SI_map_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(predict_map_mask_SI_list)
-	# with open(args.out + '/Obs_SI_map_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(targets_map_mask_SI_list)
-	# with open(args.out + '/Pre_SI_t_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(predict_t_mask_SI_list)
-	# with open(args.out + '/Obs_SI_t_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(targets_t_mask_SI_list)
-	# with open(args.out + '/Pre_SI_no_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(predict_no_mask_SI_list)
-	# with open(args.out + '/Obs_SI_no_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(targets_no_mask_SI_list)	
+	with open(args.out + '/Pre_SI_map_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_map_mask_SI_list)
+	with open(args.out + '/Obs_SI_map_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(targets_map_mask_SI_list)
+	with open(args.out + '/Pre_SI_t_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_t_mask_SI_list)
+	with open(args.out + '/Obs_SI_t_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(targets_t_mask_SI_list)
+	with open(args.out + '/Pre_SI_no_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_no_mask_SI_list)
+	with open(args.out + '/Obs_SI_no_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(targets_no_mask_SI_list)	
 
-	# with open(args.out + '/Pre_cls_map_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(predict_map_mask_cls_list)
-	# with open(args.out + '/Obs_cls_map_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(targets_map_mask_cls_list)
-	# with open(args.out + '/Pre_cls_t_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(predict_t_mask_cls_list)
-	# with open(args.out + '/Obs_cls_t_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(targets_t_mask_cls_list)
-	# with open(args.out + '/Pre_cls_no_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(predict_no_mask_cls_list)
-	# with open(args.out + '/Obs_cls_no_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(targets_no_mask_cls_list)
+	with open(args.out + '/Pre_cls_map_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_map_mask_cls_list)
+	with open(args.out + '/Obs_cls_map_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(targets_map_mask_cls_list)
+	with open(args.out + '/Pre_cls_t_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_t_mask_cls_list)
+	with open(args.out + '/Obs_cls_t_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(targets_t_mask_cls_list)
+	with open(args.out + '/Pre_cls_no_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_no_mask_cls_list)
+	with open(args.out + '/Obs_cls_no_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(targets_no_mask_cls_list)
 
-	# with open(args.out + '/Pre_zero_likelihood_no_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(predict_no_mask_zero_likelihood_list)
-	# with open(args.out + '/Pre_zero_likelihood_map_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(predict_map_mask_zero_likelihood_list)
-	# with open(args.out + '/Pre_zero_likelihood_t_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(predict_t_mask_zero_likelihood_list)
-	# with open(args.out + '/Pre_one_likelihood_no_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(predict_no_mask_one_likelihood_list)
-	# with open(args.out + '/Pre_one_likelihood_map_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(predict_map_mask_one_likelihood_list)
-	# with open(args.out + '/Pre_one_likelihood_t_mask.csv', "w") as fo:
-	# 	writer = csv.writer(fo, lineterminator=',')
-	# 	writer.writerow(predict_t_mask_one_likelihood_list)
+	with open(args.out + '/Pre_zero_likelihood_no_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_no_mask_zero_likelihood_list)
+	with open(args.out + '/Pre_zero_likelihood_map_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_map_mask_zero_likelihood_list)
+	with open(args.out + '/Pre_zero_likelihood_t_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_t_mask_zero_likelihood_list)
+	with open(args.out + '/Pre_one_likelihood_no_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_no_mask_one_likelihood_list)
+	with open(args.out + '/Pre_one_likelihood_map_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_map_mask_one_likelihood_list)
+	with open(args.out + '/Pre_one_likelihood_t_mask.csv', "w") as fo:
+		writer = csv.writer(fo, lineterminator=',')
+		writer.writerow(predict_t_mask_one_likelihood_list)
 
 	print("finished")	
 
