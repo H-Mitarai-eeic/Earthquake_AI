@@ -1,4 +1,3 @@
-const http = require("http");
 const port = 3000;
 let x;
 let y;
@@ -30,6 +29,6 @@ app.get('', (req, res) => {
   });
 });
 
-app.listen('3000', () => {
+app.listen(port, () => {
   console.log('Application started');
 });

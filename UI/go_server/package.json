@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "express": "^4.18.1",
-    "ipaddr.js": "^1.9.1"
-  }
-}
