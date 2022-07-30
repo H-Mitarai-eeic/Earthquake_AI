@@ -25,7 +25,7 @@ func query_to_string(q Query) map[string]string {
 }
 
 func main() {
-	const PORT = "3000"
+	const PORT = "8000"
 	http.HandleFunc("/", handler)
 	log.Fatal(http.ListenAndServe(":"+PORT, nil))
 }
@@ -85,8 +85,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	// 		This header is set for debug.
 	// 		If you want to delete this header,
 	// 		you have to change the front-end code.
-	header := q_st["x"] + "+" + q_st["y"] + "+" + q_st["depth"] + "+" + q_st["mag"] + ","
+	// header := q_st["x"] + "+" + q_st["y"] + "+" + q_st["depth"] + "+" + q_st["mag"] + ","
 
-	w.Write([]byte(header + string(data)))
+	// w.Write([]byte(header + string(data)))
+	w.Write([]byte(string(data)))
 
 }

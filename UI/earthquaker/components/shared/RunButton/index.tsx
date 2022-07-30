@@ -1,7 +1,8 @@
 import { Box, styled, Typography, useTheme } from "@mui/material";
 import Link from "next/link";
-import { FC } from "react";
+import { Dispatch, FC, SetStateAction, useState } from "react";
 import theme from "../../../styles/theme";
+import axios from "axios";
 
 const Container = styled(Box)(({ theme }) => ({
     borderRadius: "50%",
@@ -20,8 +21,30 @@ const Container = styled(Box)(({ theme }) => ({
     },
 }));
 
-const run = (x: number, y: number, mag: number, depth: number) => {
+const run = (
+    x: number,
+    y: number,
+    mag: number,
+    depth: number,
+    setData: Dispatch<SetStateAction<number[]>>,
+    setIsLoading: Dispatch<SetStateAction<boolean>>
+) => {
     console.warn({ x }, { y }, { mag }, { depth });
+    setIsLoading(true);
+    const URL =
+        "http://localhost:8000?x=" +
+        x +
+        "&y=" +
+        y +
+        "&mag=" +
+        mag +
+        "&depth=" +
+        depth;
+    axios.get(URL).then((response) => {
+        console.log("got", response.data);
+        setIsLoading(false);
+        setData(response.data.split(","));
+    });
 };
 
 export type Props = {
@@ -29,13 +52,22 @@ export type Props = {
     y: number;
     mag: number;
     depth: number;
+    setData: Dispatch<SetStateAction<number[]>>;
+    setIsLoading: Dispatch<SetStateAction<boolean>>;
 };
 
-export const RunButton: FC<Props> = ({ x, y, mag, depth }) => {
+export const RunButton: FC<Props> = ({
+    x,
+    y,
+    mag,
+    depth,
+    setData,
+    setIsLoading,
+}) => {
     return (
         <Container
             onClick={() => {
-                run(x, y, mag, depth);
+                run(x, y, mag, depth, setData, setIsLoading);
             }}
         >
             <Typography variant="h4" color={"white"}>
