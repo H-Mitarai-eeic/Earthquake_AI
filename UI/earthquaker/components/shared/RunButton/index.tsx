@@ -7,8 +7,8 @@ const Container = styled(Box)(({ theme }) => ({
     borderRadius: "50%",
     textAlign: "center",
     margin: theme.spacing(5),
-    width: theme.spacing(40),
-    height: theme.spacing(40),
+    width: "20vmin",
+    height: "20vmin",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -38,7 +38,7 @@ export const RunButton: FC<Props> = ({ x, y, mag, depth }) => {
                 run(x, y, mag, depth);
             }}
         >
-            <Typography variant="h3" color={"white"}>
+            <Typography variant="h4" color={"white"}>
                 RUN
             </Typography>
         </Container>

@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { FC, useState } from "react";
 import InputBar from "../shared/InputBar";
+import MapOfJapan from "../shared/MapOfJapan";
 import RunButton from "../shared/RunButton";
 
 const subContainer = styled(Stack)(({ theme }) => ({
@@ -24,8 +25,8 @@ const English: FC = () => {
 
     return (
         <Grid container>
-            <Grid xs={12} md={6}>
-                <Stack alignItems={"center"} gap={1}>
+            <Grid xs={12} lg={6}>
+                <Stack alignItems={"center"} justifyItems={"center"} gap={1}>
                     <Typography
                         variant="h1"
                         textAlign={"left"}
@@ -52,8 +53,15 @@ const English: FC = () => {
                     <RunButton x={x} y={y} mag={mag} depth={depth} />
                 </Stack>
             </Grid>
-            <Grid xs={12} md={6}>
-                <Typography variant="h3">hgoehoge</Typography>
+
+            <Grid xs={12} lg={6}>
+                <Stack
+                    alignItems={"center"}
+                    justifyItems={"center"}
+                    direction={"column"}
+                >
+                    <MapOfJapan></MapOfJapan>
+                </Stack>
             </Grid>
         </Grid>
     );

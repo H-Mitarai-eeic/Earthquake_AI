@@ -8,7 +8,7 @@ type Props = {
     title?: string;
 };
 const Layout = ({ children, title = "This is the default title" }: Props) => (
-    <Box margin={theme.spacing(8)}>
+    <Box margin={theme.spacing(12)}>
         <Head>
             <title>{title}</title>
             <meta charSet="utf-8" />
