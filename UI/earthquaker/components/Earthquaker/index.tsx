@@ -1,12 +1,4 @@
-import {
-    Box,
-    Grid,
-    Slider,
-    Stack,
-    styled,
-    Typography,
-    useTheme,
-} from "@mui/material";
+import { Grid, Stack, styled, Typography, useTheme } from "@mui/material";
 import { FC, useState } from "react";
 import {
     BITSIZE,
@@ -24,7 +16,11 @@ const subContainer = styled(Stack)(({ theme }) => ({
     margin: theme.spacing(2),
 }));
 
-const English: FC = () => {
+type Props = {
+    language: string;
+};
+
+const Earthquaker: FC<Props> = ({ language }) => {
     const theme = useTheme();
     const [pos, setPos] = useState([32, 32]);
     const [mag, setMag] = useState(7.5);
@@ -32,6 +28,8 @@ const English: FC = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const [data, setData] = useState(DEFAULT_DATA);
+    const isEnglish = language == "English";
+
     return (
         <Grid container>
             <Grid xs={12} lg={6}>
@@ -44,38 +42,65 @@ const English: FC = () => {
                         Earthquaker
                     </Typography>
                     <InputBar
-                        title={"magnitude"}
+                        title={isEnglish ? "magnitude" : "マグニチュード"}
                         min={5}
                         max={10}
                         step={0.1}
                         value={mag}
                         setValue={setMag}
+                        isLoading={isLoading}
+                        setData={setData}
                     />
                     <InputBar
-                        title={"depth"}
+                        title={isEnglish ? "depth" : "震源の深さ"}
                         min={0}
                         max={700}
                         step={1}
                         value={depth}
                         setValue={setDepth}
+                        isLoading={isLoading}
+                        setData={setData}
                     />
                     <Stack direction={"row"} gap={5}>
-                        <Typography variant="h4">
-                            latitude :&nbsp;
-                            {Math.round(
-                                LATITUDE_MAX -
-                                    (pos[1] * LATITUDE_SPAN) / BITSIZE
-                            )}
-                            °N
-                        </Typography>
-                        <Typography variant="h4">
-                            longtitude :&nbsp;
-                            {Math.round(
-                                LONGTITUDE_MIN +
-                                    (pos[0] * LONGTITUDE_SPAN) / BITSIZE
-                            )}
-                            °E
-                        </Typography>
+                        {isEnglish ? (
+                            <>
+                                <Typography variant="h4">
+                                    latitude :&nbsp;
+                                    {Math.round(
+                                        LATITUDE_MAX -
+                                            (pos[1] * LATITUDE_SPAN) / BITSIZE
+                                    )}
+                                    °N
+                                </Typography>
+                                <Typography variant="h4">
+                                    longtitude :&nbsp;
+                                    {Math.round(
+                                        LONGTITUDE_MIN +
+                                            (pos[0] * LONGTITUDE_SPAN) / BITSIZE
+                                    )}
+                                    °E
+                                </Typography>
+                            </>
+                        ) : (
+                            <>
+                                <Typography variant="h4">
+                                    緯度 :&nbsp; 北緯
+                                    {Math.round(
+                                        LATITUDE_MAX -
+                                            (pos[1] * LATITUDE_SPAN) / BITSIZE
+                                    )}
+                                    °
+                                </Typography>
+                                <Typography variant="h4">
+                                    経度 :&nbsp;東経
+                                    {Math.round(
+                                        LONGTITUDE_MIN +
+                                            (pos[0] * LONGTITUDE_SPAN) / BITSIZE
+                                    )}
+                                    °
+                                </Typography>
+                            </>
+                        )}
                     </Stack>
                     <RunButton
                         x={pos[0]}
@@ -107,4 +132,4 @@ const English: FC = () => {
     );
 };
 
-export default English;
+export default Earthquaker;

@@ -7,6 +7,7 @@ import {
     useTheme,
 } from "@mui/material";
 import { Dispatch, FC, SetStateAction, useState } from "react";
+import { DEFAULT_DATA } from "../global";
 
 const Container = styled(Stack)(({ theme }) => ({
     margin: theme.spacing(2),
@@ -20,9 +21,20 @@ type Props = {
     step: number;
     value: number;
     setValue: Dispatch<SetStateAction<number>>;
+    setData: Dispatch<SetStateAction<number[]>>;
+    isLoading: boolean;
 };
 
-const InputBar: FC<Props> = ({ title, min, max, step, value, setValue }) => {
+const InputBar: FC<Props> = ({
+    title,
+    min,
+    max,
+    step,
+    value,
+    setValue,
+    setData,
+    isLoading,
+}) => {
     const theme = useTheme();
     return (
         <Container gap={theme.spacing(3)}>
@@ -30,6 +42,7 @@ const InputBar: FC<Props> = ({ title, min, max, step, value, setValue }) => {
                 {title} : {value}
             </Typography>
             <Slider
+                disabled={isLoading}
                 min={min}
                 max={max}
                 step={step}
@@ -39,6 +52,7 @@ const InputBar: FC<Props> = ({ title, min, max, step, value, setValue }) => {
                 valueLabelDisplay="auto"
                 color="secondary"
                 onChange={(_event: Event, newValue: number | number[]) => {
+                    setData(DEFAULT_DATA);
                     setValue(newValue as number);
                 }}
             />
