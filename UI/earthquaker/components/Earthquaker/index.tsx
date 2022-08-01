@@ -85,20 +85,20 @@ const Earthquaker: FC<Props> = ({ language }) => {
                         ) : (
                             <>
                                 <Typography variant="h4">
-                                    緯度 :&nbsp; 北緯
+                                    緯度 :&nbsp;北緯&nbsp;
                                     {Math.round(
                                         LATITUDE_MAX -
                                             (pos[1] * LATITUDE_SPAN) / BITSIZE
                                     )}
-                                    度
+                                    &nbsp;度
                                 </Typography>
                                 <Typography variant="h4">
-                                    経度 :&nbsp;東経
+                                    経度 :&nbsp;東経&nbsp;
                                     {Math.round(
                                         LONGTITUDE_MIN +
                                             (pos[0] * LONGTITUDE_SPAN) / BITSIZE
                                     )}
-                                    度
+                                    &nbsp;度
                                 </Typography>
                             </>
                         )}
