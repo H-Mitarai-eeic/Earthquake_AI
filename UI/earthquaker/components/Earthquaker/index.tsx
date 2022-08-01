@@ -3,6 +3,7 @@ import { FC, useState } from "react";
 import {
     BITSIZE,
     DEFAULT_DATA,
+    Lang,
     LATITUDE_MAX,
     LATITUDE_SPAN,
     LONGTITUDE_MIN,
@@ -17,7 +18,7 @@ const subContainer = styled(Stack)(({ theme }) => ({
 }));
 
 type Props = {
-    language: string;
+    language: Lang;
 };
 
 const Earthquaker: FC<Props> = ({ language }) => {
@@ -89,7 +90,7 @@ const Earthquaker: FC<Props> = ({ language }) => {
                                         LATITUDE_MAX -
                                             (pos[1] * LATITUDE_SPAN) / BITSIZE
                                     )}
-                                    °
+                                    度
                                 </Typography>
                                 <Typography variant="h4">
                                     経度 :&nbsp;東経
@@ -97,7 +98,7 @@ const Earthquaker: FC<Props> = ({ language }) => {
                                         LONGTITUDE_MIN +
                                             (pos[0] * LONGTITUDE_SPAN) / BITSIZE
                                     )}
-                                    °
+                                    度
                                 </Typography>
                             </>
                         )}
