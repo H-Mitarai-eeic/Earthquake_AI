@@ -53,6 +53,7 @@ export type Props = {
     mag: number;
     depth: number;
     setData: Dispatch<SetStateAction<number[]>>;
+    isLoading: boolean;
     setIsLoading: Dispatch<SetStateAction<boolean>>;
 };
 
@@ -62,16 +63,29 @@ export const RunButton: FC<Props> = ({
     mag,
     depth,
     setData,
+    isLoading,
     setIsLoading,
 }) => {
     return (
         <Container
             onClick={() => {
+                if (isLoading) return;
                 run(x, y, mag, depth, setData, setIsLoading);
+            }}
+            sx={{
+                boxShadow: isLoading
+                    ? `0px 0px 10px ${theme.palette.primary.dark}`
+                    : `0px 0px 10px ${theme.palette.secondary.main}`,
+
+                "&:hover": {
+                    boxShadow: isLoading
+                        ? `0px 0px 10px ${theme.palette.primary.dark}`
+                        : `0px 0px 50px ${theme.palette.secondary.main}`,
+                },
             }}
         >
             <Typography variant="h4" color={"white"}>
-                RUN
+                {isLoading ? "RUNNING" : "RUN"}
             </Typography>
         </Container>
     );

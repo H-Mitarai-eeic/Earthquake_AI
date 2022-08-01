@@ -23,6 +23,7 @@ type Props = {
     setValue: Dispatch<SetStateAction<number>>;
     setData: Dispatch<SetStateAction<number[]>>;
     isLoading: boolean;
+    unit?: string;
 };
 
 const InputBar: FC<Props> = ({
@@ -34,12 +35,13 @@ const InputBar: FC<Props> = ({
     setValue,
     setData,
     isLoading,
+    unit,
 }) => {
     const theme = useTheme();
     return (
         <Container gap={theme.spacing(3)}>
             <Typography variant="h3">
-                {title} : {value}
+                {title} : {value} {unit}
             </Typography>
             <Slider
                 disabled={isLoading}
