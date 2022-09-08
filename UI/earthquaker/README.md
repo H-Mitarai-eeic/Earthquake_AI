@@ -1,4 +1,31 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Earthquaker
+
+## requirements and set up
+- node.js
+- golang
+
+1. move to earthquaker (this repo)
+2. change node version to v14.18.0 (if you set up nvmrc adequately, you can skip this step.)
+3. run `$ npm install` 
+
+## usage
+
+### frontend
+from this repo
+
+`$ npm run dev`
+
+### server
+from this repo
+
+`$ cd ../go_server`
+
+`$ go run main.go`
+
+If you want to stop, please input C-c. 
+
+
+<!-- This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
@@ -31,4 +58,4 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details. -->
