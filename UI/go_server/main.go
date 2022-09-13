@@ -75,6 +75,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// data, err := ioutil.ReadFile("python/niigata.csv")
+	// data, err := ioutil.ReadFile("python/abn_pre.csv")
+	// data, err := ioutil.ReadFile("python/abn_real.csv")
 	data, err := ioutil.ReadFile("python/predicted_data.csv")
 	if err != nil {
 		panic(err)
