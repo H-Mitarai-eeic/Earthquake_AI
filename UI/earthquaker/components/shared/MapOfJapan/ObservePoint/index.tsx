@@ -29,6 +29,8 @@ const fontColor = [
     "white",
 ];
 
+const intensity = ["0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7"];
+
 type Props = {
     x: number;
     y: number;
@@ -60,11 +62,11 @@ const ObservePoint: FC<Props> = ({ x, y, value, isSelected }) => {
             >
                 {value != 0 ? (
                     <Typography
-                        fontSize={"5px"}
+                        fontSize={"4px"}
                         textAlign={"center"}
                         lineHeight={`${height}px`}
                     >
-                        {value}
+                        {intensity[value]}
                     </Typography>
                 ) : null}
             </Box>
@@ -104,11 +106,11 @@ const ObservePoint: FC<Props> = ({ x, y, value, isSelected }) => {
             }}
         >
             <Typography
-                fontSize={"5px"}
+                fontSize={"4px"}
                 textAlign={"center"}
                 lineHeight={`${height}px`}
             >
-                {value}
+                {intensity[value]}
             </Typography>
         </Box>
     );

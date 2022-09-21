@@ -17,6 +17,7 @@ const fontFamily = [
 const theme = createTheme({
     palette: {
         primary: {
+            // main: "#FFFFFF",
             main: "#212121",
             light: "#484848",
             dark: "#000000",

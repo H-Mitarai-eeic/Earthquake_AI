@@ -61,6 +61,7 @@ const MapOfJapan: FC<Props> = ({ pos, setPos, data, setData, isLoading }) => {
             <Box
                 id="CANVAS"
                 border={"1px solid"}
+                // borderColor={"black"}
                 sx={{ position: "relative" }}
                 onClick={(event) => {
                     if (isLoading) return;
