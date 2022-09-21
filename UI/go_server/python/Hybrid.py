@@ -1,47 +1,80 @@
-
-
 import argparse
+from distutils.log import debug
+from time import time
+from unittest import result
 import torch
 
 from mycfc2D import MYFCN
 from Linear_binary import Linear
-#from Linear import Linear
 
 import csv
-import copy
-import math
+import datetime
+import threading
+
+debug = False
 
 len_data = 64
 input_width = 15
 half = input_width // 2
 
 
+def timer(txt):
+    if debug:
+        now = datetime.datetime.now()
+        print(txt)
+        print(now)
+        print()
+
+
 def main():
-    parser = argparse.ArgumentParser(description='Pytorch example: CIFAR-10')
-    parser.add_argument('--batchsize', '-b', type=int, default=100,
-                        help='Number of images in each mini-batch')
-    parser.add_argument('--model_kaiki', '-mk', default='python/model_final_reg',
-                        help='Path to the model for test')
-    parser.add_argument('--model_Linear', '-ml', default='python/model_final_cls_10class',
-                        help='Path to the model for test')
-    parser.add_argument('--output', '-o', default='data100/',
-                        help='Root directory of outputfile')
-    parser.add_argument('--x', '-x', default=52,
-                        help='Erthquake ID for input/output files')
-    parser.add_argument('--y', '-y', default=32,
-                        help='Erthquake ID for input/output files')
-    parser.add_argument('--depth', '-depth', default=10,
-                        help='Erthquake ID for input/output files')
-    parser.add_argument('--mag', '-mag', default=9.0,
-                        help='Erthquake ID for input/output files')
-    parser.add_argument('--kernel_size', '-kernel_size', default=125,
-                        help='Root directory of dataset')
-    parser.add_argument('--mag_degree', '-mag_d', default=14,
-                        help='Root directory of dataset')
-    parser.add_argument('--depth_degree', '-depth_d', default=14,
-                        help='Root directory of dataset')
-    parser.add_argument('--cross_degree', '-cross_d', default=0,
-                        help='Root directory of dataset')
+    timer("started")
+    parser = argparse.ArgumentParser(description="Pytorch example: CIFAR-10")
+    parser.add_argument(
+        "--batchsize",
+        "-b",
+        type=int,
+        default=100,
+        help="Number of images in each mini-batch",
+    )
+    parser.add_argument(
+        "--model_kaiki",
+        "-mk",
+        default="python/model_final_reg",
+        help="Path to the model for test",
+    )
+    parser.add_argument(
+        "--model_Linear",
+        "-ml",
+        default="python/model_final_cls_10class",
+        help="Path to the model for test",
+    )
+    parser.add_argument(
+        "--output", "-o", default="data100/", help="Root directory of outputfile"
+    )
+    parser.add_argument(
+        "--x", "-x", default=52, help="Erthquake ID for input/output files"
+    )
+    parser.add_argument(
+        "--y", "-y", default=32, help="Erthquake ID for input/output files"
+    )
+    parser.add_argument(
+        "--depth", "-depth", default=10, help="Erthquake ID for input/output files"
+    )
+    parser.add_argument(
+        "--mag", "-mag", default=9.0, help="Erthquake ID for input/output files"
+    )
+    parser.add_argument(
+        "--kernel_size", "-kernel_size", default=125, help="Root directory of dataset"
+    )
+    parser.add_argument(
+        "--mag_degree", "-mag_d", default=14, help="Root directory of dataset"
+    )
+    parser.add_argument(
+        "--depth_degree", "-depth_d", default=14, help="Root directory of dataset"
+    )
+    parser.add_argument(
+        "--cross_degree", "-cross_d", default=0, help="Root directory of dataset"
+    )
     args = parser.parse_args()
 
     # Set up a neural network to test
@@ -55,10 +88,12 @@ def main():
     kernel_size = int(args.kernel_size)
     net = MYFCN(in_channels=data_channels, mesh_size=mesh_size, kernel_size=kernel_size)
     net_Linear = Linear(n_class=10, dim=dim_cls)
-    #net_Linear = Linear(10)
+    # net_Linear = Linear(10)
     # Load designated network weight
-    net.load_state_dict(torch.load(args.model_kaiki, map_location=torch.device('cpu')))
-    net_Linear.load_state_dict(torch.load(args.model_Linear, map_location=torch.device('cpu')))
+    net.load_state_dict(torch.load(args.model_kaiki, map_location=torch.device("cpu")))
+    net_Linear.load_state_dict(
+        torch.load(args.model_Linear, map_location=torch.device("cpu"))
+    )
 
     # Test
     # Get the inputs; data is a list of [inputs, labels]
@@ -70,15 +105,38 @@ def main():
     epicenter = torch.zeros(1, data_channels, mesh_size[1], mesh_size[0])
     epicenter_Linear = torch.zeros(1, dim_cls, mesh_size[1], mesh_size[0])
 
+    output_list = [-1, -1]
+
+    class Thread(threading.Thread):
+        def __init__(self, thread_name):
+            self.thread_name = str(thread_name)
+            threading.Thread.__init__(self)
+
+        def __str__(self):
+            return self.thread_name
+
+        def run(self):
+            timer(self.thread_name + " started")
+
+            if self.thread_name == "net":
+                outputs = net(epicenter)
+                output_list[0] = outputs
+            elif self.thread_name == "net_Linear":
+                outputs = net_Linear(epicenter_Linear)
+                output_list[1] = outputs
+            timer(self.thread_name + " ended")
+
+    timer("main process started")
+
     i = 0
     epicenter[0][i][y][x] = 1
     i += 1
 
     for j in range(1, mag_degree + 1):
-        epicenter[0][i][y][x] = (mag / 9)**j
+        epicenter[0][i][y][x] = (mag / 9) ** j
         i += 1
     for j in range(1, depth_degree + 1):
-        epicenter[0][i][y][x] = (depth / depth_max)**j
+        epicenter[0][i][y][x] = (depth / depth_max) ** j
         i += 1
     for j in range(1, cross_degree // 2 + 1):
         epicenter[0][i][y][x] = ((mag / 9) * (depth / depth_max)) ** (2 * j)
@@ -89,11 +147,22 @@ def main():
         for j in range(int(args.y) - half, int(args.y) + half + 1):
             if 0 <= k < len_data and 0 <= j < len_data:
                 epicenter_Linear[0][0][k][j] = float(args.depth) / 1000
-                epicenter_Linear[0][1][k][j] = (float(args.mag) / 10)**9
+                epicenter_Linear[0][1][k][j] = (float(args.mag) / 10) ** 9
+
+    thread_name_list = ["net", "net_Linear"]
+    thread_list = []
+    for name in thread_name_list:
+        thread = Thread(thread_name=name)
+        thread.start()
+        thread_list.append(thread)
+
+    for thread in thread_list:
+        thread.join()
 
     # Forward
-    outputs = net(epicenter)
-    outputs_Linear = net_Linear(epicenter_Linear)
+    outputs = output_list[0]
+    outputs_Linear = output_list[1]
+
     # Predict the label
     predicted = [[0 for i in range(mesh_size[1])] for j in range(mesh_size[0])]
     _, predicted_Linear = torch.max(outputs_Linear, 1)
@@ -102,16 +171,20 @@ def main():
     for Y in range(mesh_size[1]):
         for X in range(mesh_size[0]):
             if predicted_Linear[0][Y][X].item() == 0:
-                #predicted[Y][X] = 0
-                predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[0][Y][X].item() - 0.30)
+                # predicted[Y][X] = 0
+                predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(
+                    outputs[0][Y][X].item() - 0.30
+                )
                 # predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[0][Y][X].item() - 0.59)
 
             else:
-                predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(outputs[0][Y][X].item())
+                predicted[Y][X] = InstrumentalIntensity2SesimicIntensity(
+                    outputs[0][Y][X].item()
+                )
 
     # csv出力
-    with open('python/predicted_data.csv', "w") as fo:
-        writer = csv.writer(fo, lineterminator=',')
+    with open("python/predicted_data.csv", "w") as fo:
+        writer = csv.writer(fo, lineterminator=",")
         writer.writerows(predicted)
 
 
@@ -138,5 +211,5 @@ def InstrumentalIntensity2SesimicIntensity(II):
         return 9  # 7
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
