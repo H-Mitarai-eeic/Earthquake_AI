@@ -14,6 +14,11 @@ import threading
 from http.server import HTTPServer
 from http.server import BaseHTTPRequestHandler
 
+import http.server as s
+from urllib.parse import urlparse
+from urllib.parse import parse_qs
+
+
 debug = False
 
 len_data = 64
@@ -115,23 +120,24 @@ net_Linear = Linear(n_class=10, dim=dim_cls)
 output_list = [-1, -1]
 
 
-# class Thread(threading.Thread):
-#     def __init__(self, thread_name):
-#         self.thread_name = str(thread_name)
-#         threading.Thread.__init__(self)
+class Thread(threading.Thread):
+    def __init__(self, thread_name, epicenter):
+        self.thread_name = str(thread_name)
+        self.epicenter = epicenter
+        threading.Thread.__init__(self)
 
-#     def __str__(self):
-#         return self.thread_name
+    def __str__(self):
+        return self.thread_name
 
-#     def run(self):
-#         timer(self.thread_name + " started")
-#         if self.thread_name == "net":
-#             outputs = net(epicenter)
-#             output_list[0] = outputs
-#         elif self.thread_name == "net_Linear":
-#             outputs = net_Linear(epicenter_Linear)
-#             output_list[1] = outputs
-#         timer(self.thread_name + " ended")
+    def run(self):
+        timer(self.thread_name + " started")
+        if self.thread_name == "net":
+            outputs = net(self.epicenter)
+            output_list[0] = outputs
+        elif self.thread_name == "net_Linear":
+            outputs = net_Linear(self.epicenter)
+            output_list[1] = outputs
+        timer(self.thread_name + " ended")
 
 
 def run():
@@ -141,7 +147,9 @@ def run():
     y = int(args.y)
     depth = float(args.depth)
     mag = float(args.mag)
-    print(x, y, depth, mag)
+
+    print()
+    print("(x: {}, y: {}, depth: {}, mag: {}) -> RUNNING".format(x, y, depth, mag))
 
     net.load_state_dict(torch.load(args.model_kaiki, map_location=torch.device("cpu")))
     net_Linear.load_state_dict(
@@ -168,22 +176,23 @@ def run():
                 epicenter_Linear[0][0][k][j] = float(args.depth) / 1000
                 epicenter_Linear[0][1][k][j] = (float(args.mag) / 10) ** 9
 
-    # thread_name_list = ["net", "net_Linear"]
-    # thread_list = []
+    thread_name_list = ["net", "net_Linear"]
+    thread_epicenter_list = [epicenter, epicenter_Linear]
+    thread_list = []
 
-    # for name in thread_name_list:
-    #     thread = Thread(thread_name=name)
-    #     thread.start()
-    #     thread_list.append(thread)
-    # for thread in thread_list:
-    #     thread.join()
+    for i in range(len(thread_name_list)):
+        thread = Thread(
+            thread_name=thread_name_list[i], epicenter=thread_epicenter_list[i],
+        )
+        thread.start()
+        thread_list.append(thread)
+    for thread in thread_list:
+        thread.join()
 
-    # # Forward
-    # outputs = output_list[0]
-    # outputs_Linear = output_list[1]
-    # # Predict the label
-    outputs = net(epicenter)
-    outputs_Linear = net_Linear(epicenter_Linear)
+    # Forward
+    outputs = output_list[0]
+    outputs_Linear = output_list[1]
+    # Predict the label
 
     predicted = [[0 for i in range(mesh_size[1])] for j in range(mesh_size[0])]
     _, predicted_Linear = torch.max(outputs_Linear, 1)
@@ -202,15 +211,8 @@ def run():
                 )
     # csv出力
     with open("predicted_data.csv", "w") as fo:
-        print("NOW WRITING")
         writer = csv.writer(fo, lineterminator=",")
         writer.writerows(predicted)
-
-
-import os
-import http.server as s
-from urllib.parse import urlparse
-from urllib.parse import parse_qs
 
 
 class MyHandler(s.BaseHTTPRequestHandler):
@@ -225,25 +227,19 @@ class MyHandler(s.BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         # urlパラメータを解析
         params = parse_qs(parsed.query)
-        print(params)
 
         args.x = params["x"][0]
         args.y = params["y"][0]
         args.mag = params["mag"][0]
         args.depth = params["depth"][0]
 
-        # x = int(params["x"][0])
-        # y = int(params["y"][0])
-        # depth = float(params["depth"][0])
-        # mag = float(params["mag"][0])
-
         run()
 
         f = open("predicted_data.csv", "r")
         data = f.read()
         f.close()
-
-        # 返信を組み立て
+        print("prediction ended")
+        # response
         body = data
         self.send_response(200)
         self.send_header("Access-Control-Allow-Origin", "*")
@@ -254,5 +250,5 @@ class MyHandler(s.BaseHTTPRequestHandler):
 host = "0.0.0.0"
 port = 8000
 httpd = s.HTTPServer((host, port), MyHandler)
-print("サーバを起動しました。ポート:%s" % port)
+print("server started at PORT:%s" % port)
 httpd.serve_forever()
